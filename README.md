@@ -13,14 +13,19 @@ CS319 Spring 2022 Group Project
 BilFit is a website spesifically designed for Bilkent University to manage the sports activites and the gym usage in the campus.  With this all-around website with user friendly design,  not only can students maintain a healthy life , but also the gym staff can easily keep track of the reservations of the activities in the sports facilities in Bilkent University.
 
 ### 🛠️ Planned features
-- There will be two types of users as normal users and gym staff 
+- There will be three types of users as gym member, gym staff and admin
+- Admin will add and delete the accounts of gym members and gym staff since there won't be a register function for users.
 - Normal user authentication will be provided by Student ID
-- Keeping the personal record of users (height, weight, favourite sports etc.)
+- Keeping the personal record of users (height, weight, e-mail, phone number etc.)
 - Reservation making and cancelling as a user for necessary activities like gym, swimming pool etc. 
-- Reservation can be done for all gyms in the campus (Main Sports Hall, East Sports Hall, Dormitories Sports Hall) 
+- Reservation can be done for all gyms in the campus (Main Sports Hall, East Sports Hall, Dormitories Sports Hall). 
 - Managing the reservations as gym staff (monitoring, approving, cancelling)
-- Announcements related to sport tournaments etc. can be visible
-- Registration for tournaments
-- Requesting personal gym program from the staff
-- Achievement system for normal users, and they will have levels based on them (Example achievements: You tried three different sports, you went to gym 10 times)
-- Staff will be able to check HES Codes
+- Gym staff will be able to restrict some Gym Members. The restricted gym members will not be able to make any reservation.
+- Announcements related to sport tournaments etc. can be visible.
+- Registration for tournaments will be available for the gym members.
+- Requesting personal gym program from the staff. Staff will be able to see the program requests and mark them as approved after the process.
+
+### 🤵‍♂️🤵‍♀️ Actors
+- Admin
+- Gym Staff
+- Gym Member
