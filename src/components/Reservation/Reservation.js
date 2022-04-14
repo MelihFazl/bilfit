@@ -20,6 +20,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import { color } from '@mui/system';
+import './Reservation.css';
 
 
 
@@ -77,6 +79,10 @@ function Reservation() {
   const [checkedState2, setCheckedState2] = useState(new Array(rows2.length).fill(false));
   const [date, setDate] = React.useState(new Date());
   const currentDate = new Date();
+  const blue = "#5584AC";
+  const white = "#F5F5F5";
+
+  
 
   const handleOnChange = (position, number) => {
     if (number == 1) {
@@ -99,17 +105,17 @@ function Reservation() {
       alignItems="center"
       spacing={8}>
       <div className="centerContainer">
-        <TableContainer component={Paper}>
-          <Table sx={{ width: '100%', backgroundColor: '#F5F5F5' }} aria-label="customized table">
+        <TableContainer component={Paper} >
+          <Table sx={{ width: '100%', backgroundColor: '#F5F5F5' }} aria-label="customized table"  >
             <TableHead>
               <TableRow>
                 <StyledTableCell>Sports Center</StyledTableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody >
               {rows.map((row, index) => (
-                <StyledTableRow key={row.name}>
-                  <StyledTableCell component="th" scope="row" key={"button" + row.key} onClick={() => { handleOnChange(index, 1) }} >
+                <StyledTableRow key={row.name}  className= {checkedState.at(index) ? "rowTrue" : "rowFalse"} >
+                  <StyledTableCell  className = 'cellItem'component="th" scope="row" style= {{backgroundColor: checkedState.at(index) ? blue : white }} key={"button" + row.key} onClick={() => { handleOnChange(index, 1)}} >
                     {row.name}
                     {checkedState[index].toString()}
                   </StyledTableCell>
@@ -130,7 +136,7 @@ function Reservation() {
             <TableBody>
               {rows2.map((row, index) => (
                 <StyledTableRow key={row.name}>
-                  <StyledTableCell component="th" scope="row" key={"button" + row.key} onClick={() => { handleOnChange(index, 2) }} >
+                  <StyledTableCell className='cellItem' component="th" scope="row" style= {{backgroundColor: checkedState2.at(index) ? blue : white }} key={"button" + row.key} onClick={() => { handleOnChange(index, 2) }} >
                     {row.name}
                     {checkedState2[index].toString()}
                   </StyledTableCell>
