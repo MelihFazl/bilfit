@@ -1,4 +1,20 @@
 
-.cellItem{
-    cursor: pointer;
+.Reservation-component {
+    /* The image used */
+    background-image: url(C:\Users\biray\OneDrive\Masaüstü\bilfit\bilfit\public\images\background_bilfit.jpg);
+
+    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
+.ReservationContainer{
+    margin-top: rem;
+}
+.mainStack{
+    margin-top: 1.5rem;
+}
+
