@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import './Reservation.css';
@@ -24,6 +25,8 @@ import SvgIcon from '@mui/material/SvgIcon';
 // Button positions will be fixed
 // Right side of the table will be fixed
 //slide down can be added to the table
+
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: '#F05454',
@@ -54,8 +57,16 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
   }));
 function Reservation(){
-    const { reservationId } = useParams();
+    const [reservations, setReservations] = useState([]);
     const [checkedState, setCheckedState] = useState(new Array(rows.length).fill(false));
+  
+    useEffect(() => {
+      fetch('http://localhost:3000/reservations')
+        .then((res) => res.json())
+        .then((result) => {
+          setReservations(result);
+        });
+    }, []);
   
 
     const handleOnChange = (position, number) => { // It will be modified according to array that comes from backend
@@ -104,7 +115,7 @@ function Reservation(){
             spacing={6}>
             <div className="ReservationContainer">
             <TableContainer component={Paper} >
-              <Table sx={{ minWidth: 800, width: '100%', backgroundColor: '#F5F5F5' }} aria-label="customized table"  >
+              <Table sx={{ minWidth: 800, width: '100%', backgroundColor: '#F5F5F5' , height: "max-content"}} aria-label="customized table"  >
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>Reservation Date</StyledTableCell>
@@ -117,25 +128,25 @@ function Reservation(){
                   </TableRow>
                 </TableHead>
                 <TableBody >
-                  {rows.map((row, index) => (
-                    <StyledTableRow key={row.name}   component="th" scope="row"  >
+                  {reservations.map((reservation) => (
+                    <StyledTableRow key={reservation.id}   component="th" scope="row"  >
                       <StyledTableCell className='cellItem'>
-                        {row.resDate}
+                        {reservation.resDate}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
-                        {row.resTimeSlot}
+                        {reservation.timeSlot}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
-                        {row.resActivity}
+                        {reservation.activity}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'  >
-                        {row.resLocation}
+                        {reservation.location}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'>
-                        {row.resPlace}
+                        {reservation.campus}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
-                        {row.resStatus}
+                        {reservation.status}
                           </StyledTableCell>
                           <StyledTableCell className='cellItem' >
                           <Stack className = 'mainStack' direction="row"  // This stack is for delete and cancel reservation buttons
@@ -175,6 +186,6 @@ function Reservation(){
           </div>
           </Stack>
           </Stack>
-    )
+    );
 }
 export default Reservation;
