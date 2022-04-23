@@ -28,7 +28,7 @@ function Navbar() {
         <>
             <nav className="navbar">
                 <div className="navbar-container">
-                    <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
+                    <Link to="/home" className="navbar-logo" onClick={closeMobileMenu}>
                         Bilfit
                         <img src="./images/bilfit_logo.png" alt="Bilfit Logo" className="bilfit-logo" />
                     </Link>
@@ -41,7 +41,7 @@ function Navbar() {
                         click ?
                             <ul className="nav-menu active">
                                 <li className="nav-item">
-                                    <Link to="/" className="nav-links" onClick={closeMobileMenu} >
+                                    <Link to="/home" className="nav-links" onClick={closeMobileMenu} >
                                         Home
                                     </Link>
                                 </li>
@@ -74,7 +74,7 @@ function Navbar() {
                             :
                             <ul className="nav-menu">
                                 <li className="nav-item">
-                                    <Link to="/" className="nav-links" onClick={closeMobileMenu} >
+                                    <Link to="/home" className="nav-links" onClick={closeMobileMenu} >
                                         Home
                                     </Link>
                                 </li>
