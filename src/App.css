@@ -6,6 +6,7 @@
 }
 /*New Added Ones are Above*/
 
+
 .App {
   text-align: center;
 }
@@ -34,6 +35,12 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.bg_image{
+  /**background-image: url('/public/images/background_bilfit.png');
+  background-repeat:round;
+  height: 800px;*/
 }
 
 @keyframes App-logo-spin {

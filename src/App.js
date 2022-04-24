@@ -14,14 +14,15 @@ import "./App.css";
 
 function App() {
   return (
-    <>
-    
+    <div className="bg_image">
       <BrowserRouter>
         <>
+        
           <Switch>
               <Route exact path="/" component={Login} />
             <>
               <Navbar/>
+              
                 <Route exact path="/home" component={Home} />
                 <Route path="/reservations" component={Reservation} />
                 <Route path="/tournaments" component={Tournaments} />
@@ -32,7 +33,7 @@ function App() {
           </Switch>
         </>
       </BrowserRouter>
-    </>
+    </div>
   )
 }
 
