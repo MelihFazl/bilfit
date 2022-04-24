@@ -14,7 +14,10 @@
 .ReservationContainer{
     margin-top: rem;
 }
-.mainStack{
+.mainStackUser{
+    margin-top: 1.5rem;
+}
+.mainStackStaff{
     margin-top: 1.5rem;
 }
 
