@@ -57,14 +57,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 function Reservation() {
-  const userType = 1; // if its type is 0  => regular user 1=> staff
+  const userType = 0; // if its type is 0  => regular user 1=> staff
   const [reservations, setReservations] = useState([]);
   const [checkedState, setCheckedState] = useState(new Array(rows.length).fill(false));
   const [checkedUsers, setCheckedUsers] = useState();
   const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users
   const [showInfo2, setInfo2] = useState(() => userType ? 1 : 0); //visibility setting for staff
 
-   useEffect(() => {
+  useEffect(() => {
     fetch('http://localhost:3000/reservations')
       .then((res) => res.json())
       .then((result) => {
@@ -117,11 +117,11 @@ function Reservation() {
   FontAwesomeSvgIcon.propTypes = {
     icon: PropTypes.any.isRequired,
   };
- 
+
   return (
     <>
       <Stack className='mainStackUser' direction="column"
-        spacing={3} alignItems="center"   style={{display: showInfo1  ? "block" : "none" }}    >
+        spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
         <div> <h1 className='header'>My Reservations</h1> </div>
         <Stack className='mainStack' direction="row"
           justifyContent="center"
@@ -201,7 +201,7 @@ function Reservation() {
         </Stack>
       </Stack>
       <Stack className='mainStackStaff' direction="column"
-        spacing={3} alignItems="center"   justifyContent="center" style={{ display: showInfo2 ? "block" : "none" }}    >
+        spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo2 ? "block" : "none" }}    >
         <div> <h1 className='header'>Total Reservations</h1> </div>
         <Stack className='mainStack' direction="row"
           justifyContent="center"
