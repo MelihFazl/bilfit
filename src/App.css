@@ -6,6 +6,11 @@
 }
 /*New Added Ones are Above*/
 
+body{
+  height: 100%;
+  overflow: auto;
+  background-color: #F5F5F5;
+}
 
 .App {
   text-align: center;
