@@ -1,17 +1,23 @@
 package com.venividicode.bilfit.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class Tournament {
 
+	@Id
+	@GeneratedValue(strategy =  GenerationType.IDENTITY)
+	private long ID;
 	private String name;
 	private LocalDateTime deadline;
 	private int maxQuota;
-	private ArrayList<TournamentRegistration> registrations;
+	@OneToMany
+	private List<TournamentRegistration> registrations;
 	private String description;
-	private ArrayList<Field> fields;
-	private long ID;
+	@OneToMany
+	private List<Field> fields;
 
 	public String getName() {
 		return this.name;
@@ -49,7 +55,7 @@ public class Tournament {
 		this.maxQuota = maxQuota;
 	}
 
-	public ArrayList<TournamentRegistration> getRegistrations() {
+	public List<TournamentRegistration> getRegistrations() {
 		return this.registrations;
 	}
 
@@ -57,7 +63,7 @@ public class Tournament {
 	 * 
 	 * @param registrations
 	 */
-	public void setRegistrations(ArrayList<TournamentRegistration> registrations) {
+	public void setRegistrations(List<TournamentRegistration> registrations) {
 		this.registrations = registrations;
 	}
 
@@ -73,7 +79,7 @@ public class Tournament {
 		this.description = description;
 	}
 
-	public ArrayList<Field> getFields() {
+	public List<Field> getFields() {
 		return this.fields;
 	}
 
@@ -81,7 +87,7 @@ public class Tournament {
 	 * 
 	 * @param fields
 	 */
-	public void setFields(ArrayList<Field> fields) {
+	public void setFields(List<Field> fields) {
 		this.fields = fields;
 	}
 

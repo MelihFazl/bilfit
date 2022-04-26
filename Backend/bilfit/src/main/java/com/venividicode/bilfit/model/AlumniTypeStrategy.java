@@ -1,28 +1,40 @@
 package com.venividicode.bilfit.model;
 
-public class AlumniTypeStrategy extends MemberTypeStrategy {
+import org.springframework.stereotype.Component;
 
-	private GymMemberType memberType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
 
-	public GymMemberType getMemberType() {
-		return this.memberType;
+public class AlumniTypeStrategy implements MemberTypeStrategy {
+
+
+	@Override
+	public boolean makeReservation(Reservation reservation) {
+		return false;
 	}
 
-	/**
-	 * 
-	 * @param memberType
-	 */
-	public void setMemberType(GymMemberType memberType) {
-		this.memberType = memberType;
+	@Override
+	public boolean enrollCourse(SportCourse course) {
+		return false;
 	}
 
-	/**
-	 * 
-	 * @param amount
-	 */
-	public boolean makePayment(double amount) {
-		// TODO - implement AlumniTypeStrategy.makePayment
-		throw new UnsupportedOperationException();
+	@Override
+	public boolean registerToTournament(Tournament tournament) {
+		return false;
 	}
 
+	@Override
+	public boolean cancelReservation(long reservationID) {
+		return false;
+	}
+
+	@Override
+	public boolean disenrollCourse(long courseID) {
+		return false;
+	}
+
+	@Override
+	public boolean cancelTournamentRegisteration(TournamentRegistration tournamentRegistration) {
+		return false;
+	}
 }

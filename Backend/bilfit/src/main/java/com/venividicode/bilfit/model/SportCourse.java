@@ -1,15 +1,23 @@
 package com.venividicode.bilfit.model;
 
-import java.util.ArrayList;
+import javax.persistence.*;
+import java.util.List;
 
+@Entity
 public class SportCourse {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long ID;
 	private String type;
 	private String description;
-	private ArrayList<GymStaff> instructors;
-	private ArrayList<GymMember> participants;
+	@OneToMany
+	private List<GymStaff> instructors;
+	@OneToMany
+	private List<GymMember> participants;
+	@OneToOne
 	private SportCenter location;
-	private long ID;
+
 
 	public String getType() {
 		return this.type;
@@ -35,7 +43,7 @@ public class SportCourse {
 		this.description = description;
 	}
 
-	public ArrayList<GymStaff> getInstructors() {
+	public List<GymStaff> getInstructors() {
 		return this.instructors;
 	}
 
@@ -43,11 +51,11 @@ public class SportCourse {
 	 * 
 	 * @param instructors
 	 */
-	public void setInstructors(ArrayList<GymStaff> instructors) {
+	public void setInstructors(List<GymStaff> instructors) {
 		this.instructors = instructors;
 	}
 
-	public ArrayList<GymMember> getParticipants() {
+	public List<GymMember> getParticipants() {
 		return this.participants;
 	}
 
@@ -55,7 +63,7 @@ public class SportCourse {
 	 * 
 	 * @param participants
 	 */
-	public void setParticipants(ArrayList<GymMember> participants) {
+	public void setParticipants(List<GymMember> participants) {
 		this.participants = participants;
 	}
 

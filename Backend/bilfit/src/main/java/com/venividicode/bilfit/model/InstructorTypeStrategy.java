@@ -1,19 +1,34 @@
 package com.venividicode.bilfit.model;
 
-public class InstructorTypeStrategy extends MemberTypeStrategy {
+public class InstructorTypeStrategy implements MemberTypeStrategy {
 
-	private GymMemberType memberType;
-
-	public GymMemberType getMemberType() {
-		return this.memberType;
+	@Override
+	public boolean makeReservation(Reservation reservation) {
+		return false;
 	}
 
-	/**
-	 * 
-	 * @param memberType
-	 */
-	public void setMemberType(GymMemberType memberType) {
-		this.memberType = memberType;
+	@Override
+	public boolean enrollCourse(SportCourse course) {
+		return false;
 	}
 
+	@Override
+	public boolean registerToTournament(Tournament tournament) {
+		return false;
+	}
+
+	@Override
+	public boolean cancelReservation(long reservationID) {
+		return false;
+	}
+
+	@Override
+	public boolean disenrollCourse(long courseID) {
+		return false;
+	}
+
+	@Override
+	public boolean cancelTournamentRegisteration(TournamentRegistration tournamentRegistration) {
+		return false;
+	}
 }

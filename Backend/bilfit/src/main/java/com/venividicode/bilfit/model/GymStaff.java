@@ -1,13 +1,16 @@
 package com.venividicode.bilfit.model;
 
-import java.time.LocalDate;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+@Entity
 public class GymStaff extends User {
 
-	private ArrayList<SportCenter> workplaces;
+	@OneToMany
+	private List<SportCenter> workplaces;
 
 	/**
 	 * 
@@ -33,7 +36,7 @@ public class GymStaff extends User {
 	 * @param sportActivity
 	 * @param timeIntervals
 	 */
-	public boolean determineTimeIntervals(SportActivity sportActivity, ArrayList<String> timeIntervals) {
+	public boolean determineTimeIntervals(SportActivity sportActivity, List<String> timeIntervals) {
 		// TODO - implement GymStaff.determineTimeIntervals
 		throw new UnsupportedOperationException();
 	}
@@ -90,7 +93,7 @@ public class GymStaff extends User {
 		throw new UnsupportedOperationException();
 	}
 
-	public ArrayList<SportCenter> getWorkplaces() {
+	public List<SportCenter> getWorkplaces() {
 		return this.workplaces;
 	}
 
@@ -98,7 +101,7 @@ public class GymStaff extends User {
 	 * 
 	 * @param workplaces
 	 */
-	public void setWorkplaces(ArrayList<SportCenter> workplaces) {
+	public void setWorkplaces(List<SportCenter> workplaces) {
 		this.workplaces = workplaces;
 	}
 

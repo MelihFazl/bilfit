@@ -1,19 +1,12 @@
 package com.venividicode.bilfit.model;
 
-public class MemberTypeStrategy {
 
-	private GymMemberType memberType;
-
-	public GymMemberType getMemberType() {
-		return this.memberType;
-	}
-
-	/**
-	 * 
-	 * @param memberType
-	 */
-	public void setMemberType(GymMemberType memberType) {
-		this.memberType = memberType;
-	}
-
+public interface MemberTypeStrategy
+{
+	public boolean makeReservation(Reservation reservation);
+	public boolean enrollCourse(SportCourse course);
+	public boolean registerToTournament(Tournament tournament);
+	public boolean cancelReservation(long reservationID);
+	public boolean disenrollCourse(long courseID);
+	public boolean cancelTournamentRegisteration(TournamentRegistration tournamentRegistration);
 }
