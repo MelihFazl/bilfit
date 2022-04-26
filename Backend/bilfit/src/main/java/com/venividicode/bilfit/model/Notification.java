@@ -1,4 +1,6 @@
-package model;
+package com.venividicode.bilfit.model;
+
+import java.util.ArrayList;
 
 public class Notification {
 
@@ -43,7 +45,7 @@ public class Notification {
 		this.title = title;
 	}
 
-	public void notify() {
+	public void sendNotification() {
 		// TODO - implement Notification.notify
 		throw new UnsupportedOperationException();
 	}

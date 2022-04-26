@@ -1,4 +1,6 @@
-package model;
+package com.venividicode.bilfit.model;
+
+import java.util.ArrayList;
 
 public class TournamentRegistration {
 

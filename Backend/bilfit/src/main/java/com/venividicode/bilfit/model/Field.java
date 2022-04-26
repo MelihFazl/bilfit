@@ -1,4 +1,8 @@
-package model;
+package com.venividicode.bilfit.model;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class Field {
 
@@ -48,7 +52,7 @@ public class Field {
 	 * @param timeSlot
 	 * @param date
 	 */
-	public boolean isReservationAvailable(String timeSlot, Date date) {
+	public boolean isReservationAvailable(String timeSlot, LocalDateTime date) {
 		// TODO - implement Field.isReservationAvailable
 		throw new UnsupportedOperationException();
 	}

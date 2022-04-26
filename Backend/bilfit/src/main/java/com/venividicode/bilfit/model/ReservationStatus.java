@@ -1,7 +1,7 @@
-package model;
+package com.venividicode.bilfit.model;
 
-public class ReservationStatus {
+public enum ReservationStatus {
 	Upcoming,
 	Attended,
-	Not Attended
+	NotAttended
 }

@@ -1,4 +1,4 @@
-package model;
+package com.venividicode.bilfit.model;
 
 public class GymProgram {
 

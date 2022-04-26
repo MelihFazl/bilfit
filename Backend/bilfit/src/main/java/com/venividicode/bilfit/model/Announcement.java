@@ -1,10 +1,12 @@
-package model;
+package com.venividicode.bilfit.model;
+
+import java.time.LocalDateTime;
 
 public class Announcement {
 
 	private String title;
 	private String description;
-	private Date date;
+	private LocalDateTime date;
 	private long ID;
 
 	public String getTitle() {
@@ -31,7 +33,7 @@ public class Announcement {
 		this.description = description;
 	}
 
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return this.date;
 	}
 
@@ -39,7 +41,7 @@ public class Announcement {
 	 * 
 	 * @param date
 	 */
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 

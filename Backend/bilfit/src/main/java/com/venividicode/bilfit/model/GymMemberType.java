@@ -1,6 +1,6 @@
-package model;
+package com.venividicode.bilfit.model;
 
-public class GymMemberType {
+public enum GymMemberType {
 	Alumni,
 	Instructor,
 	Student

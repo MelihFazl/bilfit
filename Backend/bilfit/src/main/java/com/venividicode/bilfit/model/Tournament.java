@@ -1,13 +1,16 @@
-package model;
+package com.venividicode.bilfit.model;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Tournament {
 
 	private String name;
-	private Date deadline;
+	private LocalDateTime deadline;
 	private int maxQuota;
 	private ArrayList<TournamentRegistration> registrations;
 	private String description;
-	private ArrayList<Fields> fields;
+	private ArrayList<Field> fields;
 	private long ID;
 
 	public String getName() {
@@ -22,7 +25,7 @@ public class Tournament {
 		this.name = name;
 	}
 
-	public Date getDeadline() {
+	public LocalDateTime getDeadline() {
 		return this.deadline;
 	}
 
@@ -30,7 +33,7 @@ public class Tournament {
 	 * 
 	 * @param deadline
 	 */
-	public void setDeadline(Date deadline) {
+	public void setDeadline(LocalDateTime deadline) {
 		this.deadline = deadline;
 	}
 
@@ -70,7 +73,7 @@ public class Tournament {
 		this.description = description;
 	}
 
-	public ArrayList<Fields> getFields() {
+	public ArrayList<Field> getFields() {
 		return this.fields;
 	}
 
@@ -78,7 +81,7 @@ public class Tournament {
 	 * 
 	 * @param fields
 	 */
-	public void setFields(ArrayList<Fields> fields) {
+	public void setFields(ArrayList<Field> fields) {
 		this.fields = fields;
 	}
 

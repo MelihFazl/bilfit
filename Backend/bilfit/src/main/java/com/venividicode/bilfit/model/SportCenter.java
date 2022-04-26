@@ -1,12 +1,15 @@
-package model;
+package com.venividicode.bilfit.model;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class SportCenter {
 
 	private String name;
 	private ArrayList<SportActivity> availableActivities;
 	private ArrayList<GymStaff> staff;
-	private Time opensAt;
-	private Time closesAt;
+	private LocalDateTime opensAt;
+	private LocalDateTime closesAt;
 	private int latestReservationStepValue;
 	private ArrayList<Tournament> tournaments;
 	private ArrayList<SportCourse> courses;
@@ -48,7 +51,7 @@ public class SportCenter {
 		this.staff = staff;
 	}
 
-	public Time getOpensAt() {
+	public LocalDateTime getOpensAt() {
 		return this.opensAt;
 	}
 
@@ -56,11 +59,11 @@ public class SportCenter {
 	 * 
 	 * @param opensAt
 	 */
-	public void setOpensAt(Time opensAt) {
+	public void setOpensAt(LocalDateTime opensAt) {
 		this.opensAt = opensAt;
 	}
 
-	public Time getClosesAt() {
+	public LocalDateTime getClosesAt() {
 		return this.closesAt;
 	}
 
@@ -68,7 +71,7 @@ public class SportCenter {
 	 * 
 	 * @param closesAt
 	 */
-	public void setClosesAt(Time closesAt) {
+	public void setClosesAt(LocalDateTime closesAt) {
 		this.closesAt = closesAt;
 	}
 
@@ -78,7 +81,7 @@ public class SportCenter {
 	 * @param TimeSlot
 	 * @param date
 	 */
-	public ArrayList<Reservation> reservationsForAnActivityForTimeSlot(SportActivity sportActivity, String TimeSlot, Date date) {
+	public ArrayList<Reservation> reservationsForAnActivityForTimeSlot(SportActivity sportActivity, String TimeSlot, LocalDateTime date) {
 		// TODO - implement SportCenter.reservationsForAnActivityForTimeSlot
 		throw new UnsupportedOperationException();
 	}
@@ -120,7 +123,7 @@ public class SportCenter {
 	 * 
 	 * @param date
 	 */
-	public boolean isStepValueExceeded(Date date) {
+	public boolean isStepValueExceeded(LocalDateTime date) {
 		// TODO - implement SportCenter.isStepValueExceeded
 		throw new UnsupportedOperationException();
 	}

@@ -1,4 +1,9 @@
-package model;
+package com.venividicode.bilfit.model;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GymStaff extends User {
 
@@ -38,7 +43,7 @@ public class GymStaff extends User {
 	 * @param opensAt
 	 * @param closesAt
 	 */
-	public boolean setOpenHours(Time opensAt, Time closesAt) {
+	public boolean setOpenHours(LocalDateTime opensAt, LocalDateTime closesAt) {
 		// TODO - implement GymStaff.setOpenHours
 		throw new UnsupportedOperationException();
 	}
@@ -142,4 +147,13 @@ public class GymStaff extends User {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public boolean cancelReservation(long reservationID) {
+		return false;
+	}
+
+	@Override
+	public HashMap<String, Object> getProfileInfo(long ID) {
+		return null;
+	}
 }

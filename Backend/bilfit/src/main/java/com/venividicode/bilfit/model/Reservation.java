@@ -1,4 +1,6 @@
-package model;
+package com.venividicode.bilfit.model;
+
+import java.time.LocalDateTime;
 
 public class Reservation {
 
@@ -9,7 +11,7 @@ public class Reservation {
 	private SportCenter reservationPlace;
 	private ReservationStatus status;
 	private GymMember Reserver;
-	private Date reservationDay;
+	private LocalDateTime reservationDay;
 	private Field reservationField;
 
 	public long getID() {
@@ -88,7 +90,7 @@ public class Reservation {
 		throw new UnsupportedOperationException();
 	}
 
-	public Date getReservationDay() {
+	public LocalDateTime getReservationDay() {
 		return this.reservationDay;
 	}
 
@@ -96,7 +98,7 @@ public class Reservation {
 	 * 
 	 * @param reservationDay
 	 */
-	public void setReservationDay(Date reservationDay) {
+	public void setReservationDay(LocalDateTime reservationDay) {
 		this.reservationDay = reservationDay;
 	}
 

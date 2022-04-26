@@ -1,4 +1,8 @@
-package model;
+package com.venividicode.bilfit.model;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 public class GymMember extends User {
 
@@ -163,4 +167,13 @@ public class GymMember extends User {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public boolean cancelReservation(long reservationID) {
+		return false;
+	}
+
+	@Override
+	public HashMap<String, Object> getProfileInfo(long ID) {
+		return null;
+	}
 }

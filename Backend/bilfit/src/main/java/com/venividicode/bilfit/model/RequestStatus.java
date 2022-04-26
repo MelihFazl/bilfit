@@ -1,6 +1,6 @@
-package model;
+package com.venividicode.bilfit.model;
 
-public class RequestStatus {
+public enum RequestStatus {
 	Pending,
 	Cancelled,
 	Written
