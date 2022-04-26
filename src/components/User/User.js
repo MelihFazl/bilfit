@@ -1,4 +1,7 @@
 import React from "react";
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash';
+import IconButton from '@mui/material/IconButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '../Navbar/Button'
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -11,6 +14,11 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import { useParams } from "react-router-dom";
 import { useEffect } from 'react';
 import { useState } from "react";
@@ -42,13 +50,25 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function User() {
     //variables
-    const [button, setButton] = useState(true);
+    const [button, setButton] = useState(true);//2 buttons may be needed
     const [users, setUsers] = useState([]);
     const [editClick, setEditClick] = useState(false);
+    const [changePasswordClick, setChangePasswordClick] = useState(true);//when initial value false, doesn't work properly 
+    const [openDialog, setOpenDialog] = useState(false);
+    const [hidePassword, setHidePassowrd] = useState(true);
 
     const handleEditClick = () => {
         setEditClick(!editClick);
     }
+
+    const handleChangePasswordClick = () => {
+        setChangePasswordClick(!changePasswordClick);
+        setOpenDialog(changePasswordClick);
+    }
+
+    const handleHidePassword = () => setHidePassowrd(!hidePassword);
+
+
 
     var userId = 21902222;
     //const { userId } = useParams(); Can be used in the future to get id from parameters
@@ -103,7 +123,7 @@ function User() {
                         : button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Edit Profile</Button>}
                 </Box>
                 <Box>
-                    {button && <Button buttonStyle="btn--outline" margin="1rem" >Change Password</Button>}
+                    {button && <Button buttonStyle="btn--outline" onClick={handleChangePasswordClick} margin="1rem" >Change Password</Button>}
                 </Box>
             </Box>
 
@@ -177,7 +197,47 @@ function User() {
                     </Table>
                 </TableContainer>
             </Box>
+
+            {/*This is created for the change password dialog.*/}
+            <Dialog open={openDialog} onClose={handleChangePasswordClick}>
+                <DialogTitle>Change Password</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Please enter your new password:
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="New Password"
+                        type={hidePassword ? 'password' : 'name'}
+                        fullWidth
+                        variant="standard"
+                        InputProps={{
+                            endAdornment: <IconButton aria-label="Example" onClick={handleHidePassword}>
+                                <FontAwesomeIcon icon={faEyeSlash} width='20px' />
+                            </IconButton>
+                        }}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Re-Enter Password"
+                        type={hidePassword ? 'password' : 'name'}
+                        fullWidth
+                        variant="standard"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleChangePasswordClick}>Cancel</Button>
+                    <Button onClick={handleChangePasswordClick}>Submit</Button>
+                </DialogActions>
+            </Dialog>
+
         </Box >
+
+
     )
 }
 export default User;
