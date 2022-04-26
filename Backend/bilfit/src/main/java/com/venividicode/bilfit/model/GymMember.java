@@ -1,19 +1,24 @@
 package com.venividicode.bilfit.model;
 
-import java.util.ArrayList;
-import java.util.Date;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 
+@Entity
 public class GymMember extends User {
 
 	private double height;
 	private double weight;
 	private String gender;
-	private Date birthday;
-	private ArrayList<Reservation> reservations;
+	private LocalDateTime birthday;
+	@OneToMany
+	private List<Reservation> reservations;
 	private boolean isRestricted;
+
+	@OneToOne
 	private GymProgram program;
-	private MemberTypeStrategy typeStrategy;
+	//private MemberTypeStrategy typeStrategy;
 
 	public double getHeight() {
 		return this.height;
@@ -51,7 +56,7 @@ public class GymMember extends User {
 		this.gender = gender;
 	}
 
-	public Date getBirthday() {
+	public LocalDateTime getBirthday() {
 		return this.birthday;
 	}
 
@@ -59,11 +64,11 @@ public class GymMember extends User {
 	 * 
 	 * @param birthday
 	 */
-	public void setBirthday(Date birthday) {
+	 public void setBirthday(LocalDateTime birthday) {
 		this.birthday = birthday;
 	}
 
-	public ArrayList<Reservation> getReservations() {
+	public List<Reservation> getReservations() {
 		return this.reservations;
 	}
 
@@ -71,7 +76,7 @@ public class GymMember extends User {
 	 * 
 	 * @param reservations
 	 */
-	public void setReservations(ArrayList<Reservation> reservations) {
+	public void setReservations(List<Reservation> reservations) {
 		this.reservations = reservations;
 	}
 
@@ -120,25 +125,25 @@ public class GymMember extends User {
 
 	/**
 	 * 
-	 * @param program
+	 * @param
 	 */
 	public void setProgram(GymProgram program) {
 		this.program = program;
 	}
 
-	public void getTypeStrategy() {
+	/*public void getTypeStrategy() {
 		// TODO - implement GymMember.getTypeStrategy
 		throw new UnsupportedOperationException();
-	}
+	}*/
 
 	/**
 	 * 
 	 * @param typeStrategy
 	 */
-	public void setTypeStrategy(int typeStrategy) {
+	/*public void setTypeStrategy(int typeStrategy) {
 		// TODO - implement GymMember.setTypeStrategy
 		throw new UnsupportedOperationException();
-	}
+	}*/
 
 	/**
 	 * 

@@ -1,24 +1,24 @@
 package com.venividicode.bilfit.model;
 
-import java.util.ArrayList;
+import javax.persistence.*;
+import java.util.List;
 
+@Entity
 public class Notification {
-
-	private ArrayList<User> targets;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long ID;
+	@ElementCollection(targetClass=Long.class)
+	private List<Long> targetIDs;
 	private String content;
 	private String title;
-	private long ID;
 
-	public ArrayList<User> getTargets() {
-		return this.targets;
+	public List<Long> getTargetIDs() {
+		return targetIDs;
 	}
 
-	/**
-	 * 
-	 * @param targets
-	 */
-	public void setTargets(ArrayList<User> targets) {
-		this.targets = targets;
+	public void setTargetIDs(List<Long> targetIDs) {
+		this.targetIDs = targetIDs;
 	}
 
 	public String getContent() {

@@ -1,11 +1,19 @@
 package com.venividicode.bilfit.model;
 
-import java.util.ArrayList;
+import javax.persistence.*;
+import java.util.List;
 
+@Entity
 public class SportActivity {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long ID;
+
 	private String activity;
-	private ArrayList<Field> fields;
+
+	@OneToMany
+	private List<Field> fields;
 
 	public String getActivity() {
 		return this.activity;
@@ -19,7 +27,7 @@ public class SportActivity {
 		this.activity = activity;
 	}
 
-	public ArrayList<Field> getFields() {
+	public List<Field> getFields() {
 		return this.fields;
 	}
 
@@ -27,7 +35,7 @@ public class SportActivity {
 	 * 
 	 * @param fields
 	 */
-	public void setFields(ArrayList<Field> fields) {
+	public void setFields(List<Field> fields) {
 		this.fields = fields;
 	}
 

@@ -1,7 +1,12 @@
 package com.venividicode.bilfit.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Admin {
 
+	@Id
 	private long ID;
 	private String hashedPassword;
 

@@ -1,12 +1,22 @@
 package com.venividicode.bilfit.model;
 
-import java.util.ArrayList;
 
+import javax.persistence.*;
+
+import java.util.List;
+
+@Entity
 public class TournamentRegistration {
 
-	private GymMember registerer;
-	private ArrayList<Long> teamMembersID;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long ID;
+
+	@OneToOne
+	private GymMember registerer;
+	@ElementCollection(targetClass=Long.class)
+	private List<Long> teamMembersID;
+
 
 	public GymMember getRegisterer() {
 		return this.registerer;
@@ -20,7 +30,7 @@ public class TournamentRegistration {
 		this.registerer = registerer;
 	}
 
-	public ArrayList<Long> getTeamMembersID() {
+	public List<Long> getTeamMembersID() {
 		return this.teamMembersID;
 	}
 
@@ -28,7 +38,7 @@ public class TournamentRegistration {
 	 * 
 	 * @param teamMembersID
 	 */
-	public void setTeamMembersID(ArrayList<Long> teamMembersID) {
+	public void setTeamMembersID(List<Long> teamMembersID) {
 		this.teamMembersID = teamMembersID;
 	}
 

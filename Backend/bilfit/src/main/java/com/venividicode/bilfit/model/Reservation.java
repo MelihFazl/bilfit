@@ -1,17 +1,25 @@
 package com.venividicode.bilfit.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 public class Reservation {
 
-	GymMember generates;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long ID;
 	private String reservedTimeInterval;
+	@OneToOne
 	private SportActivity reservationActivity;
+	@OneToOne
 	private SportCenter reservationPlace;
+	@Enumerated
 	private ReservationStatus status;
-	private GymMember Reserver;
+	@OneToOne
+	private GymMember reserver;
 	private LocalDateTime reservationDay;
+	@OneToOne
 	private Field reservationField;
 
 	public long getID() {
@@ -77,17 +85,11 @@ public class Reservation {
 	}
 
 	public GymMember getReserver() {
-		// TODO - implement Reservation.getReserver
-		throw new UnsupportedOperationException();
+		return reserver;
 	}
 
-	/**
-	 * 
-	 * @param Reserver
-	 */
-	public void setReserver(GymMember Reserver) {
-		// TODO - implement Reservation.setReserver
-		throw new UnsupportedOperationException();
+	public void setReserver(GymMember reserver) {
+		this.reserver = reserver;
 	}
 
 	public LocalDateTime getReservationDay() {

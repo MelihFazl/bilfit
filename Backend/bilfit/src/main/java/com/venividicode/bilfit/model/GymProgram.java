@@ -1,11 +1,21 @@
 package com.venividicode.bilfit.model;
 
+import javax.persistence.*;
+
+@Entity
 public class GymProgram {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long ID;
+
+	@OneToOne
 	private GymMember owner;
+
+	@OneToOne
 	private GymStaff author;
 	private String description;
-	private long ID;
+
 
 	public GymMember getOwner() {
 		return this.owner;

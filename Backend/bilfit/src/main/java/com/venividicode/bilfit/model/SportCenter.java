@@ -1,18 +1,26 @@
 package com.venividicode.bilfit.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class SportCenter {
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long ID;
 	private String name;
-	private ArrayList<SportActivity> availableActivities;
-	private ArrayList<GymStaff> staff;
+	@OneToMany
+	private List<SportActivity> availableActivities;
+	@OneToMany
+	private List<GymStaff> staff;
 	private LocalDateTime opensAt;
 	private LocalDateTime closesAt;
 	private int latestReservationStepValue;
-	private ArrayList<Tournament> tournaments;
-	private ArrayList<SportCourse> courses;
+	@OneToMany
+	private List<Tournament> tournaments;
+	@OneToMany
+	private List<SportCourse> courses;
 	private double balance;
 
 	public String getName() {
@@ -27,7 +35,7 @@ public class SportCenter {
 		this.name = name;
 	}
 
-	public ArrayList<SportActivity> getAvailableActivities() {
+	public List<SportActivity> getAvailableActivities() {
 		return this.availableActivities;
 	}
 
@@ -35,11 +43,11 @@ public class SportCenter {
 	 * 
 	 * @param availableActivities
 	 */
-	public void setAvailableActivities(ArrayList<SportActivity> availableActivities) {
+	public void setAvailableActivities(List<SportActivity> availableActivities) {
 		this.availableActivities = availableActivities;
 	}
 
-	public ArrayList<GymStaff> getStaff() {
+	public List<GymStaff> getStaff() {
 		return this.staff;
 	}
 
@@ -47,7 +55,7 @@ public class SportCenter {
 	 * 
 	 * @param staff
 	 */
-	public void setStaff(ArrayList<GymStaff> staff) {
+	public void setStaff(List<GymStaff> staff) {
 		this.staff = staff;
 	}
 
@@ -81,7 +89,7 @@ public class SportCenter {
 	 * @param TimeSlot
 	 * @param date
 	 */
-	public ArrayList<Reservation> reservationsForAnActivityForTimeSlot(SportActivity sportActivity, String TimeSlot, LocalDateTime date) {
+	public List<Reservation> reservationsForAnActivityForTimeSlot(SportActivity sportActivity, String TimeSlot, LocalDateTime date) {
 		// TODO - implement SportCenter.reservationsForAnActivityForTimeSlot
 		throw new UnsupportedOperationException();
 	}
@@ -98,7 +106,7 @@ public class SportCenter {
 		this.latestReservationStepValue = latestReservationStepValue;
 	}
 
-	public ArrayList<Tournament> getTournaments() {
+	public List<Tournament> getTournaments() {
 		return this.tournaments;
 	}
 
@@ -106,7 +114,7 @@ public class SportCenter {
 	 * 
 	 * @param tournaments
 	 */
-	public void setTournaments(ArrayList<Tournament> tournaments) {
+	public void setTournaments(List<Tournament> tournaments) {
 		this.tournaments = tournaments;
 	}
 
@@ -137,7 +145,7 @@ public class SportCenter {
 		throw new UnsupportedOperationException();
 	}
 
-	public ArrayList<SportCourse> getCourses() {
+	public List<SportCourse> getCourses() {
 		return this.courses;
 	}
 
@@ -145,7 +153,7 @@ public class SportCenter {
 	 * 
 	 * @param courses
 	 */
-	public void setCourses(ArrayList<SportCourse> courses) {
+	public void setCourses(List<SportCourse> courses) {
 		this.courses = courses;
 	}
 

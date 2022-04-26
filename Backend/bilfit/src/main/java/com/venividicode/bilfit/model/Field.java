@@ -1,16 +1,20 @@
 package com.venividicode.bilfit.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
+@Entity
 public class Field {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long ID;
+	@OneToOne
 	private SportActivity activity;
 	private int maxQuota;
-	private ArrayList<String> occupiableTimeSlots;
-	private long ID;
-
+	@ElementCollection(targetClass=String.class)
+	private List<String> occupiableTimeSlots;
 	public SportActivity getActivity() {
 		return this.activity;
 	}
@@ -35,7 +39,7 @@ public class Field {
 		this.maxQuota = maxQuota;
 	}
 
-	public ArrayList<String> getOccupiableTimeSlots() {
+	public List<String> getOccupiableTimeSlots() {
 		return this.occupiableTimeSlots;
 	}
 
@@ -43,7 +47,7 @@ public class Field {
 	 * 
 	 * @param occupiableTimeSlots
 	 */
-	public void setOccupiableTimeSlots(ArrayList<String> occupiableTimeSlots) {
+	public void setOccupiableTimeSlots(List<String> occupiableTimeSlots) {
 		this.occupiableTimeSlots = occupiableTimeSlots;
 	}
 
