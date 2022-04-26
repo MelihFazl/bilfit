@@ -2,26 +2,15 @@ import React from "react";
 import { Button } from '../Navbar/Button'
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import InboxIcon from '@mui/icons-material/Inbox';
+import { TextField } from "@mui/material";
 import Typography from '@mui/material/Typography';
-import DraftsIcon from '@mui/icons-material/Drafts';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import PropTypes from 'prop-types';
 import { useParams } from "react-router-dom";
 import { useEffect } from 'react';
 import { useState } from "react";
@@ -50,12 +39,23 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function User(props) {
+
+function User() {
     //variables
     const [button, setButton] = useState(true);
     const [users, setUsers] = useState([]);
-    const { userId } = useParams();
+    const [editClick, setEditClick] = useState(false);
 
+    const handleEditClick = () => {
+        setEditClick(!editClick);
+    }
+
+    var userId = 21902222;
+    //const { userId } = useParams(); Can be used in the future to get id from parameters
+
+    //javascript mehods
+
+    //in order to display the customly designed button
     const showButton = () => {
         if (window.innerWidth <= 960)
             setButton(false);
@@ -63,10 +63,6 @@ function User(props) {
             setButton(true);
     };
     window.addEventListener("resize", showButton);
-
-
-
-    
 
     //get users from fake rest api
     useEffect(() => {
@@ -77,68 +73,52 @@ function User(props) {
             });
     }, []);
 
-    /**const getUser = () => {
-        GetWithAuth("/users/21901111")
-        .then(res => res.json())
-        .then(
-            (result) => {
-                console.log(result);
-                setUsers(result);
-            },
-            (error) => {
-                console.log(error)
-            }
-        )
-        }
-
-        useEffect(() => {
-            getUser()
-        }, [])*/
-    
     return (
+
         <Box sx={{
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'horizontal',
             justifyContent: 'center',
-            margin: '2rem'
+            margin: '2rem',
         }}>
 
-        <Box sx={{
-            borderRadius: "2%",
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-            backgroundColor: "#F05454",
-            margin: '1rem',
-            padding: '2rem',
-            width: '30rem'
-        }}>
-            <Avatar alt="Remy Sharp" src=""
-                sx={{ height: '7.5rem', width: '7.5rem'}} />
-            <Typography variant="h4" sx={{ fontFamily: 'PT Sans, sans-serif' }} >
-                Ahmet Mehmet
-            </Typography>
-            <Box sx = {{ margin: '1rem'}}>
-                {button && <Button buttonStyle="btn--outline" margin = "1rem" >Edit Profile</Button>}
+            <Box sx={{
+                borderRadius: "2%",
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                backgroundColor: "#F05454",
+                margin: '1rem',
+                padding: '2rem',
+                width: '30rem',
+            }}>
+                <Avatar alt="Remy Sharp" src="../images/gym_avatar.png"//dummy avatar, may change later
+                    sx={{ height: '7.5rem', width: '7.5rem' }} />
+                <Typography variant="h4" sx={{ fontFamily: 'PT Sans, sans-serif' }} >
+                    {users.map((user) => user.id === userId ? (<div>{user.name}</div>) : (<></>))}
+                </Typography>
+                <Box sx={{ margin: '1rem' }}>
+                    {editClick ? button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Finish Edit</Button>
+                        : button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Edit Profile</Button>}
+                </Box>
+                <Box>
+                    {button && <Button buttonStyle="btn--outline" margin="1rem" >Change Password</Button>}
+                </Box>
             </Box>
-            <Box>
-                {button && <Button buttonStyle="btn--outline" margin = "1rem" >Change Password</Button>}
-            </Box>
-        </Box>
-            
-        
-            
-            <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' , margin: '1rem'}}>
+
+            <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', margin: '1rem' }}>
                 <TableContainer component={Paper} >
-                    <Table sx={{  width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
+                    <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
                         <TableBody >
                             <StyledTableRow component="th" scope="row"  >
                                 <StyledTableCell className='cellItem'>
                                     ID:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    21901111
+                                    {/*this method finds the user with specified id and displays the user that is found in the array. 
+                                We may find a different method to accomplish this.*/}
+                                    {users.map((user) => user.id === userId ? (<div>{user.id}</div>) : (<></>))}
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
@@ -146,15 +126,15 @@ function User(props) {
                                     Gender:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    Male
+                                    {users.map((user) => user.id === userId ? (<div>{user.gender}</div>) : (<></>))}
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
                                 <StyledTableCell className='cellItem'>
-                                    Birthdate: 
+                                    Birthdate:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    22 July 2001
+                                    {users.map((user) => user.id === userId ? (<div>{user.birthdate}</div>) : (<></>))}
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
@@ -162,31 +142,35 @@ function User(props) {
                                     Weight:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    1.73
+                                    {/*Changing acquired input is not implemented, needs to be implemented after connection with database*/}
+                                    {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.weight}></TextField>) : (<></>)))
+                                        : (users.map((user) => user.id === userId ? (<div>{user.weight}</div>) : (<></>)))}
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
                                 <StyledTableCell className='cellItem'>
-                                    Height: 
+                                    Height:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    1.73
+                                    {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.height}></TextField>) : (<></>)))
+                                        : (users.map((user) => user.id === userId ? (<div>{user.height}</div>) : (<></>)))}
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
                                 <StyledTableCell className='cellItem'>
-                                    Phone Number: 
+                                    Phone Number:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    500 000 00 00
+                                    {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.id}></TextField>) : (<></>)))
+                                        : (users.map((user) => user.id === userId ? (<div>{user.id}</div>) : (<></>)))}
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
                                 <StyledTableCell className='cellItem'>
-                                    Email: 
+                                    Email:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    mehmet@ug.bilkent.edu.tr
+                                    {users.map((user) => user.id === userId ? (<div>{user.email}</div>) : (<></>))}
                                 </StyledTableCell>
                             </StyledTableRow>
                         </TableBody>
