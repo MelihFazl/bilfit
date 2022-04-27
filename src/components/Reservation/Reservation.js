@@ -24,7 +24,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 
 // Button positions will be fixed
 // Right side of the table will be fixed
-//slide down can be added to the table
+
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -35,6 +35,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 13,
+    
   },
 }));
 function createData(resDate, resTimeSlot, resActivity, resPlace, resLocation, resStatus, cancelButton, deleteButton) { // I am not sure for the last two parameters for now 
@@ -49,7 +50,7 @@ const rows = [
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
+   // backgroundColor: theme.palette.action.hover,
   },
   // hide last border
   '&:last-child td, &:last-child th': {

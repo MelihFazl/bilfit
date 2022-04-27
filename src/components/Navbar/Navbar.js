@@ -3,23 +3,61 @@ import { Link } from 'react-router-dom'
 import { Button } from './Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import Dropdown from './Dropdown';
 import "./Navbar.css";
 
 function Navbar() {
     //declarations
     const [click, setClick] = useState(false);
     const [button, setButton] = useState(true);
+    const [dropdown1, setDropdown1] = useState(false);
+    const [dropdown2, setDropdown2] = useState(false);
     let userId = 5;
     let reservationId = 5;
 
-    //function body
+    //methods
     const showButton = () => {
-        if (window.innerWidth <= 960)
+        if (window.innerWidth <= 1100)
             setButton(false);
         else
             setButton(true);
     };
+
+    const onMouseEnter1 = () => {
+        if (window.innerWidth < 960) {
+          setDropdown1(false);
+        } else {
+          setDropdown1(true);
+        }
+      };
+    
+    const onMouseLeave1 = () => {
+        if (window.innerWidth < 960) {
+          setDropdown1(false);
+        } else {
+          setDropdown1(false);
+        }
+      };
+
+    const onMouseEnter2 = () => {
+        if (window.innerWidth < 960) {
+          setDropdown2(false);
+        } else {
+          setDropdown2(true);
+        }
+      };
+    
+    const onMouseLeave2 = () => {
+        if (window.innerWidth < 960) {
+          setDropdown2(false);
+        } else {
+          setDropdown2(false);
+        }
+      };
+
+    
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
     window.addEventListener("resize", showButton);
@@ -30,7 +68,7 @@ function Navbar() {
                 <div className="navbar-container">
                     <Link to="/home" className="navbar-logo" onClick={closeMobileMenu}>
                         Bilfit
-                        <img src="./images/bilfit_logo.png" alt="Bilfit Logo" className="bilfit-logo" />
+                        <img src="/images/bilfit_logo.png" alt="Bilfit Logo" className="bilfit-logo" />
                     </Link>
                     <div className="menu-icon" onClick={handleClick}>
                         {
@@ -45,15 +83,17 @@ function Navbar() {
                                         Home
                                     </Link>
                                 </li>
-                                <li className="nav-item">
-                                    <Link to={{ pathname: "/reservations/" + reservationId }} className="nav-links" onClick={closeMobileMenu}>
-                                        Reservations
+                                <li className="nav-item" >
+                                    <Link className="nav-links" onClick={closeMobileMenu} >
+                                        Reservations <FontAwesomeIcon icon={faCaretDown} width='30px' />
                                     </Link>
+                                    {dropdown1 && <Dropdown ChooseMenu={"reservationDropdown"}/>}
                                 </li>
                                 <li className="nav-item">
-                                    <Link to="/tournaments" className="nav-links" onClick={closeMobileMenu}>
-                                        Tournaments
+                                    <Link className="nav-links" onClick={closeMobileMenu}>
+                                        Tournaments <FontAwesomeIcon icon={faCaretDown} width='30px' />
                                     </Link>
+                                    {dropdown2 && <Dropdown ChooseMenu={"tournamentDropdown"}/>}
                                 </li>
                                 <li className="nav-item">
                                     <Link to="/courses" className="nav-links" onClick={closeMobileMenu}>
@@ -78,15 +118,17 @@ function Navbar() {
                                         Home
                                     </Link>
                                 </li>
-                                <li className="nav-item">
-                                    <Link to={{ pathname: "/reservations/" + reservationId }} className="nav-links" onClick={closeMobileMenu}>
-                                        Reservations
+                                <li className="nav-item" onMouseEnter={onMouseEnter1} onMouseLeave={onMouseLeave1}>
+                                    <Link className="nav-links" onClick={closeMobileMenu} >
+                                        Reservations   <FontAwesomeIcon icon={faCaretDown} width='30px' />
                                     </Link>
+                                    {dropdown1 && <Dropdown ChooseMenu={"reservationDropdown"}/>}
                                 </li>
-                                <li className="nav-item">
-                                    <Link to="/tournaments" className="nav-links" onClick={closeMobileMenu}>
-                                        Tournaments
+                                <li className="nav-item" onMouseEnter={onMouseEnter2} onMouseLeave={onMouseLeave2}>
+                                    <Link className="nav-links" onClick={closeMobileMenu}>
+                                        Tournaments <FontAwesomeIcon icon={faCaretDown} width='30px' />
                                     </Link>
+                                    {dropdown2 && <Dropdown ChooseMenu={"tournamentDropdown"}/>}
                                 </li>
                                 <li className="nav-item">
                                     <Link to="/courses" className="nav-links" onClick={closeMobileMenu}>
@@ -106,13 +148,15 @@ function Navbar() {
                             </ul>
 
                     }
-                    {button && <Button buttonStyle="btn--outline">Log Out</Button>}
+                    <Link to= '/' className='btn-mobile'>
+                        {button && <Button buttonStyle="btn--outline">Log Out</Button>}
+                    </Link>
+                    
                 </div>
             </nav>
         </>
     )
 }
 export default Navbar
-//NOTES
-//Maybe we do not need Link tag for navbar logo
+
 

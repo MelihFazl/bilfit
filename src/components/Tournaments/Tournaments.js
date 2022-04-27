@@ -16,23 +16,15 @@ import PropTypes from 'prop-types';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons/faTrashCan';
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons/faPenToSquare';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import SvgIcon from '@mui/material/SvgIcon';
-import Tooltip from '@mui/material/Tooltip';
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-} from '@mui/x-data-grid';
-import Reservation from '../Reservation/Reservation';
-import { buttonBaseClasses } from '@mui/material';
 
 
-
+//ToDos: Button's on click functions can be added
+//seperating staff and user (not sure)
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: '#F05454',
@@ -65,17 +57,19 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 function Tournaments(){
-const userType = 0; // if its type is 0  => regular user 1=> staff
+const userType = 1; // if its type is 0  => regular user 1=> staff
   const [tournaments, setTournaments] = useState([]);
+  //variables for unique button states 
   const [checkedState1, setCheckedState1] = useState(new Array().fill(false));
   const [checkedState2, setCheckedState2] = useState(new Array().fill(false));
   const [checkedState3, setCheckedState3] = useState(new Array().fill(false));
   const [checkedState4, setCheckedState4] = useState(new Array().fill(false));
   const [checkedState5, setCheckedState5] = useState(new Array().fill(false));
   const [checkedState6, setCheckedState6] = useState(new Array().fill(false));
+  const [checkedState7, setCheckedState7] = useState(new Array().fill(false));
   const [checkedUsers, setCheckedUsers] = useState();
-  const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users
-  const [showInfo2, setInfo2] = useState(() => userType ? 1 : 0); //visibility setting for staff
+  const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users and staff
+
 
 
 
@@ -137,6 +131,12 @@ const userType = 0; // if its type is 0  => regular user 1=> staff
       const updatedCheckedState = checkedState6.map((item, index) => index === position ? !item : item);
       setCheckedState6(updatedCheckedState);
     }
+    if(number == 7){
+      const updateAllStates = checkedState7.fill(false);
+      setCheckedState7(updateAllStates);
+      const updatedCheckedState = checkedState7.map((item, index) => index === position ? !item : item);
+      setCheckedState7(updatedCheckedState);
+    }
     
 
   };
@@ -168,7 +168,7 @@ const userType = 0; // if its type is 0  => regular user 1=> staff
 
     return(
         <>
-        <Stack className='mainStackUser' direction="column"
+        <Stack className='mainStackUser' direction="column" 
           spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "block" : "none" }}    >
           <div> <h1 className='header' >My Tournaments</h1> </div>
           <Stack className='mainStack' direction="row"
@@ -181,12 +181,12 @@ const userType = 0; // if its type is 0  => regular user 1=> staff
                   <TableHead>
                     <TableRow hover="false">
                       <StyledTableCell>Tournament Date</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Time</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Activity</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Location</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Sport Center</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Team Members</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Status</StyledTableCell>
+                      <StyledTableCell align='right'> Time</StyledTableCell>
+                      <StyledTableCell align='right'> Activity</StyledTableCell>
+                      <StyledTableCell align='right'> Location</StyledTableCell>
+                      <StyledTableCell align='right'> Sport Center</StyledTableCell>
+                      <StyledTableCell align='right'> Team Members</StyledTableCell>
+                      <StyledTableCell align='right'> Status</StyledTableCell>
                       <StyledTableCell align='right'></StyledTableCell>
                     </TableRow>
                   </TableHead>
@@ -268,12 +268,12 @@ const userType = 0; // if its type is 0  => regular user 1=> staff
                   <TableHead>
                     <TableRow>
                       <StyledTableCell> Requester </StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Date</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Time</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Activity</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Location</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Sport Center</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Team Members</StyledTableCell>
+                      <StyledTableCell align='right'>Date</StyledTableCell>
+                      <StyledTableCell align='right'>Time</StyledTableCell>
+                      <StyledTableCell align='right'>Activity</StyledTableCell>
+                      <StyledTableCell align='right'>Location</StyledTableCell>
+                      <StyledTableCell align='right'>Sport Center</StyledTableCell>
+                      <StyledTableCell align='right'>Team Members</StyledTableCell>
                       <StyledTableCell align='right'>Tournament Status</StyledTableCell>
                       <StyledTableCell align='right'></StyledTableCell>
                     </TableRow>
@@ -358,12 +358,12 @@ const userType = 0; // if its type is 0  => regular user 1=> staff
                   <TableHead>
                     <TableRow>
                       <StyledTableCell> Team Members </StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Date</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Time</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Activity</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Location</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Sport Center</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Status</StyledTableCell>
+                      <StyledTableCell align='right'> Date</StyledTableCell>
+                      <StyledTableCell align='right'> Time</StyledTableCell>
+                      <StyledTableCell align='right'> Activity</StyledTableCell>
+                      <StyledTableCell align='right'> Location</StyledTableCell>
+                      <StyledTableCell align='right'> Sport Center</StyledTableCell>
+                      <StyledTableCell align='right'> Status</StyledTableCell>
                       <StyledTableCell align='right'></StyledTableCell>
                     </TableRow>
                   </TableHead>
@@ -431,6 +431,84 @@ const userType = 0; // if its type is 0  => regular user 1=> staff
             </div>
           </Stack>
           
+        </Stack>
+        <Stack className='mainStackStaff' direction="column" 
+          spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "none" : "block" }}    >
+          <div> <h1 className='header' >All Available Tournaments</h1> </div>
+          <Stack className='mainStack' direction="row"
+            justifyContent="center"
+            alignItems="center"
+            spacing={6}>
+            <div className="TournamentContainer">
+              <TableContainer   component={Paper} >
+                <Table sx={{   width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
+                  <TableHead>
+                    <TableRow hover="false">
+                      <StyledTableCell>Tournament Date</StyledTableCell>
+                      <StyledTableCell align='right'> Time</StyledTableCell>
+                      <StyledTableCell align='right'> Activity</StyledTableCell>
+                      <StyledTableCell align='right'> Location</StyledTableCell>
+                      <StyledTableCell align='right'> Sport Center</StyledTableCell>
+                      <StyledTableCell align='right'>Team Member Numbers</StyledTableCell>
+                      <StyledTableCell align='right'>Team Members</StyledTableCell>
+                      <StyledTableCell align='right'> Status</StyledTableCell>
+                      <StyledTableCell align='right'></StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody  hover="false">
+                    {tournaments.map((tournament,index) => (
+                      <StyledTableRow key={tournament.id} component="th" scope="row"  >
+                        <StyledTableCell  className='cellItem'>
+                          {tournament.resDate}
+                        </StyledTableCell>
+                        <StyledTableCell className='cellItem' >
+                          {tournament.timeSlot}
+                        </StyledTableCell>
+                        <StyledTableCell className='cellItem' >
+                          {tournament.activity}
+                        </StyledTableCell>
+                        <StyledTableCell className='cellItem'  >
+                          {tournament.location}
+                        </StyledTableCell>
+                        <StyledTableCell className='cellItem'>
+                          {tournament.campus}
+                        </StyledTableCell>
+                        <StyledTableCell className='cellItem'>
+                          {tournament.memberNumber}
+                        </StyledTableCell>
+                        <StyledTableCell className='cellItem'>
+                        <Table  size="small" aria-label="a dense table">
+                                <TableRow><StyledTableCell > {tournament.teammates1 }</StyledTableCell></TableRow>
+                                <TableRow><StyledTableCell> {tournament.teammates2 }</StyledTableCell></TableRow>
+                                <TableRow><StyledTableCell> {tournament.teammates3 }</StyledTableCell></TableRow>
+                                <TableRow><StyledTableCell> {tournament.teammates4 }</StyledTableCell></TableRow>
+                                
+                          </Table>
+                        </StyledTableCell>
+                        <StyledTableCell className='cellItem' >
+                          {tournament.status}
+                        </StyledTableCell>
+                        <StyledTableCell className='cellItem' >
+    
+                            <Box className='button1'
+                              sx={{
+                                '& > :not(style)': {
+                                  m: 1,
+                                },
+                              }}
+                            >
+                              <IconButton aria-label="Example" onClick={() => { handleOnChange(index,7); alert(index)  /* it will be modified according to array that comes from backend */ }}>
+                                <FontAwesomeIcon icon={faXmark} />
+                              </IconButton></Box>
+                          
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          </Stack>
         </Stack>
       </>  
     )
