@@ -1,4 +1,4 @@
-package com.venividicode.bilfit.model;
+package com.venividicode.bilfit.models;
 
 import javax.persistence.*;
 import java.util.HashMap;

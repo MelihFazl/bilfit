@@ -1,18 +1,21 @@
-package com.venividicode.bilfit.model;
+package com.venividicode.bilfit.models;
 
 import javax.persistence.*;
 
 @Entity
-public class GymProgramRequest {
+public class GymProgram {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long ID;
+
 	@OneToOne
 	private GymMember owner;
+
+	@OneToOne
+	private GymStaff author;
 	private String description;
-	@Enumerated
-	private RequestStatus status;
+
 
 	public GymMember getOwner() {
 		return this.owner;
@@ -24,6 +27,18 @@ public class GymProgramRequest {
 	 */
 	public void setOwner(GymMember owner) {
 		this.owner = owner;
+	}
+
+	public GymStaff getAuthor() {
+		return this.author;
+	}
+
+	/**
+	 * 
+	 * @param author
+	 */
+	public void setAuthor(GymStaff author) {
+		this.author = author;
 	}
 
 	public String getDescription() {
@@ -38,20 +53,8 @@ public class GymProgramRequest {
 		this.description = description;
 	}
 
-	public RequestStatus getStatus() {
-		return this.status;
-	}
-
-	/**
-	 * 
-	 * @param status
-	 */
-	public void setStatus(RequestStatus status) {
-		this.status = status;
-	}
-
 	public long getID() {
-		// TODO - implement GymProgramRequest.getID
+		// TODO - implement GymProgram.getID
 		throw new UnsupportedOperationException();
 	}
 
@@ -60,7 +63,7 @@ public class GymProgramRequest {
 	 * @param ID
 	 */
 	public void setID(long ID) {
-		// TODO - implement GymProgramRequest.setID
+		// TODO - implement GymProgram.setID
 		throw new UnsupportedOperationException();
 	}
 

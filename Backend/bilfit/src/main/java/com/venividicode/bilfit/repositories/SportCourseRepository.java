@@ -1,6 +1,6 @@
 package com.venividicode.bilfit.repositories;
 
-import com.venividicode.bilfit.model.SportCourse;
+import com.venividicode.bilfit.models.SportCourse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
