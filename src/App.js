@@ -9,6 +9,7 @@ import Home from './components/Home/Home';
 import Reservation from './components/Reservation/Reservation';
 import MakeReservation from './components/Reservation/MakeReservation';
 import Tournaments from './components/Tournaments/Tournaments';
+import EnrollTournaments from './components/Tournaments/EnrollTournaments';
 import Login from './components/Login/Login';
 import Contact from './components/Contact/Contact';
 import "./App.css";
