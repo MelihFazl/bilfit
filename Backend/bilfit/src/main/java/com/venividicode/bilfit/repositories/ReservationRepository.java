@@ -1,6 +1,6 @@
 package com.venividicode.bilfit.repositories;
 
-import com.venividicode.bilfit.model.Reservation;
+import com.venividicode.bilfit.models.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

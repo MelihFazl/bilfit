@@ -1,4 +1,4 @@
-package com.venividicode.bilfit.model;
+package com.venividicode.bilfit.models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -54,30 +54,20 @@ public class Admin {
 		throw new UnsupportedOperationException();
 	}
 
+
 	public long getID() {
-		// TODO - implement Admin.getID
-		throw new UnsupportedOperationException();
+		return ID;
 	}
 
-	/**
-	 * 
-	 * @param ID
-	 */
 	public void setID(long ID) {
-		// TODO - implement Admin.setID
-		throw new UnsupportedOperationException();
+		this.ID = ID;
 	}
 
 	public String getHashedPassword() {
-		return this.hashedPassword;
+		return hashedPassword;
 	}
 
-	/**
-	 * 
-	 * @param hashedPassword
-	 */
 	public void setHashedPassword(String hashedPassword) {
 		this.hashedPassword = hashedPassword;
 	}
-
 }

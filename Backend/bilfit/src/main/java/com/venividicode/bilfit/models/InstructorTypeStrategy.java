@@ -1,12 +1,6 @@
-package com.venividicode.bilfit.model;
+package com.venividicode.bilfit.models;
 
-import org.springframework.stereotype.Component;
-
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-
-public class AlumniTypeStrategy implements MemberTypeStrategy {
-
+public class InstructorTypeStrategy implements MemberTypeStrategy {
 
 	@Override
 	public boolean makeReservation(Reservation reservation) {

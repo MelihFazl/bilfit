@@ -1,6 +1,7 @@
-package com.venividicode.bilfit.model;
+package com.venividicode.bilfit.models;
 
-public class InstructorTypeStrategy implements MemberTypeStrategy {
+public class AlumniTypeStrategy implements MemberTypeStrategy {
+
 
 	@Override
 	public boolean makeReservation(Reservation reservation) {
