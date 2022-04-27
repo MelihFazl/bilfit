@@ -1,6 +1,6 @@
 package com.venividicode.bilfit.repositories;
 
-import com.venividicode.bilfit.model.TournamentRegistration;
+import com.venividicode.bilfit.models.TournamentRegistration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

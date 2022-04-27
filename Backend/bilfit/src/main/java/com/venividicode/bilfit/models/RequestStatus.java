@@ -1,4 +1,4 @@
-package com.venividicode.bilfit.model;
+package com.venividicode.bilfit.models;
 
 public enum RequestStatus {
 	Pending,
