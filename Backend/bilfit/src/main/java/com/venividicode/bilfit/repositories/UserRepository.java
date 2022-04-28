@@ -4,8 +4,17 @@ import com.venividicode.bilfit.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    //TODO
+
+    /*
+    public List<User> findByID(long userID);
+    public List<User> findByName(String name);
+    public User deleteByID(long userID);
+     */
+    //Throws error since User is not an entity. It is a MappedSuperClass. Examine this later.
+
 }
 
