@@ -26,7 +26,6 @@ public class AnnouncementController {
 
     @PostMapping("/make")
     public String makeAnnouncement(@RequestBody Announcement announcement) {
-        System.out.println(announcement.getDate());
         announcement.setDate(LocalDateTime.now());
         announcementService.saveAnnouncement(announcement);
         return "Announcement with title \"" + announcement.getTitle()
@@ -50,13 +49,13 @@ public class AnnouncementController {
     @GetMapping("/{id}")
     public Announcement getAnnouncementWithID(@PathVariable("id") long id) {
 
-        List<Announcement> announcementsWithSpecifedID = announcementService.getAnnouncementByID(id);
+        List<Announcement> announcementsWithSpecifiedID = announcementService.getAnnouncementByID(id);
 
-        if (announcementsWithSpecifedID == null) {
+        if (announcementsWithSpecifiedID == null) {
             return null;
         }
 
-        return announcementsWithSpecifedID.get(0);
+        return announcementsWithSpecifiedID.get(0);
 
     }
 
