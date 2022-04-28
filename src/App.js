@@ -8,6 +8,8 @@ import User from './components/User/User';
 import Home from './components/Home/Home';
 import MyReservations from './components/Reservation/Reservation';
 import MakeReservation from './components/Reservation/MakeReservation';
+import Tournaments from './components/Tournaments/Tournaments';
+import EnrollTournaments from './components/Tournaments/EnrollTournaments';
 import MyTournaments from './components/Tournaments/Tournaments';
 import Login from './components/Login/Login';
 import Contact from './components/Contact/Contact';
@@ -41,3 +43,4 @@ function App() {
 
 
 export default App;
+

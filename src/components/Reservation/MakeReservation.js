@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { useParams } from "react-router-dom";
 import { useState } from "react";
@@ -109,7 +108,7 @@ function MakeReservation() {
 
   return (
     <>
-      <Stack direction="column"
+      <Stack className='mainStack' direction="column"
         justifyContent="center"
         alignItems="center"
         spacing={8}>
