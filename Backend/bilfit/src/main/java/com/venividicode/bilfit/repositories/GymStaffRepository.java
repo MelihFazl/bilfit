@@ -12,4 +12,5 @@ public interface GymStaffRepository extends JpaRepository<GymStaff, Long>
 {
     public List<GymStaff> findById(long gymStaffID);
     public GymStaff deleteById(long gymStaffID);
+    public List<GymStaff> findByName(String name);
 }
