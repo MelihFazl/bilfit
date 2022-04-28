@@ -18,7 +18,6 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons/faTrashCan';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import SvgIcon from '@mui/material/SvgIcon';
 
@@ -57,7 +56,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 function Tournaments(){
-const userType = 1; // if its type is 0  => regular user 1=> staff
+const userType = 0; // if its type is 0  => regular user 1=> staff
   const [tournaments, setTournaments] = useState([]);
   //variables for unique button states 
   const [checkedState1, setCheckedState1] = useState(new Array().fill(false));
@@ -169,8 +168,8 @@ const userType = 1; // if its type is 0  => regular user 1=> staff
     return(
         <>
         <Stack className='mainStackUser' direction="column" 
-          spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "block" : "none" }}    >
-          <div> <h1 className='header' >My Tournaments</h1> </div>
+          spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
+           <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}> <h1 className='header'> My Tournaments</h1> </div>
           <Stack className='mainStack' direction="row"
             justifyContent="center"
             alignItems="center"
@@ -255,186 +254,9 @@ const userType = 1; // if its type is 0  => regular user 1=> staff
             </div>
           </Stack>
         </Stack>
-        <Stack className='mainStackUser' direction="column"
-          spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "block" : "none" }}    >
-          <div> <h1 className='header' alignItems="center">My Pending Requests</h1> </div>
-          <Stack className='mainStack' direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={6}>
-            <div className="TournamentContainer">
-              <TableContainer   component={Paper} >
-                <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell> Requester </StyledTableCell>
-                      <StyledTableCell align='right'>Date</StyledTableCell>
-                      <StyledTableCell align='right'>Time</StyledTableCell>
-                      <StyledTableCell align='right'>Activity</StyledTableCell>
-                      <StyledTableCell align='right'>Location</StyledTableCell>
-                      <StyledTableCell align='right'>Sport Center</StyledTableCell>
-                      <StyledTableCell align='right'>Team Members</StyledTableCell>
-                      <StyledTableCell align='right'>Tournament Status</StyledTableCell>
-                      <StyledTableCell align='right'></StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody >
-                    {tournaments.map((tournament, index) => (
-                      <StyledTableRow key={ "row" + tournament.id} component="th" scope="row"  >
-                        <StyledTableCell  className='cellItem'>
-                          {tournament.requester}
-                        </StyledTableCell>
-                        <StyledTableCell  className='cellItem'>
-                          {tournament.resDate}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.timeSlot}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.activity}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'  >
-                          {tournament.location}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'>
-                          {tournament.campus}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'>
-                        <Table  size="small" aria-label="a dense table">
-                                <TableRow><StyledTableCell > {tournament.teammates1 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates2 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates3 }</StyledTableCell></TableRow>
-                          </Table>
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.status}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          <Stack className='mainStack' direction="row"  // This stack is for delete and cancel reservation buttons
-                            justifyContent="start"
-                            alignItems="start"
-                            spacing={0}>
-                            <Box className={"button" + index}
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton key={"button" + index} aria-label="Example" onClick={() => {handleOnChange(index,3); alert(index) /* it will be modified according to array that comes from backend */}} >
-                                <FontAwesomeIcon icon={faCheck} />
-                              </IconButton> </Box> 
-                            <Box className='button2'
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton aria-label="Example">
-                                <FontAwesomeIcon icon={faXmark} onClick={() => { handleOnChange(index,4); alert(index)  /* it will be modified according to array that comes from backend */ }} />
-                              </IconButton></Box>
-                          </Stack>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </Stack>
-          
-        </Stack>
-        <Stack className='mainStackUser' direction="column"
-          spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "block" : "none" }}    >
-          <div> <h1 className='header' alignItems="center">My Sent Requests</h1> </div>
-          <Stack className='mainStack' direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={6}>
-            <div className="TournamentContainer">
-              <TableContainer   component={Paper} >
-                <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell> Team Members </StyledTableCell>
-                      <StyledTableCell align='right'> Date</StyledTableCell>
-                      <StyledTableCell align='right'> Time</StyledTableCell>
-                      <StyledTableCell align='right'> Activity</StyledTableCell>
-                      <StyledTableCell align='right'> Location</StyledTableCell>
-                      <StyledTableCell align='right'> Sport Center</StyledTableCell>
-                      <StyledTableCell align='right'> Status</StyledTableCell>
-                      <StyledTableCell align='right'></StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody >
-                    {tournaments.map((tournament, index) => (
-                      <StyledTableRow key={ "row" + tournament.id} component="th" scope="row"  >
-                        <StyledTableCell className='cellItem'>
-                        <Table  size="small" aria-label="a dense table">
-                                <TableRow><StyledTableCell > {tournament.teammates1 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates2 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates3 }</StyledTableCell></TableRow>
-                          </Table>
-                        </StyledTableCell>
-                        <StyledTableCell  className='cellItem'>
-                          {tournament.resDate}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.timeSlot}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.activity}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'  >
-                          {tournament.location}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'>
-                          {tournament.campus}
-                        </StyledTableCell>
-
-                        <StyledTableCell className='cellItem' >
-                          {tournament.status}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          <Stack className='mainStack' direction="row"  // This stack is for delete and cancel reservation buttons
-                            justifyContent="start"
-                            alignItems="start"
-                            spacing={0}>
-                            <Box className={"button" + index}
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton key={"button" + index} aria-label="Example" onClick={() => {handleOnChange(index,5); alert(index) /* it will be modified according to array that comes from backend */}} >
-                                <FontAwesomeIcon icon={faCheck} />
-                              </IconButton> </Box> 
-                            <Box className='button2'
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton aria-label="Example">
-                                <FontAwesomeIcon icon={faXmark} onClick={() => { handleOnChange(index,6); alert(index)  /* it will be modified according to array that comes from backend */ }} />
-                              </IconButton></Box>
-                          </Stack>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </Stack>
-          
-        </Stack>
         <Stack className='mainStackStaff' direction="column" 
           spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "none" : "block" }}    >
-          <div> <h1 className='header' >All Available Tournaments</h1> </div>
+          <div  style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}> <h1 className='header' >Enrolled Tournaments</h1> </div>
           <Stack className='mainStack' direction="row"
             justifyContent="center"
             alignItems="center"
