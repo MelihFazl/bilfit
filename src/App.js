@@ -13,6 +13,7 @@ import EnrollTournaments from './components/Tournaments/EnrollTournaments';
 import MyTournaments from './components/Tournaments/Tournaments';
 import Login from './components/Login/Login';
 import Contact from './components/Contact/Contact';
+import TournamentRequests from './components/Tournaments/TournamentRequests'; 
 import "./App.css";
 
 function App() {
@@ -30,6 +31,8 @@ function App() {
                 <Route path="/make-reservation" component={MakeReservation} />
                 <Route path="/my-reservations" component={MyReservations} />
                 <Route path="/my-tournaments" component={MyTournaments} />
+                <Route path="/tournament-requests" component={TournamentRequests} />
+                <Route path="/enroll-tournament" component={EnrollTournaments} />
                 <Route path="/courses" />
                 <Route path="/my-profile" component={User} />
                 <Route path="/contact" component={Contact} />
