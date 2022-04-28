@@ -6,9 +6,9 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Navbar from './components/Navbar/Navbar';
 import User from './components/User/User';
 import Home from './components/Home/Home';
-import Reservation from './components/Reservation/Reservation';
+import MyReservations from './components/Reservation/Reservation';
 import MakeReservation from './components/Reservation/MakeReservation';
-import Tournaments from './components/Tournaments/Tournaments';
+import MyTournaments from './components/Tournaments/Tournaments';
 import Login from './components/Login/Login';
 import Contact from './components/Contact/Contact';
 import "./App.css";
@@ -25,8 +25,9 @@ function App() {
               <Navbar/>
               
                 <Route exact path="/home" component={Home} />
-                <Route path="/reservations" component={Reservation} />
-                <Route path="/tournaments" component={Tournaments} />
+                <Route path="/make-reservation" component={MakeReservation} />
+                <Route path="/my-reservations" component={MyReservations} />
+                <Route path="/my-tournaments" component={MyTournaments} />
                 <Route path="/courses" />
                 <Route path="/my-profile" component={User} />
                 <Route path="/contact" component={Contact} />

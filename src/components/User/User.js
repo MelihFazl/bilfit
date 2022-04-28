@@ -181,8 +181,8 @@ function User() {
                                     Phone Number:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.id}></TextField>) : (<></>)))
-                                        : (users.map((user) => user.id === userId ? (<div>{user.id}</div>) : (<></>)))}
+                                    {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.phoneNumber}></TextField>) : (<></>)))
+                                        : (users.map((user) => user.id === userId ? (<div>{user.phoneNumber}</div>) : (<></>)))}
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >

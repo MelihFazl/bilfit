@@ -20,7 +20,7 @@ public class AdminController {
     public String addAdmin(@RequestBody Admin admin)
     {
         List<Admin> checkList = adminService.getAdminByID(admin.getID());
-        if(checkList != null)
+        if (checkList != null)
             return "ID " + admin.getID()  + " is already in use.";
         passwordHashHandler.setPassword(admin.getHashedPassword());
         admin.setHashedPassword(passwordHashHandler.hashPassword());
@@ -75,6 +75,25 @@ public class AdminController {
             return "Admin with specified ID" + adminID + " was not found.";
         adminService.deleteAdminByID(adminID);
         return "Admin with specified ID " + adminID + " was successfully deleted.";
+    }
+
+
+    @GetMapping
+    public List<Admin> getAllAdmins() {
+        return adminService.getAllAdmins();
+    }
+
+    @GetMapping("/{id}")
+    public Admin getAdminWithID(@PathVariable("id") long adminID) {
+
+        List<Admin> adminsWithSpecifiedID = adminService.getAdminByID(adminID);
+
+        if (adminsWithSpecifiedID == null)
+            return null;
+
+        return adminsWithSpecifiedID.get(0);
+
+
     }
 
 }
