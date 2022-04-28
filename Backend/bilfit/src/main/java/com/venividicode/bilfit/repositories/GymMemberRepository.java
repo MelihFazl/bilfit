@@ -10,6 +10,6 @@ import java.util.List;
 public interface GymMemberRepository extends JpaRepository<GymMember, Long> {
 
     public List<GymMember> findById(long gymMemberID);
-    public GymMember deleteByID(long gymMemberID);
-    public GymMember findByName(String name);
+    public GymMember deleteById(long gymMemberID);
+    public List<GymMember> findByName(String name);
 }
