@@ -14,6 +14,7 @@ import MyTournaments from './components/Tournaments/Tournaments';
 import Login from './components/Login/Login';
 import Contact from './components/Contact/Contact';
 import TournamentRequests from './components/Tournaments/TournamentRequests'; 
+import AdminPanel from './components/AdminPanel/AdminPanel';
 import "./App.css";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/courses" />
                 <Route path="/my-profile" component={User} />
                 <Route path="/contact" component={Contact} />
+                <Route path="/admin-panel" component={AdminPanel} />
             </>
           </Switch>
         </>
