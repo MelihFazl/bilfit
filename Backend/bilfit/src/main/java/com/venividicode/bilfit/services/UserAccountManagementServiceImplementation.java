@@ -9,6 +9,7 @@ import com.venividicode.bilfit.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 @Service
@@ -20,7 +21,7 @@ public class UserAccountManagementServiceImplementation  implements UserAccountM
     private GymStaffRepository gymStaffRepository;
     @Override
     public List<User> getAllUsers() {
-        List<User> result = Collections.emptyList();
+        List<User> result = new ArrayList<>();
         result.addAll(gymMemberRepository.findAll());
         result.addAll(gymStaffRepository.findAll());
         return result;
@@ -37,7 +38,7 @@ public class UserAccountManagementServiceImplementation  implements UserAccountM
     }
 
     @Override
-    public List<User> getUserByID(long userID) {
+    public List<User> getUserByID(long userID) {    // see here why test fails? both findById s return empty??
         List<GymMember> gymMembers = gymMemberRepository.findById(userID);
         if(gymMembers == null)
         {
@@ -46,14 +47,14 @@ public class UserAccountManagementServiceImplementation  implements UserAccountM
                 return null;
             else
             {
-                List<User> result = Collections.emptyList();
+                List<User> result = new ArrayList<>();
                 result.addAll(gymStaffs);
                 return result;
             }
         }
         else
         {
-            List<User> result = Collections.emptyList();
+            List<User> result = new ArrayList<>();
             result.addAll(gymMembers);
             return result;
         }
@@ -74,7 +75,7 @@ public class UserAccountManagementServiceImplementation  implements UserAccountM
     @Override
     public List<User> getUsersByName(String userName)
     {
-        List<User> result = Collections.emptyList();
+        List<User> result = new ArrayList<>();
         result.addAll(gymMemberRepository.findByName(userName));
         result.addAll(gymStaffRepository.findByName(userName));
         return result;
@@ -95,9 +96,12 @@ public class UserAccountManagementServiceImplementation  implements UserAccountM
         List<GymMember> gymMembers = gymMemberRepository.findById(userID);
         if(gymMembers == null)
         {
+            System.out.println("GYM MEMBERS BOŞ GELDİ");
             List<GymStaff> gymStaffs = gymStaffRepository.findById(userID);
-            if(gymStaffs == null)
+            if(gymStaffs == null) {
+                System.out.println("GYM STAFF BOŞ GELDİ");
                 return null;
+            }
             else
             {
                 return gymStaffRepository.deleteById(userID);

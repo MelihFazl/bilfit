@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface GymMemberRepository extends JpaRepository<GymMember, Long> {
 
-    public List<GymMember> findById(long gymMemberID);
-    public GymMember deleteById(long gymMemberID);
+    public List<GymMember> findById(long id);
+    public GymMember deleteById(long id);
     public List<GymMember> findByName(String name);
 }
