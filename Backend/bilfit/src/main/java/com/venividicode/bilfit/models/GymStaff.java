@@ -155,8 +155,4 @@ public class GymStaff extends User {
 		return false;
 	}
 
-	@Override
-	public HashMap<String, Object> getProfileInfo(long ID) {
-		return null;
-	}
 }

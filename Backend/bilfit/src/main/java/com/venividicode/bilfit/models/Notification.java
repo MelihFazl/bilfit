@@ -51,8 +51,7 @@ public class Notification {
 	}
 
 	public long getID() {
-		// TODO - implement Notification.getID
-		throw new UnsupportedOperationException();
+		return this.ID;
 	}
 
 	/**
@@ -60,8 +59,7 @@ public class Notification {
 	 * @param ID
 	 */
 	public void setID(long ID) {
-		// TODO - implement Notification.setID
-		throw new UnsupportedOperationException();
+		this.ID = ID;
 	}
 
 }

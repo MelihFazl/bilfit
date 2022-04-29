@@ -19,65 +19,43 @@ public abstract class User {
 	 */
 	public abstract boolean cancelReservation(long reservationID);
 
-	/**
-	 * 
-	 * @param ID
-	 */
-	public abstract HashMap<String, Object> getProfileInfo(long ID);
-
 	public long getID() {
-		// TODO - implement User.getID
-		throw new UnsupportedOperationException();
+		return ID;
+	}
+
+	public void setID(long ID) {
+		this.ID = ID;
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
-	/**
-	 * 
-	 * @param name
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public void getEmail() {
-		// TODO - implement User.getEmail
-		throw new UnsupportedOperationException();
+	public String getEmail() {
+		return email;
 	}
 
-	/**
-	 * 
-	 * @param email
-	 */
-	public void setEmail(int email) {
-		// TODO - implement User.setEmail
-		throw new UnsupportedOperationException();
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPhoneNumber() {
-		return this.phoneNumber;
+		return phoneNumber;
 	}
 
-	/**
-	 * 
-	 * @param phoneNumber
-	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
 	public String getHashedPassword() {
-		return this.hashedPassword;
+		return hashedPassword;
 	}
 
-	/**
-	 * 
-	 * @param hashedPassword
-	 */
 	public void setHashedPassword(String hashedPassword) {
 		this.hashedPassword = hashedPassword;
 	}
-
 }

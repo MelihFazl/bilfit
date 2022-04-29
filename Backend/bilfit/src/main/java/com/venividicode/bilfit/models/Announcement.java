@@ -55,7 +55,8 @@ public class Announcement {
 
 	public long getID() {
 		// TODO - implement Announcement.getID
-		throw new UnsupportedOperationException();
+		// throw new UnsupportedOperationException();
+		return ID;
 	}
 
 	/**
@@ -64,7 +65,8 @@ public class Announcement {
 	 */
 	public void setID(long ID) {
 		// TODO - implement Announcement.setID
-		throw new UnsupportedOperationException();
+		// throw new UnsupportedOperationException();
+		this.ID = ID;
 	}
 
 }
