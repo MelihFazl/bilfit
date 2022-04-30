@@ -20,7 +20,7 @@ public class AdminController {
     public String addAdmin(@RequestBody Admin admin)
     {
         List<Admin> checkList = adminService.getAdminByID(admin.getID());
-        if(checkList != null)
+        if (checkList != null)
             return "ID " + admin.getID()  + " is already in use.";
         passwordHashHandler.setPassword(admin.getHashedPassword());
         admin.setHashedPassword(passwordHashHandler.hashPassword());
@@ -38,7 +38,7 @@ public class AdminController {
         List<Admin> possibleIDConflicts = adminService.getAdminByID(editedAdmin.getID());
 
         //If not exists
-        if(adminsWithSpecifiedID.size() == 0)
+        if(adminsWithSpecifiedID == null)
             return "Admin with specified ID " + adminID + " was not found.";
 
         //If the id that is going to be changed to is already in use by another admin
@@ -71,10 +71,29 @@ public class AdminController {
     public String deleteAdminWithID(@PathVariable("id") long adminID)
     {
         List<Admin> adminsWithSpecifiedID = adminService.getAdminByID(adminID);
-        if(adminsWithSpecifiedID.size() == 0)
-            return "Admin with specified ID" + adminID + " was not found.";
+        if(adminsWithSpecifiedID == null)
+            return "Admin with specified ID " + adminID + " was not found.";
         adminService.deleteAdminByID(adminID);
         return "Admin with specified ID " + adminID + " was successfully deleted.";
+    }
+
+
+    @GetMapping
+    public List<Admin> getAllAdmins() {
+        return adminService.getAllAdmins();
+    }
+
+    @GetMapping("/{id}")
+    public Admin getAdminWithID(@PathVariable("id") long adminID) {
+
+        List<Admin> adminsWithSpecifiedID = adminService.getAdminByID(adminID);
+
+        if (adminsWithSpecifiedID == null)
+            return null;
+
+        return adminsWithSpecifiedID.get(0);
+
+
     }
 
 }

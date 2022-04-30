@@ -25,7 +25,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param height
 	 */
 	public void setHeight(double height) {
@@ -37,7 +36,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param weight
 	 */
 	public void setWeight(double weight) {
@@ -49,7 +47,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param gender
 	 */
 	public void setGender(String gender) {
@@ -61,10 +58,9 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param birthday
 	 */
-	 public void setBirthday(LocalDateTime birthday) {
+	public void setBirthday(LocalDateTime birthday) {
 		this.birthday = birthday;
 	}
 
@@ -73,7 +69,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param reservations
 	 */
 	public void setReservations(List<Reservation> reservations) {
@@ -81,7 +76,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param reservation
 	 */
 	public boolean addReservation(Reservation reservation) {
@@ -90,7 +84,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param requestDescription
 	 */
 	public boolean requestGymProgram(String requestDescription) {
@@ -99,7 +92,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param tournament
 	 */
 	public boolean registerToTournament(Tournament tournament) {
@@ -112,7 +104,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param isRestricted
 	 */
 	public void setIsRestricted(boolean isRestricted) {
@@ -124,7 +115,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param
 	 */
 	public void setProgram(GymProgram program) {
@@ -137,7 +127,7 @@ public class GymMember extends User {
 	}*/
 
 	/**
-	 * 
+	 *
 	 * @param typeStrategy
 	 */
 	/*public void setTypeStrategy(int typeStrategy) {
@@ -146,7 +136,6 @@ public class GymMember extends User {
 	}*/
 
 	/**
-	 * 
 	 * @param course
 	 */
 	public boolean enrollCourse(SportCourse course) {
@@ -155,7 +144,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param registration
 	 */
 	public void cancelTournamentRegistration(TournamentRegistration registration) {
@@ -164,7 +152,6 @@ public class GymMember extends User {
 	}
 
 	/**
-	 * 
 	 * @param requestID
 	 */
 	public void cancelProgramRequest(long requestID) {
@@ -177,8 +164,4 @@ public class GymMember extends User {
 		return false;
 	}
 
-	@Override
-	public HashMap<String, Object> getProfileInfo(long ID) {
-		return null;
-	}
 }
