@@ -5,11 +5,19 @@ import com.venividicode.bilfit.models.GymMember;
 import com.venividicode.bilfit.models.GymStaff;
 import com.venividicode.bilfit.models.User;
 import com.venividicode.bilfit.services.UserAccountManagementService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.websocket.server.PathParam;
+import java.beans.FeatureDescriptor;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/user")
@@ -17,21 +25,9 @@ import java.util.List;
 public class UserAccountManagementController {
     @Autowired
     private UserAccountManagementService userAccountManagementService;
-    private PasswordHashHandler passwordHashHandler = new PasswordHashHandler("");
-
-    //Cannot implement due to users being abstract.
-    /*@PostMapping("/add")
-    public String addUser(@RequestBody User user)
-    {
-        userAccountManagementService.saveUser(user);
-        return "user has been added";
-    }
-
-    @GetMapping("/getUsers")
-    public List<User> getAllUsers()
-    {
-        return userAccountManagementService.getAllUsers();
-    }*/
+    private PasswordHashHandler passwordHashHandler = PasswordHashHandler.getInstance();
+    @Autowired
+    private EntityManager entityManager;
 
     @PostMapping("/gymMember/add")
     public String saveGymMember(@RequestBody GymMember gymMember)    //test passed
@@ -86,7 +82,102 @@ public class UserAccountManagementController {
         return "User with ID " + userID + " has been successfully deleted.";
     }
 
-    /**
-     * TODO -> PATCH GymMember and GymStaff. Do not forget to validate all combinations.
-     */
+    @PatchMapping("/changePassword/{id}")
+    public String changeUserPassword(@PathVariable("id") long userID, @RequestParam String newPassword, @RequestParam String oldPassword) //test passed
+    {
+        passwordHashHandler.setPassword(newPassword);
+        String newHashedPassword = passwordHashHandler.hashPassword();
+        passwordHashHandler.setPassword(oldPassword);
+        String oldHashedPassword = passwordHashHandler.hashPassword();
+        String actualOldHashedPassword = "";
+        List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(userID);
+        if(gymMembers == null) {
+            List<GymStaff> gymStaffs = userAccountManagementService.getGymStaffByID(userID);
+            if(gymStaffs == null)
+                return "The user with ID " + userID + " was not found.";
+            else
+            {
+                actualOldHashedPassword = gymStaffs.get(0).getHashedPassword();
+                if(!oldHashedPassword.equals(actualOldHashedPassword))
+                    return "The old password is incorrect.";
+                gymStaffs.get(0).setHashedPassword(newHashedPassword);
+                userAccountManagementService.saveGymStaff(gymStaffs.get(0));
+                return "The password of user with ID " + userID + " has been successfully changed.";
+            }
+        }
+        else
+        {
+            actualOldHashedPassword = gymMembers.get(0).getHashedPassword();
+            if(!oldHashedPassword.equals(actualOldHashedPassword))
+                return "The old password is incorrect.";
+            gymMembers.get(0).setHashedPassword(newHashedPassword);
+            userAccountManagementService.saveGymMember(gymMembers.get(0));
+            return "The password of user with ID " + userID + " has been successfully changed.";
+        }
+    }
+
+    @PatchMapping("/editGymMember/{id}")
+    public String editGymMemberWithID(@RequestBody GymMember editedGymMember, @PathVariable("id") long gymMemberID) //test passed.
+    {
+        List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(gymMemberID);
+        if(gymMembers ==  null)
+            return "There is no Gym Member with ID " + gymMemberID;
+        GymMember oldGymMember = gymMembers.get(0);
+        try{
+            userAccountManagementService.patchGymMember(editedGymMember, oldGymMember.getID());
+            return  "Gym Member with ID " + gymMemberID + " was successfully edited.";
+        }
+        catch (Exception e)
+        {
+            return "An error occurred.";
+        }
+    }
+    @PatchMapping("/editGymStaff/{id}")
+    public String editGymStaffWithID(@RequestBody GymStaff editedGymStaff, @PathVariable("id") long gymStaffID) //test passed
+    {
+        List<GymStaff> gymStaffs = userAccountManagementService.getGymStaffByID(gymStaffID);
+        if(gymStaffs ==  null)
+            return "There is no Gym Staff with ID " + gymStaffID;
+        GymStaff oldGymStaff = gymStaffs.get(0);
+        try{
+            userAccountManagementService.patchGymStaff(editedGymStaff, oldGymStaff.getID());
+            return  "Gym Staff with ID " + gymStaffID + " was successfully edited.";
+        }
+        catch (Exception e)
+        {
+            return "An error occurred.";
+        }
+    }
+
+    @PatchMapping("/editUserID/{id}")
+    public String editUserID(@RequestParam long newID, @PathVariable("id") long oldID)  //test passed
+    {
+        List<User> userList =  userAccountManagementService.getUserByID(oldID);
+        if(userList == null)
+            return "There is no user with ID " + oldID + ".";
+        else
+        {
+            List<User> potentialConflictList = userAccountManagementService.getUserByID(newID);
+            if(potentialConflictList != null)
+                return "The ID " + newID + " is already in use by another user.";
+            else
+            {
+                if (userList.get(0) instanceof GymMember)
+                {
+                    GymMember oldGymMember = userAccountManagementService.getGymMemberByID(oldID).get(0);
+                    userAccountManagementService.deleteUserByID(oldID);
+                    oldGymMember.setID(newID);
+                    userAccountManagementService.saveGymMember(oldGymMember);
+                }
+                else
+                {
+                    GymStaff oldGymStaff = userAccountManagementService.getGymStaffByID(oldID).get(0);
+                    userAccountManagementService.deleteUserByID(oldID);
+                    oldGymStaff.setID(newID);
+                    userAccountManagementService.saveGymStaff(oldGymStaff);
+                }
+                return "The user's ID was successfully changed from " + oldID + " to " + newID + ".";
+            }
+        }
+    }
 }

@@ -1,17 +1,27 @@
 package com.venividicode.bilfit.services;
 
+import com.venividicode.bilfit.helpers.IgnoredPropertyCreator;
 import com.venividicode.bilfit.models.GymMember;
 import com.venividicode.bilfit.models.GymStaff;
 import com.venividicode.bilfit.models.User;
 import com.venividicode.bilfit.repositories.GymMemberRepository;
 import com.venividicode.bilfit.repositories.GymStaffRepository;
 import com.venividicode.bilfit.repositories.UserRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
+
 @Service
 public class UserAccountManagementServiceImplementation  implements UserAccountManagementService
 {
@@ -19,6 +29,7 @@ public class UserAccountManagementServiceImplementation  implements UserAccountM
     private GymMemberRepository gymMemberRepository;
     @Autowired
     private GymStaffRepository gymStaffRepository;
+    private IgnoredPropertyCreator ignoredPropertyCreator;
     @Override
     public List<User> getAllUsers() {
         List<User> result = new ArrayList<>();
@@ -125,35 +136,47 @@ public class UserAccountManagementServiceImplementation  implements UserAccountM
 
 
     @Override
-    public GymMember patchGymMember(GymMember editedGymMember) {
-        List<GymMember> gymMembers = gymMemberRepository.findById(editedGymMember.getID());
+    public GymMember patchGymMember(GymMember editedGymMember, long oldGymMemberID) {
+        List<GymMember> gymMembers = gymMemberRepository.findById(oldGymMemberID);
         if(gymMembers == null)
         {
             return null;
         }
         else
         {
-            return gymMemberRepository.save(editedGymMember);
+            GymMember oldGymMember = gymMembers.get(0);
+            ignoredPropertyCreator = IgnoredPropertyCreator.getInstance();
+            ignoredPropertyCreator.setObj(editedGymMember);
+            String[] ignoredProperties = ignoredPropertyCreator.getNullPropertyNames();
+            BeanUtils.copyProperties(editedGymMember, oldGymMember, ignoredProperties);
+            gymMemberRepository.save(oldGymMember);
+            return oldGymMember;
         }
     }
 
     @Override
-    public GymStaff patchGymStaff(GymStaff editedGymStaff) {
-        List<GymStaff> gymStaffs = gymStaffRepository.findById(editedGymStaff.getID());
+    public GymStaff patchGymStaff(GymStaff editedGymStaff, long olgGymStaffID) {
+        List<GymStaff> gymStaffs = gymStaffRepository.findById(olgGymStaffID);
         if(gymStaffs == null)
         {
             return null;
         }
         else
         {
-            return gymStaffRepository.save(editedGymStaff);
+            GymStaff oldGymStaff = gymStaffs.get(0);
+            ignoredPropertyCreator = IgnoredPropertyCreator.getInstance();
+            ignoredPropertyCreator.setObj(editedGymStaff);
+            String[] ignoredProperties = ignoredPropertyCreator.getNullPropertyNames();
+            BeanUtils.copyProperties(editedGymStaff, oldGymStaff, ignoredProperties);
+            gymStaffRepository.save(oldGymStaff);
+            return oldGymStaff;
         }
     }
 
     @Override
     public GymMember saveGymMember(GymMember gymMember) {
-        List<GymStaff> gymStaffs = gymStaffRepository.findById(gymMember.getID());
-        List<GymMember> gymMembers = gymMemberRepository.findById(gymMember.getID());
+        List<GymStaff> gymStaffs = gymStaffRepository.findById(gymMember.getID().longValue());
+        List<GymMember> gymMembers = gymMemberRepository.findById(gymMember.getID().longValue());
         if(gymMembers == null && gymStaffs == null)
             return gymMemberRepository.save(gymMember);
         return  null;
@@ -161,11 +184,13 @@ public class UserAccountManagementServiceImplementation  implements UserAccountM
 
     @Override
     public GymStaff saveGymStaff(GymStaff gymStaff) {
-        List<GymStaff> gymStaffs = gymStaffRepository.findById(gymStaff.getID());
-        List<GymMember> gymMembers = gymMemberRepository.findById(gymStaff.getID());
+        List<GymStaff> gymStaffs = gymStaffRepository.findById(gymStaff.getID().longValue());
+        List<GymMember> gymMembers = gymMemberRepository.findById(gymStaff.getID().longValue());
         if(gymMembers == null && gymStaffs == null)
             return gymStaffRepository.save(gymStaff);
         return  null;
     }
+
+
 }
 

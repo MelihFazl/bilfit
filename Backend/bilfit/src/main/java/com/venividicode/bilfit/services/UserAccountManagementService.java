@@ -22,8 +22,8 @@ public interface UserAccountManagementService
     public User deleteUserByID(long userID);
     public GymMember deleteGymMemberByID(long gymMemberID);
     public GymStaff deleteGymStaffByID(long gymStaffID);
-    public GymMember patchGymMember(GymMember editedGymMember);
-    public GymStaff patchGymStaff(GymStaff editedGymStaff);
+    public GymMember patchGymMember(GymMember editedGymMember, long oldGymMemberID);
+    public GymStaff patchGymStaff(GymStaff editedGymStaff, long olgGymStaffID);
     public GymMember saveGymMember(GymMember gymMember);
     public GymStaff saveGymStaff(GymStaff gymStaff);
 

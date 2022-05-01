@@ -1,42 +1,21 @@
 package com.venividicode.bilfit.models;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class SportActivity {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long ID;
-
-	private String activity;
-
+	private Long ID;
+	private String Activity;
 	@OneToMany
 	private List<Field> fields;
-
-	public String getActivity() {
-		return this.activity;
-	}
-
-	/**
-	 * 
-	 * @param activity
-	 */
-	public void setActivity(String activity) {
-		this.activity = activity;
-	}
-
-	public List<Field> getFields() {
-		return this.fields;
-	}
-
-	/**
-	 * 
-	 * @param fields
-	 */
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
 }
