@@ -25,6 +25,7 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long ID;
 
+
     public String generateToken()
     {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@.-#?!";
