@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Random;
 
@@ -17,10 +16,13 @@ import java.util.Random;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Token {
+
+    @Column(name = "token", columnDefinition = "LONGTEXT")
     private String token;
     private Boolean inUse;
     private LocalDateTime lastActive;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long ID;
 
     public String generateToken()
