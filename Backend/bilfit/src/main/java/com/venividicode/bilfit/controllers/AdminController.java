@@ -100,7 +100,7 @@ public class AdminController {
     }
 
     @PostMapping("/login/{id}")
-    public String login(@RequestParam String username, @RequestParam String password, @PathVariable("id") long adminID)
+    public String login(@RequestParam String password, @PathVariable("id") long adminID)
     {
         List<Admin> admins = adminService.getAdminByID(adminID);
         if(admins == null)
@@ -117,11 +117,25 @@ public class AdminController {
                 adminToken.setLastActive(LocalDateTime.now());
                 tokenRepository.save(adminToken);
                 adminLoggingIn.setToken(adminToken);
+                adminService.patchAdmin(adminLoggingIn);
                 System.out.println(adminToken.getID());
                 return token;
             }
             else
                 return "Password is incorrect.";
         }
+    }
+    @PostMapping("/logout/{id}")
+    public String logOut(@PathVariable("id") long adminID)
+    {
+        List<Admin> admins = adminService.getAdminByID(adminID);
+        if(admins == null)
+            return "No admin found with ID " + adminID;
+        Admin curAdmin = admins.get(0);
+        curAdmin.getToken().setLastActive(LocalDateTime.now());
+        curAdmin.getToken().setInUse(false);
+        adminService.patchAdmin(curAdmin);
+        tokenRepository.save(curAdmin.getToken());
+        return "Admin with ID " + adminID + " successfully logged out";
     }
 }

@@ -17,7 +17,6 @@ public class Admin {
 	@Id
 	private Long ID;
 	private String hashedPassword;
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "token_id")
+	@OneToOne
 	private Token token;
 }
