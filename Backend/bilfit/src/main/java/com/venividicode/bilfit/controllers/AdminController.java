@@ -14,7 +14,7 @@ import java.util.List;
 public class AdminController {
     @Autowired
     private AdminService adminService;
-    private PasswordHashHandler passwordHashHandler = new PasswordHashHandler("");
+    private PasswordHashHandler passwordHashHandler = PasswordHashHandler.getInstance();
 
     @PostMapping("/add")
     public String addAdmin(@RequestBody Admin admin)
