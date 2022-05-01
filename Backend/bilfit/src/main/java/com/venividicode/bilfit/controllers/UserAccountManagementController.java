@@ -1,9 +1,12 @@
 package com.venividicode.bilfit.controllers;
 
 import com.venividicode.bilfit.helpers.PasswordHashHandler;
+import com.venividicode.bilfit.models.Admin;
 import com.venividicode.bilfit.models.GymMember;
 import com.venividicode.bilfit.models.GymStaff;
 import com.venividicode.bilfit.models.User;
+import com.venividicode.bilfit.repositories.TokenRepository;
+import com.venividicode.bilfit.services.AdminService;
 import com.venividicode.bilfit.services.UserAccountManagementService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -25,29 +28,71 @@ import java.util.stream.Stream;
 public class UserAccountManagementController {
     @Autowired
     private UserAccountManagementService userAccountManagementService;
-    private PasswordHashHandler passwordHashHandler = PasswordHashHandler.getInstance();
     @Autowired
-    private EntityManager entityManager;
+    private AdminService adminService;
+    private PasswordHashHandler passwordHashHandler = PasswordHashHandler.getInstance();
+
+    @Autowired
+    private TokenRepository tokenRepository;
+
 
     @PostMapping("/gymMember/add")
-    public String saveGymMember(@RequestBody GymMember gymMember)    //test passed
+    public String saveGymMember(@RequestParam String token, @RequestBody GymMember gymMember)    //test passed
     {
-        passwordHashHandler.setPassword(gymMember.getHashedPassword());
-        gymMember.setHashedPassword(passwordHashHandler.hashPassword());
-        if (userAccountManagementService.saveGymMember(gymMember) != null)
-            return "Gym Member with name (" + gymMember.getName() + ") and with id (" + gymMember.getID() +") has been added.";
-        else
-            return "There is already an existing user with the id" + gymMember.getID();
+        List<Admin> admins = adminService.getAllAdmins();
+        if(admins != null) {
+            boolean tokenMatch = false;
+            for(int i = 0; admins.size() > i; i++)
+            {
+                if(admins.get(i).getToken() != null) {
+                    if (admins.get(i).getToken().getToken().equals(token) && admins.get(i).getToken().getInUse()) {
+                        tokenMatch = true;
+                        break;
+                    }
+                }
+            }
+            if (tokenMatch)
+            {
+                passwordHashHandler.setPassword(gymMember.getHashedPassword());
+                gymMember.setHashedPassword(passwordHashHandler.hashPassword());
+                if (userAccountManagementService.saveGymMember(gymMember) != null)
+                    return "Gym Member with name (" + gymMember.getName() + ") and with id (" + gymMember.getID() + ") has been added.";
+                else
+                    return "There is already an existing user with the id" + gymMember.getID();
+            }
+            else {
+                return "Unauthorized request.";
+            }
+        }
+        return "Unauthorized request.";
     }
     @PostMapping("/gymStaff/add")
-    public String saveGymStaff(@RequestBody GymStaff gymStaff)       //test passed
+    public String saveGymStaff(@RequestParam String token, @RequestBody GymStaff gymStaff)       //test passed
     {
-        passwordHashHandler.setPassword(gymStaff.getHashedPassword());
-        gymStaff.setHashedPassword(passwordHashHandler.hashPassword());
-        if (userAccountManagementService.saveGymStaff(gymStaff) != null)
-            return "Gym Staff with name (" + gymStaff.getName() + ") and with id (" + gymStaff.getID() +") has been added.";
-        else
-            return "There is already an existing user with the id" + gymStaff.getID();
+        List<Admin> admins = adminService.getAllAdmins();
+        if(admins != null) {
+            boolean tokenMatch = false;
+            for(int i = 0; admins.size() > i; i++)
+            {
+                if(admins.get(i).getToken() != null)
+                    if(admins.get(i).getToken().getToken().equals(token) && admins.get(i).getToken().getInUse())
+                    {
+                        tokenMatch = true;
+                        break;
+                    }
+            }
+            if(tokenMatch) {
+                passwordHashHandler.setPassword(gymStaff.getHashedPassword());
+                gymStaff.setHashedPassword(passwordHashHandler.hashPassword());
+                if (userAccountManagementService.saveGymStaff(gymStaff) != null)
+                    return "Gym Staff with name (" + gymStaff.getName() + ") and with id (" + gymStaff.getID() + ") has been added.";
+                else
+                    return "There is already an existing user with the id" + gymStaff.getID();
+            }
+            else
+                return "Unauthorized request.";
+        }
+        return "Unauthorized request.";
     }
 
    @GetMapping

@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 public class Admin {
-
 	@Id
 	private Long ID;
 	private String hashedPassword;
