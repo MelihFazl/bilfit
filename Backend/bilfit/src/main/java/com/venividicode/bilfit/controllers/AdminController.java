@@ -2,10 +2,12 @@ package com.venividicode.bilfit.controllers;
 
 import com.venividicode.bilfit.helpers.PasswordHashHandler;
 import com.venividicode.bilfit.models.Admin;
+import com.venividicode.bilfit.models.Token;
 import com.venividicode.bilfit.services.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -92,8 +94,29 @@ public class AdminController {
             return null;
 
         return adminsWithSpecifiedID.get(0);
-
-
     }
 
+    @PostMapping("/login/{id}")
+    public String login(@RequestParam String username, @RequestParam String password, @PathVariable("id") long adminID)
+    {
+        List<Admin> admins = adminService.getAdminByID(adminID);
+        if(admins == null)
+            return "No admin was found with ID " + adminID;
+        else
+        {
+            Admin adminLoggingIn = admins.get(0);
+            passwordHashHandler.setPassword(password);
+            if(adminLoggingIn.getHashedPassword().equals(passwordHashHandler.hashPassword()))
+            {
+                Token adminToken = new Token();
+                String token = adminToken.generateToken();
+                adminToken.setInUse(true);
+                adminToken.setLastActive(LocalDateTime.now());
+                adminLoggingIn.setToken(adminToken);
+                return token;
+            }
+            else
+                return "Password is incorrect.";
+        }
+    }
 }
