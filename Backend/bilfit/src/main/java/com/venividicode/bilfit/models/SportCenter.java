@@ -24,9 +24,9 @@ public class SportCenter {
 	private LocalDateTime opensAt;
 	private LocalDateTime closesAt;
 	private Integer latestReservationStepValue;
-	@OneToMany
+	/*@OneToMany
 	private List<Tournament> tournaments;
 	@OneToMany
-	private List<SportCourse> courses;
+	private List<SportCourse> courses;*/
 	private Double balance;
 }
