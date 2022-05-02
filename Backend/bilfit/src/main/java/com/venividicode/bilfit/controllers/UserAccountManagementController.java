@@ -124,6 +124,8 @@ public class UserAccountManagementController {
     {
         if (userAccountManagementService.getUserByID(userID) == null)
             return "User with ID " + userID + " does not exist.";
+        else
+            userAccountManagementService.deleteUserByID(userID);
         return "User with ID " + userID + " has been successfully deleted.";
     }
 
