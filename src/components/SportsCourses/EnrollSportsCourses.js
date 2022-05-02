@@ -28,9 +28,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 
-
-
-
 //ToDos: Button's on click functions can be added
 //seperating staff and user (not sure)
 const StyledTableCell = styled(TableCell)(({ theme }) => ({

@@ -32,46 +32,8 @@ import { InputAdornment, TableFooter, TableSortLabel } from '@mui/material';
 import { Sort } from '@mui/icons-material';
 import TextField from '@mui/material/TextField';
 import Search from '@mui/icons-material/Search';
-
-// Button positions will be fixed
-// Right side of the table will be fixed
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: '#F05454',
-    color: theme.palette.common.white,
-    fontSize: 13
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 13,
-
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    // backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}));
-
-function Input(props) {
-
-  const { name, label, value, error = null, onChange, ...other } = props;
-  return (
-    <TextField
-      variant="outlined"
-      label={label}
-      name={name}
-      value={value}
-      onChange={onChange}
-      {...other}
-      {...(error && { error: true, helperText: error })}
-    />
-  )
-}
+import Input from '../Controls/Input.js';
+import {stableSort, getComparator} from '../SearchAndSortMethods/SearchAndSort.js';
 
 function Reservation() {
   //variables
@@ -86,6 +48,30 @@ function Reservation() {
   const [orderBy, setOrderBy] = useState();
   const [filterFn, setFilterFn] = useState({ fn: items => { return items; } });
   const [searchSelection, setSearchSelection] = useState();
+
+  // Button positions will be fixed
+  // Right side of the table will be fixed
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: '#F05454',
+      color: theme.palette.common.white,
+      fontSize: 13
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 13,
+
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      // backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+  }));
   //methods
 
   //In order to print the headings from a map
@@ -99,7 +85,6 @@ function Reservation() {
     { id: 'resButton1', label: '', disableSorting: true },
     { id: 'resButton2', label: '', disableSorting: true }
   ]
-
 
   useEffect(() => {
     fetch('http://localhost:3000/reservations')
@@ -134,37 +119,8 @@ function Reservation() {
             case "resStatus": return items.filter(x => x.resStatus.includes(target.value));
             default: return items.filter(x => x.resActivity.includes(target.value));
           }
-
-
-
       }
     })
-  }
-
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-  }
-
-  function getComparator(order, orderBy) {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-
-  function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
   }
 
   const reservationsAfterSortingAndPaging = () => {
@@ -211,6 +167,7 @@ function Reservation() {
 
   return (
     <>
+    
       <Stack className='mainStackUser' direction="column"
         spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header' >My Reservations</h1> </div>
@@ -244,86 +201,87 @@ function Reservation() {
                   </Select>
                 </FormControl>
               </Box>
-              </Stack>
-              <TableContainer component={Paper} >
-                <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table" >
-                  <TableHead>
-                    <TableRow>
-                      {headCells1.map(headCell => (
-                        <StyledTableCell key={headCell.id} >
-                          {headCell.disableSorting ? headCell.label :
-                            <TableSortLabel onClick={() => { handleSortRequest(headCell.id) }}
-                              direction={(orderBy === headCell.id) ? order : 'asc'} active={orderBy == headCell.id}>
-                              {headCell.label}
-                            </TableSortLabel>}
-                        </StyledTableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody >
-                    {reservationsAfterSortingAndPaging().map((reservation, index) => (
-                      <StyledTableRow key={reservation.id} component="th" scope="row"  >
-                        <StyledTableCell className='cellItem'>
-                          {reservation.resDate}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {reservation.resTime}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {reservation.resActivity}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'  >
-                          {reservation.resLocation}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'>
-                          {reservation.resSportsCenter}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {reservation.resStatus}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          <Stack className='mainStack' direction="row"  // This stack is for delete and cancel reservation buttons
-                            justifyContent="start"
-                            alignItems="start"
-                            spacing={0}>
-                            <Box className='button1'
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton aria-label="Example" onClick={() => { alert("I am clicked But1")  /* it will be modified according to array that comes from backend */ }}>
-                                <FontAwesomeIcon icon={faXmark} />
-                              </IconButton></Box>
-                            <Box className='button2'
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton aria-label="Example">
-                                <FontAwesomeIcon icon={faTrashCan} onClick={() => { alert("I am clicked But2")  /* it will be modified according to array that comes from backend */ }} />
-                              </IconButton></Box>
-                          </Stack>
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                        </StyledTableCell>
-                      </StyledTableRow>
+            </Stack>
+            <TableContainer component={Paper} >
+              <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table" >
+                <TableHead>
+                  <TableRow>
+                    {headCells1.map(headCell => (
+                      <StyledTableCell key={headCell.id} >
+                        {headCell.disableSorting ? headCell.label :
+                          <TableSortLabel onClick={() => { handleSortRequest(headCell.id) }}
+                            direction={(orderBy === headCell.id) ? order : 'asc'} active={orderBy == headCell.id}>
+                            {headCell.label}
+                          </TableSortLabel>}
+                      </StyledTableCell>
                     ))}
-                  </TableBody>
+                  </TableRow>
+                </TableHead>
+                <TableBody >
+                  {reservationsAfterSortingAndPaging().map((reservation, index) => (
+                    <StyledTableRow key={reservation.id} component="th" scope="row"  >
+                      <StyledTableCell className='cellItem'>
+                        {reservation.resDate}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        {reservation.resTime}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        {reservation.resActivity}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem'  >
+                        {reservation.resLocation}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem'>
+                        {reservation.resSportsCenter}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        {reservation.resStatus}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        <Stack className='mainStack' direction="row"  // This stack is for delete and cancel reservation buttons
+                          justifyContent="start"
+                          alignItems="start"
+                          spacing={0}>
+                          <Box className='button1'
+                            sx={{
+                              '& > :not(style)': {
+                                m: 1,
+                              },
+                            }}
+                          >
+                            <IconButton aria-label="Example" onClick={() => { alert("I am clicked But1")  /* it will be modified according to array that comes from backend */ }}>
+                              <FontAwesomeIcon icon={faXmark} />
+                            </IconButton></Box>
+                          <Box className='button2'
+                            sx={{
+                              '& > :not(style)': {
+                                m: 1,
+                              },
+                            }}
+                          >
+                            <IconButton aria-label="Example">
+                              <FontAwesomeIcon icon={faTrashCan} onClick={() => { alert("I am clicked But2")  /* it will be modified according to array that comes from backend */ }} />
+                            </IconButton></Box>
+                        </Stack>
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
 
-                </Table>
-                <TablePagination component='div' page={page} rowsPerPageOptions={pages} rowsPerPage={rowsPerPage}
-                  count={reservations.length} onPageChange={handlePageChange}
-                  onRowsPerPageChange={handleRowsPerPageChange}
-                  sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }}>
-                </TablePagination>
-              </TableContainer>
+              </Table>
+              <TablePagination component='div' page={page} rowsPerPageOptions={pages} rowsPerPage={rowsPerPage}
+                count={reservations.length} onPageChange={handlePageChange}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }}>
+              </TablePagination>
+            </TableContainer>
           </div>
         </Stack>
       </Stack>
+
       <Stack className='mainStackStaff' direction="column"
         spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo2 ? "block" : "none" }}    >
         <div> <h1 className='header'>Total Reservations</h1> </div>
@@ -415,6 +373,7 @@ function Reservation() {
           </div>
         </Stack>
       </Stack>
+
     </>
   );
 }

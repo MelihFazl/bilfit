@@ -15,6 +15,7 @@ import Login from './components/Login/Login';
 import Contact from './components/Contact/Contact';
 import TournamentRequests from './components/Tournaments/TournamentRequests'; 
 import AdminPanel from './components/AdminPanel/AdminPanel';
+import EnrollSportsCourses from './components/SportsCourses/EnrollSportsCourses';
 import "./App.css";
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
                 <Route path="/my-tournaments" component={MyTournaments} />
                 <Route path="/tournament-requests" component={TournamentRequests} />
                 <Route path="/enroll-tournament" component={EnrollTournaments} />
-                <Route path="/courses" />
+                <Route path="/courses" component={EnrollSportsCourses}/>
                 <Route path="/my-profile" component={User} />
                 <Route path="/contact" component={Contact} />
                 <Route path="/admin-panel" component={AdminPanel} />
