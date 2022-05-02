@@ -129,6 +129,7 @@ function Tournaments() {
             case "resActivity": return items.filter(x => x.resActivity.includes(target.value));
             case "resLocation": return items.filter(x => x.resLocation.includes(target.value));
             case "resSportsCenter": return items.filter(x => x.resSportsCenter.includes(target.value));
+            //case "resTeamMembers": return items.filter( x => x.team) May be problematic and may be disabled for search
             case "resStatus": return items.filter(x => x.resStatus.includes(target.value));
             default: return items.filter(x => x.resActivity.includes(target.value));
           }
