@@ -17,5 +17,4 @@ import java.util.List;
 public class GymStaff extends User {
 	@OneToMany
 	private List<SportCenter> workplaces;
-
 }

@@ -29,7 +29,4 @@ public class SportCenter {
 	@OneToMany
 	private List<SportCourse> courses;
 	private Double balance;
-	public String getName() {
-		return this.name;
-	}
 }
