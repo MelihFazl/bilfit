@@ -25,6 +25,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+
 
 
 
@@ -41,14 +44,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
   },
 }));
-function createData(resDate, resTimeSlot, resActivity, resPlace, resLocation, resStatus, cancelButton, deleteButton) { // I am not sure for the last two parameters for now 
-  return { resDate, resTimeSlot, resActivity, resPlace, resLocation, resStatus };
-}
-const rows = [
-  createData('March 19, 2022', '11.30-12.45', 'Fitness', 'Dormitories', 'Ground Floor', 'Attended', "", ""),
-  createData('March 25, 2022', '14.30-15.45', 'Basketball', 'Main Campus', 'Ground Floor', 'Upcoming', "", ""),
 
-];
 
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -61,21 +57,112 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const week = [
+  {
+    value: 'Monday',
+    label: 'Monday',
+  },
+  {
+    value: 'Tuesday',
+    label: 'Tuesday',
+  },
+  {
+    value: 'Wednesday',
+    label: 'Wednesday',
+  },
+  {
+    value: 'Thursday',
+    label: 'Thursday',
+  },
+  {
+    value: 'Friday',
+    label: 'Friday',
+  },
+  {
+    value: 'Saturday',
+    label: 'Saturday',
+  },
+  {
+    value: 'Sunday',
+    label: 'Sunday',
+  }
+]
+
+const sportCenters = [
+  {
+      value: 'Main',
+      label: 'Main Sport Center',
+  },
+  {
+      value: 'Dorm',
+      label: 'Dormitory Sport Center',
+  },
+  {
+      value: 'East',
+      label: 'East Sport Center',
+  },
+];
 function EnrollSportsCourses() {
-  const userType = 0; // if its type is 0  => regular user 1=> staff
+  const userType = 1; // if its type is 0  => regular user 1=> staff
   const [courses, setCourses] = useState([]);
   //variables for unique button states 
-  const [checkedState1, setCheckedState1] = useState(new Array().fill(false));
-  const [checkedState2, setCheckedState2] = useState(new Array().fill(false));
-  const [checkedState3, setCheckedState3] = useState(new Array().fill(false));
-  const [checkedState4, setCheckedState4] = useState(new Array().fill(false));
-  const [checkedState5, setCheckedState5] = useState(new Array().fill(false));
-  const [checkedState6, setCheckedState6] = useState(new Array().fill(false));
-  const [checkedState7, setCheckedState7] = useState(new Array().fill(false));
+
   const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users and staff
-  const [open1, setOpen1] = React.useState(false);
+  const [open1, setOpen1] = React.useState(false); // these are for dialogs
+  const [open2, setOpen2] = React.useState(false);
+  const [open3, setOpen3] = React.useState(false);
 
 
+  //Below are new course data when staff added
+  const [newCourseDate, setNewCourseDate] = useState('');
+  const [newCourseTime, setNewCourseTime] = useState('');
+  const [newCourseActivity, setNewCourseActivity] = useState('');
+  const [newCourseLocation, setNewCourseLocation] = useState('');
+  const [newCourseSportCenter, setNewCourseSportCenter] = useState('');
+  const [newCourseLastRegDate, setNewCourseLastRegDate] = useState('');
+  const [newCourseTotalNumber, setNewCourseTotalQuota] = useState('');
+  const [newCourseStartDate, setNewCourseStartDate] = useState('');
+  const [newCourseFinishDate, setNewCourseFinishDate] = useState('');
+  const [newCourseWeeklyCount, setNewCourseWeeklyCount] = useState(0);
+
+/* */
+  const render = (count) => {
+    const items = [];
+    for (var i = 0; i < count; i++) {
+      items.push(
+        <>
+          <TextField className="newCourse" style = {{marginRight: '0.25rem', marginLeft: '0.25rem',  marginTop: '0.25rem',  marginBottom: '0.25rem'}} onChange={event => setNewCourseTime(event.target.value)}
+            autoFocus
+            id="Course Date"
+            select
+            label="Course Date"
+            required
+            color='secondary'
+            helperText="Please select Course Date"
+            focused
+          >
+            {week.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField className="newCourse" onChange={event => setNewCourseFinishDate(event.target.value)/*bilmiyorum*/}
+            autoFocus
+            id="newCourseTime"
+            label="Course Time"
+            type="time"
+            color='secondary'
+            required
+
+            variant="standard"
+            focused
+          />
+        </>
+      )
+    }
+    return items;
+  }
 
   useEffect(() => {
     fetch('http://localhost:3000/reservations')
@@ -85,58 +172,19 @@ function EnrollSportsCourses() {
       });
   }, []);
 
+  const enrollNewCourse = (courseID) => {
+    // This function will take the chosen course id and sends to the database
+  }
 
+  const deleteCourse = (courseID) => {
+    // This function will take the chosen course id and delete it from the database
+  }
   /**
    * This function changes the situation of the buttons when the are clicked
    * @param {it is the position of the row} position 
    * @param {it shows which button is clicked } number 
    */
-  const handleOnChange = (position, number) => { // It will be modified according to array that comes from backend
-    if (number == 1) {
-      const updateAllStates = checkedState1.fill(false);
-      setCheckedState1(updateAllStates);
-      const updatedCheckedState = checkedState1.map((item, index) => index === position ? !item : item);
-      setCheckedState1(updatedCheckedState);
-    }
-    if (number == 2) {
-      const updateAllStates = checkedState2.fill(false);
-      setCheckedState2(updateAllStates);
-      const updatedCheckedState = checkedState2.map((item, index) => index === position ? !item : item);
-      setCheckedState2(updatedCheckedState);
-    }
-    if (number == 3) {
-      const updateAllStates = checkedState3.fill(false);
-      setCheckedState3(updateAllStates);
-      const updatedCheckedState = checkedState3.map((item, index) => index === position ? !item : item);
-      setCheckedState3(updatedCheckedState);
-    }
-    if (number == 4) {
-      const updateAllStates = checkedState4.fill(false);
-      setCheckedState4(updateAllStates);
-      const updatedCheckedState = checkedState4.map((item, index) => index === position ? !item : item);
-      setCheckedState4(updatedCheckedState);
-    }
-    if (number == 5) {
-      const updateAllStates = checkedState5.fill(false);
-      setCheckedState5(updateAllStates);
-      const updatedCheckedState = checkedState5.map((item, index) => index === position ? !item : item);
-      setCheckedState5(updatedCheckedState);
-    }
-    if (number == 6) {
-      const updateAllStates = checkedState6.fill(false);
-      setCheckedState6(updateAllStates);
-      const updatedCheckedState = checkedState6.map((item, index) => index === position ? !item : item);
-      setCheckedState6(updatedCheckedState);
-    }
-    if (number == 7) {
-      const updateAllStates = checkedState7.fill(false);
-      setCheckedState7(updateAllStates);
-      const updatedCheckedState = checkedState7.map((item, index) => index === position ? !item : item);
-      setCheckedState7(updatedCheckedState);
-    }
 
-
-  };
 
   const FontAwesomeSvgIcon = React.forwardRef((props, ref) => {
     const { icon } = props;
@@ -165,8 +213,128 @@ function EnrollSportsCourses() {
 
   return (
     <>
+      <div style={{ display: showInfo1 ? "none" : "block", justifyContent: 'right', alignItems: 'center', marginRight: '5rem', marginTop: '2rem' }}>
+        <Button onClick={() => setOpen3(true)} > Add New Sports Course </Button>
+        <Dialog open={open3} onClose={() => setOpen3(true)}  >
+          <DialogTitle>Add a Sports Course </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please enter the necessary information of a new sports course.
+            </DialogContentText>
+            <TextField className="newCourse" onChange={event => setNewCourseActivity(event.target.value)}
+              autoFocus
+              margin="dense"
+              id="newCourseActivity"
+              label="Course Activity"
+              color='secondary'
+              type="text"
+              fullWidth
+              variant="standard"
+              required
+
+              focused
+            />
+            <TextField className="newCourse" onChange={event => setNewCourseStartDate(event.target.value)}
+              autoFocus
+              margin="dense"
+              id={"newTournamentStartDate"}
+              label="Tournament Start Date"
+              color='secondary'
+              type="date"
+              required
+
+              fullWidth
+              variant="standard"
+              focused
+            />
+            <TextField className="newCourse" onChange={event => setNewCourseFinishDate(event.target.value)}
+              autoFocus
+              margin="dense"
+              id={"newTournamentFinishDate"}
+              required
+
+              color='secondary'
+
+              label="Tournament Finish Date"
+              type="date"
+              fullWidth
+              variant="standard"
+              focused
+            />
+            <TextField className="newCourse" onChange={event => setNewCourseWeeklyCount(event.target.value)} 
+              autoFocus
+              margin="dense"
+              id="newCourseWeeklyCount"
+              label="Course Program Weekly Count"
+              required
+
+              type="number"
+              color='secondary'
+
+              fullWidth
+              variant="standard"
+              focused
+            />
+            {render(newCourseWeeklyCount)}
+
+            <TextField className="newCourse" onChange={event => setNewCourseLastRegDate(event.target.value)} style={{marginBottom: '0.5rem'}}
+              autoFocus
+              margin="dense"
+              id="newCourseLastRegDate"
+              color='secondary'
+              label="Course Last Registration Date"
+              type="text"
+              required
+
+              fullWidth
+              variant="standard"
+              focused
+            />
+            <TextField className="newCourse" onChange={event => setNewCourseSportCenter(event.target.value)}
+            autoFocus
+            id="newCourseSportsCenter"
+            required
+
+            select
+            label="Course Sports Center"
+            color='secondary'
+            helperText="Please select Course Sports Center"
+            value={newCourseSportCenter}
+            focused
+          >
+            {sportCenters.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField className="newCourse" onChange={event => setNewCourseLocation(event.target.value)} style={{marginLeft: '0.5rem'}}
+              autoFocus
+              margin="dense"
+              id="newCourseLocation"
+              color='secondary'
+              required
+
+              label="Course Location"
+              type="text"
+              fullWidth
+              variant="standard"
+              focused
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => {
+              setOpen3(false);
+            }} >Cancel </Button>
+            <Button onClick={() => {
+              setOpen3(false);
+            }}>Add</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+
       <Stack className='mainStackUser' direction="column"
-        spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
+        spacing={3} alignItems="center"    >
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'> Available Sports Courses</h1> </div>
         <Stack className='mainStack' direction="row"
           justifyContent="center"
@@ -178,7 +346,7 @@ function EnrollSportsCourses() {
                 <TableHead>
                   <TableRow hover="false">
                     <StyledTableCell>Activity</StyledTableCell>
-                    <StyledTableCell align='right'> Program</StyledTableCell>
+                    <StyledTableCell align='right'> Weekly Course Program</StyledTableCell>
                     <StyledTableCell align='right'> Start- Finish Date </StyledTableCell>
                     <StyledTableCell align='right'>Sports Center</StyledTableCell>
                     <StyledTableCell align='right'> Location</StyledTableCell>
@@ -195,8 +363,8 @@ function EnrollSportsCourses() {
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
                         <Table size="small" aria-label="a dense table">
-                          <TableRow><StyledTableCell > {course.timeSlot1}</StyledTableCell></TableRow>
-                          <TableRow><StyledTableCell> {course.timeSlot2}</StyledTableCell></TableRow>
+                          <TableRow><StyledTableCell > {course.timeSlot1/*This will change the type of data*/}</StyledTableCell></TableRow>
+                          <TableRow><StyledTableCell> {course.timeSlot2/*This will change the type of data*/}</StyledTableCell></TableRow>
                         </Table>
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
@@ -223,7 +391,7 @@ function EnrollSportsCourses() {
                           alignItems="start"
                           spacing={0}>
 
-                          <Box className='button1'
+                          <Box className='button1' style={{ display: showInfo1 ? "block" : "none" }}
                             sx={{
                               '& > :not(style)': {
                                 m: 1,
@@ -231,11 +399,22 @@ function EnrollSportsCourses() {
                             }}
                           >
                             <IconButton aria-label="Example">
-                              <FontAwesomeIcon icon={faFilePen} onClick={() => setOpen1(true)} /* it will be modified according to array that comes from backend */  />
+                              <FontAwesomeIcon icon={faFilePen} onClick={() => setOpen1(true)} /* it will be modified according to array that comes from backend */ />
+                            </IconButton></Box>
+
+                          <Box className='button2' style={{ display: showInfo1 ? "none" : "block" }}
+                            sx={{
+                              '& > :not(style)': {
+                                m: 1,
+                              },
+                            }}
+                          >
+                            <IconButton aria-label="Example">
+                              <FontAwesomeIcon icon={faXmark} onClick={() => setOpen2(true)} /* it will be modified according to array that comes from backend */ />
                             </IconButton></Box>
                           <Dialog
                             open={open1}
-                            onClose= { () => setOpen1(false)}
+                            onClose={() => setOpen1(false)}
                             aria-labelledby="alert-dialog-title"
                             aria-describedby="alert-dialog-description"
                           >
@@ -244,13 +423,34 @@ function EnrollSportsCourses() {
                             </DialogTitle>
                             <DialogContent>
                               <DialogContentText id="alert-dialog-description">
-                                You should attend the classes regularly. Are you still sure to enroll this class?
+                                You should attend the classes regularly. Are you sure to enroll the course?
                               </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                              <Button onClick={ () => setOpen1(false)}>Cancel</Button>
-                              <Button onClick={ () => setOpen1(false)} autoFocus>
+                              <Button color='secondary' onClick={() => setOpen1(false)}>Cancel</Button>
+                              <Button color='secondary' onClick={() => { setOpen1(false); enrollNewCourse(course.id) }} autoFocus>
                                 Enroll
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                          <Dialog
+                            open={open2}
+                            onClose={() => setOpen2(false)}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                          >
+                            <DialogTitle id="alert-dialog-title">
+                              {""}
+                            </DialogTitle>
+                            <DialogContent>
+                              <DialogContentText id="alert-dialog-description">
+                                If you click "Delete" button, you will delete all enrollments about this course. Are you sure to delete this course?
+                              </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button color='secondary' onClick={() => setOpen2(false)}>Cancel</Button>
+                              <Button color='secondary' onClick={() => { setOpen2(false); deleteCourse(course.id) }} autoFocus>
+                                Delete
                               </Button>
                             </DialogActions>
                           </Dialog>
