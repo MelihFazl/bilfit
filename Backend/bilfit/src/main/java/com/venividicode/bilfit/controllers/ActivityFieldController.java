@@ -31,15 +31,15 @@ public class ActivityFieldController
         }
     }
 
-    @DeleteMapping("activity/delete/{id}")
+    @DeleteMapping("/activity/delete/{id}")
     public String deleteSportActivity(@PathVariable("id") long id)
     {
         List<SportActivity> sportActivitiesWithSpecifiedID = activityFieldService.getSportActivityByID(id);
         if (sportActivitiesWithSpecifiedID == null) {
-            return "Field with specified ID " + id + " was not found.";
+            return "SportActivity with specified ID " + id + " was not found.";
         }
         activityFieldService.deleteSportActivityByID(id);
-        return "Notification with specified ID " + id + " has been successfully deleted.";
+        return "SportActivity with specified ID " + id + " has been successfully deleted.";
     }
 
     @GetMapping("/activity")
@@ -47,7 +47,7 @@ public class ActivityFieldController
         return activityFieldService.getAllSportActivities();
     }
 
-    @GetMapping("activity/{id}")
+    @GetMapping("/activity/{id}")
     public List<SportActivity> getSportActivityWithID(@PathVariable("id") long id)
     {
         return activityFieldService.getSportActivityByID(id);
@@ -76,7 +76,7 @@ public class ActivityFieldController
             return "Field with specified ID " + id + " was not found.";
         }
         activityFieldService.deleteFieldByID(id);
-        return "Notification with specified ID " + id + " has been successfully deleted.";
+        return "Field with specified ID " + id + " has been successfully deleted.";
     }
 
     @GetMapping("/field")
@@ -84,7 +84,7 @@ public class ActivityFieldController
         return activityFieldService.getAllFields();
     }
 
-    @GetMapping("field/{id}")
+    @GetMapping("/field/{id}")
     public List<Field> getFieldWithID(@PathVariable("id") long id)
     {
         return activityFieldService.getFieldByID(id);
