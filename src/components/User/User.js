@@ -7,6 +7,9 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import { TextField } from "@mui/material";
 import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -94,8 +97,7 @@ function User() {
     }, []);
 
     return (
-
-        <Box sx={{
+        <><Box sx={{
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'horizontal',
@@ -209,6 +211,7 @@ function User() {
                         autoFocus
                         margin="dense"
                         id="name"
+                        color="secondary"
                         label="New Password"
                         type={hidePassword ? 'password' : 'name'}
                         fullWidth
@@ -222,6 +225,7 @@ function User() {
                     <TextField
                         autoFocus
                         margin="dense"
+                        color="secondary"
                         id="name"
                         label="Re-Enter Password"
                         type={hidePassword ? 'password' : 'name'}
@@ -235,9 +239,38 @@ function User() {
                 </DialogActions>
             </Dialog>
 
+
+
         </Box >
 
-
+            <div className="App">
+                <Grid>
+                    <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto", marginBottom: '1rem'}}>
+                        <CardContent>
+                            <Typography gutterBottom variant="h5">
+                                Request Gym Program
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary" component="p" gutterBottom>
+                                Fill up the form and our gym staff will contact you as soon as possible.
+                            </Typography>
+                            <form>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={12}>
+                                        <TextField type="title" placeholder="Enter a title" label="Title" variant="outlined" fullWidth/>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField label="Message" multiline rows={4} placeholder="Enter your expactations from this program" variant="outlined" fullWidth required />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        {button && <Button buttonStyle="btn--primary" style={{color:"#000"}} margin="1rem" >Submit</Button>}
+                                    </Grid>
+                                </Grid>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </div>
+        </>
     )
 }
 export default User;
