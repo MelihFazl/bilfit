@@ -13,16 +13,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class Field {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long ID;
-	@OneToOne
-	private SportActivity activity;
-	private int maxQuota;
+	private Integer maxQuota;
+	private String name;
 	@ElementCollection(targetClass=String.class)
 	private List<String> occupiableTimeSlots;
-	public SportActivity getActivity() {
-		return this.activity;
-	}
 }

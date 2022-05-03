@@ -11,9 +11,12 @@
 }
 
 .btn--primary{
-    background-color: var(--primary);
-    color: #242424;
-    border: 1px solid var(--primary);
+    background-color: rgb(183, 183, 183);
+    color: #000;
+    padding: 4px 10px;
+    border: 1px solid rgb(183, 183, 183);
+    transition: all 0.3s ease-out;
+
 }
 
 .btn--outline{

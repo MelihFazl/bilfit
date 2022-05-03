@@ -162,6 +162,7 @@ function AdminPanel() {
                             required={true}
                             fullWidth
                             variant="standard"
+                            color='secondary'
                             errorText="Please enter only 8 digits number"
                             focused
                         />
@@ -172,6 +173,8 @@ function AdminPanel() {
                             label="User Full Name"
                             required={true}
                             type="text"
+                            color='secondary'
+
                             fullWidth
                             variant="standard"
 
@@ -182,6 +185,8 @@ function AdminPanel() {
                             margin="dense"
                             id="newUserMail"
                             label="User Mail"
+                            color='secondary'
+
                             required={true}
                             type="mail"
                             fullWidth
@@ -195,6 +200,7 @@ function AdminPanel() {
                             id="newUserBirthDate"
                             label="User Birth Date"
                             required={true}
+                            color='secondary'
                             type="date"
                             fullWidth
                             variant="standard"
@@ -310,6 +316,8 @@ function AdminPanel() {
                                                                 margin="dense"
                                                                 id="UserID"
                                                                 label="User ID"
+                                                                color='secondary'
+
                                                                 placeholder={user.id}
                                                                 type="number"
                                                                 fullWidth
@@ -323,6 +331,8 @@ function AdminPanel() {
                                                                 id="UserName"
                                                                 label="User Full Name"
                                                                 placeholder={user.name}
+                                                                color='secondary'
+
                                                                 type="text"
                                                                 fullWidth
                                                                 variant="standard"
@@ -335,6 +345,8 @@ function AdminPanel() {
                                                                 id="UserMail"
                                                                 label="User Mail"
                                                                 placeholder={user.email}
+                                                                color='secondary'
+
                                                                 type="mail"
                                                                 fullWidth
                                                                 variant="standard"
@@ -347,6 +359,8 @@ function AdminPanel() {
                                                                 id="UserBirthDate"
                                                                 label="User Birth Date"
                                                                 placeholder={user.birthdate}
+                                                                color='secondary'
+
                                                                 type="date"
                                                                 fullWidth
                                                                 variant="standard"
@@ -359,8 +373,8 @@ function AdminPanel() {
                                                                 margin="dense"
                                                                 select
                                                                 label="Select User Gender"
+                                                                color='secondary'
                                                                 value={editUserGender}
-                                                                color="secondary"
                                                                 helperText="Please select Gender"
                                                                 focused
                                                             >
