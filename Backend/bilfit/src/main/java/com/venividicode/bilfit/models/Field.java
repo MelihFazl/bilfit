@@ -5,8 +5,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -18,6 +21,6 @@ public class Field {
 	private Long ID;
 	private Integer maxQuota;
 	private String name;
-	@ElementCollection(targetClass=String.class)
-	private List<String> occupiableTimeSlots;
+	@OneToMany
+	List<TimeSlotOnDay> occupiableTimeSlotsOnDay;
 }
