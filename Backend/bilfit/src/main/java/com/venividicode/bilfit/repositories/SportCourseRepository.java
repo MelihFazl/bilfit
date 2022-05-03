@@ -1,10 +1,16 @@
 package com.venividicode.bilfit.repositories;
 
+import com.venividicode.bilfit.models.SportCenter;
 import com.venividicode.bilfit.models.SportCourse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface SportCourseRepository extends JpaRepository<SportCourse, Long> {
-    //TODO
+    public List<SportCourse> findById(long id);
+    public SportCourse deleteById(long id);
+    public List<SportCourse> findByType(String type);
+    public List<SportCourse> findByLocation(SportCenter location);
 }

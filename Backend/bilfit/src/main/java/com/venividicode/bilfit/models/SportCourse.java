@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -18,9 +19,12 @@ public class SportCourse {
 	private Long ID;
 	private String type;
 	private String description;
-	@OneToMany
+	private String startingDate;
+	private String endingDate;
+	private LocalDate lastRegistrationDate;
+	@ManyToMany
 	private List<GymStaff> instructors;
-	@OneToMany
+	@ManyToMany
 	private List<GymMember> participants;
 	@OneToOne
 	private SportCenter location;

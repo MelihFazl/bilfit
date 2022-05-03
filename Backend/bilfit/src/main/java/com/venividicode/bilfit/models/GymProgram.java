@@ -12,10 +12,10 @@ public class GymProgram {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long ID;
-	@OneToOne
-	private GymMember owner;
-	@OneToOne
-	private GymStaff author;
+	//@OneToOne
+	//private GymMember owner;
+	//@OneToOne
+	//private GymStaff author;
 	private String description;
 
 }
