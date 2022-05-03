@@ -22,9 +22,9 @@ public class SportCourse {
 	private String startingDate;
 	private String endingDate;
 	private LocalDate lastRegistrationDate;
-	@OneToMany
+	@ManyToMany
 	private List<GymStaff> instructors;
-	@OneToMany
+	@ManyToMany
 	private List<GymMember> participants;
 	@OneToOne
 	private SportCenter location;
