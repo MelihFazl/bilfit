@@ -32,7 +32,6 @@ import MenuItem from '@mui/material/MenuItem';
 
 
 //ToDos: Button's on click functions can be added
-//seperating staff and user (not sure)
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: '#F05454',
@@ -179,13 +178,12 @@ function EnrollSportsCourses() {
   const deleteCourse = (courseID) => {
     // This function will take the chosen course id and delete it from the database
   }
-  /**
-   * This function changes the situation of the buttons when the are clicked
-   * @param {it is the position of the row} position 
-   * @param {it shows which button is clicked } number 
-   */
 
 
+  const addNewSportsCourse = () => {
+    // This function will add the new course to the database
+
+  }
   const FontAwesomeSvgIcon = React.forwardRef((props, ref) => {
     const { icon } = props;
 
@@ -327,7 +325,7 @@ function EnrollSportsCourses() {
               setOpen3(false);
             }} >Cancel </Button>
             <Button onClick={() => {
-              setOpen3(false);
+              setOpen3(false); addNewSportsCourse();
             }}>Add</Button>
           </DialogActions>
         </Dialog>
