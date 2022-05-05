@@ -70,6 +70,7 @@ function AdminPanel() {
     const [newUserMail, setNewUserMail] = useState('');
     const [newUserGender, setNewUserGender] = useState('');
     const [newUserBirthDate, setNewUserBirthDate] = useState('');
+    const[newUserPassword, setNewUserPassword] = useState('')
 
     //Below are for editing users
     const [editUserID, setEditUserID] = useState('');
@@ -192,6 +193,18 @@ function AdminPanel() {
                             fullWidth
                             variant="standard"
 
+                            focused
+                        />
+                        <TextField className="newUser" onChange={event => setNewUserPassword(event.target.value)}
+                            autoFocus
+                            margin="dense"
+                            id="newUserPassword"
+                            label="User Password"
+                            type="password"
+                            required={true}
+                            fullWidth
+                            variant="standard"
+                            color='secondary'
                             focused
                         />
                         <TextField className="newUser" onChange={event => setNewUserBirthDate(event.target.value)}
@@ -317,7 +330,6 @@ function AdminPanel() {
                                                                 id="UserID"
                                                                 label="User ID"
                                                                 color='secondary'
-
                                                                 placeholder={user.id}
                                                                 type="number"
                                                                 fullWidth
@@ -332,7 +344,6 @@ function AdminPanel() {
                                                                 label="User Full Name"
                                                                 placeholder={user.name}
                                                                 color='secondary'
-
                                                                 type="text"
                                                                 fullWidth
                                                                 variant="standard"
@@ -346,13 +357,12 @@ function AdminPanel() {
                                                                 label="User Mail"
                                                                 placeholder={user.email}
                                                                 color='secondary'
-
                                                                 type="mail"
                                                                 fullWidth
                                                                 variant="standard"
-
                                                                 focused
                                                             />
+
                                                             <TextField className="editUser" onChange={event => setEditUserBirthDate(event.target.value)}
                                                                 autoFocus
                                                                 margin="dense"
@@ -360,7 +370,6 @@ function AdminPanel() {
                                                                 label="User Birth Date"
                                                                 placeholder={user.birthdate}
                                                                 color='secondary'
-
                                                                 type="date"
                                                                 fullWidth
                                                                 variant="standard"
