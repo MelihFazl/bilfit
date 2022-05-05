@@ -23,9 +23,9 @@ public class Reservation {
 	private SportCenter reservationPlace;
 	@Enumerated
 	private ReservationStatus status;
-	@OneToOne
-	private GymMember reserver;
-	private LocalDateTime reservationDay;
+	/*@OneToOne
+	private GymMember reserver;*/
+	private LocalDateTime reservationTime;
 	@OneToOne
 	private Field reservationField;
 }
