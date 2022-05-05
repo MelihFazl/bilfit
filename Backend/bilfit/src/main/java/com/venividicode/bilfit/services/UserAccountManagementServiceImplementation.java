@@ -182,6 +182,15 @@ public class UserAccountManagementServiceImplementation  implements UserAccountM
         return  null;
     }
 
+    public GymMember updateGymMember(GymMember gymMember)
+    {
+        return gymMemberRepository.save(gymMember);
+    }
+    public GymStaff updateGymStaff(GymStaff gymStaff)
+    {
+        return gymStaffRepository.save(gymStaff);
+    }
+
     @Override
     public GymStaff saveGymStaff(GymStaff gymStaff) {
         List<GymStaff> gymStaffs = gymStaffRepository.findById(gymStaff.getID().longValue());

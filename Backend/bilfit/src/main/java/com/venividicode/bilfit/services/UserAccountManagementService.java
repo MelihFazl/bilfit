@@ -26,5 +26,7 @@ public interface UserAccountManagementService
     public GymStaff patchGymStaff(GymStaff editedGymStaff, long olgGymStaffID);
     public GymMember saveGymMember(GymMember gymMember);
     public GymStaff saveGymStaff(GymStaff gymStaff);
+    public GymMember updateGymMember(GymMember gymMember);
+    public  GymStaff updateGymStaff(GymStaff gymStaff);
 
 }

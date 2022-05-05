@@ -1,26 +1,15 @@
 package com.venividicode.bilfit.controllers;
 
 import com.venividicode.bilfit.helpers.PasswordHashHandler;
-import com.venividicode.bilfit.models.Admin;
-import com.venividicode.bilfit.models.GymMember;
-import com.venividicode.bilfit.models.GymStaff;
-import com.venividicode.bilfit.models.User;
+import com.venividicode.bilfit.models.*;
 import com.venividicode.bilfit.repositories.TokenRepository;
 import com.venividicode.bilfit.services.AdminService;
 import com.venividicode.bilfit.services.UserAccountManagementService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.websocket.server.PathParam;
-import java.beans.FeatureDescriptor;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/user")
@@ -40,76 +29,69 @@ public class UserAccountManagementController {
     public String saveGymMember(@RequestParam String token, @RequestBody GymMember gymMember)    //test passed
     {
         List<Admin> admins = adminService.getAllAdmins();
-        if(admins != null) {
+        if (admins != null) {
             boolean tokenMatch = false;
-            for(int i = 0; admins.size() > i; i++)
-            {
-                if(admins.get(i).getToken() != null) {
+            for (int i = 0; admins.size() > i; i++) {
+                if (admins.get(i).getToken() != null) {
                     if (admins.get(i).getToken().getToken().equals(token) && admins.get(i).getToken().getInUse()) {
                         tokenMatch = true;
                         break;
                     }
                 }
             }
-            if (tokenMatch)
-            {
+            if (tokenMatch) {
                 passwordHashHandler.setPassword(gymMember.getHashedPassword());
                 gymMember.setHashedPassword(passwordHashHandler.hashPassword());
                 if (userAccountManagementService.saveGymMember(gymMember) != null)
                     return "Gym Member with name (" + gymMember.getName() + ") and with id (" + gymMember.getID() + ") has been added.";
                 else
                     return "There is already an existing user with the id" + gymMember.getID();
-            }
-            else {
+            } else {
                 return "Unauthorized request.";
             }
         }
         return "Unauthorized request.";
     }
+
     @PostMapping("/gymStaff/add")
     public String saveGymStaff(@RequestParam String token, @RequestBody GymStaff gymStaff)       //test passed
     {
         List<Admin> admins = adminService.getAllAdmins();
-        if(admins != null) {
+        if (admins != null) {
             boolean tokenMatch = false;
-            for(int i = 0; admins.size() > i; i++)
-            {
-                if(admins.get(i).getToken() != null)
-                    if(admins.get(i).getToken().getToken().equals(token) && admins.get(i).getToken().getInUse())
-                    {
+            for (int i = 0; admins.size() > i; i++) {
+                if (admins.get(i).getToken() != null)
+                    if (admins.get(i).getToken().getToken().equals(token) && admins.get(i).getToken().getInUse()) {
                         tokenMatch = true;
                         break;
                     }
             }
-            if(tokenMatch) {
+            if (tokenMatch) {
                 passwordHashHandler.setPassword(gymStaff.getHashedPassword());
                 gymStaff.setHashedPassword(passwordHashHandler.hashPassword());
                 if (userAccountManagementService.saveGymStaff(gymStaff) != null)
                     return "Gym Staff with name (" + gymStaff.getName() + ") and with id (" + gymStaff.getID() + ") has been added.";
                 else
                     return "There is already an existing user with the id" + gymStaff.getID();
-            }
-            else
+            } else
                 return "Unauthorized request.";
         }
         return "Unauthorized request.";
     }
 
-   @GetMapping
+    @GetMapping
     public List<User> getAllUsers() //test passed
     {
         return userAccountManagementService.getAllUsers();
     }
 
     @GetMapping("/gymMember")   //test passed
-    public List<GymMember> getAllGymMembers()
-    {
+    public List<GymMember> getAllGymMembers() {
         return userAccountManagementService.getAllGymMembers();
     }
 
     @GetMapping("/gymStaff")    //test passed
-    public List<GymStaff> getAllGymStaffs()
-    {
+    public List<GymStaff> getAllGymStaffs() {
         return userAccountManagementService.getAllGymStaff();
     }
 
@@ -138,24 +120,21 @@ public class UserAccountManagementController {
         String oldHashedPassword = passwordHashHandler.hashPassword();
         String actualOldHashedPassword = "";
         List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(userID);
-        if(gymMembers == null) {
+        if (gymMembers == null) {
             List<GymStaff> gymStaffs = userAccountManagementService.getGymStaffByID(userID);
-            if(gymStaffs == null)
+            if (gymStaffs == null)
                 return "The user with ID " + userID + " was not found.";
-            else
-            {
+            else {
                 actualOldHashedPassword = gymStaffs.get(0).getHashedPassword();
-                if(!oldHashedPassword.equals(actualOldHashedPassword))
+                if (!oldHashedPassword.equals(actualOldHashedPassword))
                     return "The old password is incorrect.";
                 gymStaffs.get(0).setHashedPassword(newHashedPassword);
                 userAccountManagementService.saveGymStaff(gymStaffs.get(0));
                 return "The password of user with ID " + userID + " has been successfully changed.";
             }
-        }
-        else
-        {
+        } else {
             actualOldHashedPassword = gymMembers.get(0).getHashedPassword();
-            if(!oldHashedPassword.equals(actualOldHashedPassword))
+            if (!oldHashedPassword.equals(actualOldHashedPassword))
                 return "The old password is incorrect.";
             gymMembers.get(0).setHashedPassword(newHashedPassword);
             userAccountManagementService.saveGymMember(gymMembers.get(0));
@@ -167,31 +146,28 @@ public class UserAccountManagementController {
     public String editGymMemberWithID(@RequestBody GymMember editedGymMember, @PathVariable("id") long gymMemberID) //test passed.
     {
         List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(gymMemberID);
-        if(gymMembers ==  null)
+        if (gymMembers == null)
             return "There is no Gym Member with ID " + gymMemberID;
         GymMember oldGymMember = gymMembers.get(0);
-        try{
+        try {
             userAccountManagementService.patchGymMember(editedGymMember, oldGymMember.getID());
-            return  "Gym Member with ID " + gymMemberID + " was successfully edited.";
-        }
-        catch (Exception e)
-        {
+            return "Gym Member with ID " + gymMemberID + " was successfully edited.";
+        } catch (Exception e) {
             return "An error occurred.";
         }
     }
+
     @PatchMapping("/editGymStaff/{id}")
     public String editGymStaffWithID(@RequestBody GymStaff editedGymStaff, @PathVariable("id") long gymStaffID) //test passed
     {
         List<GymStaff> gymStaffs = userAccountManagementService.getGymStaffByID(gymStaffID);
-        if(gymStaffs ==  null)
+        if (gymStaffs == null)
             return "There is no Gym Staff with ID " + gymStaffID;
         GymStaff oldGymStaff = gymStaffs.get(0);
-        try{
+        try {
             userAccountManagementService.patchGymStaff(editedGymStaff, oldGymStaff.getID());
-            return  "Gym Staff with ID " + gymStaffID + " was successfully edited.";
-        }
-        catch (Exception e)
-        {
+            return "Gym Staff with ID " + gymStaffID + " was successfully edited.";
+        } catch (Exception e) {
             return "An error occurred.";
         }
     }
@@ -199,25 +175,20 @@ public class UserAccountManagementController {
     @PatchMapping("/editUserID/{id}")
     public String editUserID(@RequestParam long newID, @PathVariable("id") long oldID)  //test passed
     {
-        List<User> userList =  userAccountManagementService.getUserByID(oldID);
-        if(userList == null)
+        List<User> userList = userAccountManagementService.getUserByID(oldID);
+        if (userList == null)
             return "There is no user with ID " + oldID + ".";
-        else
-        {
+        else {
             List<User> potentialConflictList = userAccountManagementService.getUserByID(newID);
-            if(potentialConflictList != null)
+            if (potentialConflictList != null)
                 return "The ID " + newID + " is already in use by another user.";
-            else
-            {
-                if (userList.get(0) instanceof GymMember)
-                {
+            else {
+                if (userList.get(0) instanceof GymMember) {
                     GymMember oldGymMember = userAccountManagementService.getGymMemberByID(oldID).get(0);
                     userAccountManagementService.deleteUserByID(oldID);
                     oldGymMember.setID(newID);
                     userAccountManagementService.saveGymMember(oldGymMember);
-                }
-                else
-                {
+                } else {
                     GymStaff oldGymStaff = userAccountManagementService.getGymStaffByID(oldID).get(0);
                     userAccountManagementService.deleteUserByID(oldID);
                     oldGymStaff.setID(newID);
@@ -225,6 +196,71 @@ public class UserAccountManagementController {
                 }
                 return "The user's ID was successfully changed from " + oldID + " to " + newID + ".";
             }
+        }
+    }
+
+    @PostMapping("/login/{id}")
+    public String login(@RequestParam String password, @PathVariable("id") long userID) {
+        passwordHashHandler = PasswordHashHandler.getInstance();
+        passwordHashHandler.setPassword(password);
+        List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(userID);
+        if (gymMembers == null) {
+            List<GymStaff> gymStaffs = userAccountManagementService.getGymStaffByID(userID);
+            if (gymStaffs == null)
+                return "No user was found with ID " + userID;
+            else {
+                GymStaff gymStaffLoggingIn = gymStaffs.get(0);
+                if (passwordHashHandler.hashPassword().equals(gymStaffLoggingIn.getHashedPassword())) {
+                    Token token = new Token();
+                    token.setInUse(true);
+                    token.setLastActive(LocalDateTime.now());
+                    String tokenStr = token.generateToken();
+                    tokenRepository.save(token);
+                    gymStaffLoggingIn.setToken(token);
+                    userAccountManagementService.updateGymStaff(gymStaffLoggingIn);
+                    return "GS " + tokenStr;
+                }
+                return "Password is incorrect.";
+            }
+        } else {
+            GymMember gymMemberLoggingIn = gymMembers.get(0);
+            if (passwordHashHandler.hashPassword().equals(gymMemberLoggingIn.getHashedPassword())) {
+                Token token = new Token();
+                token.setInUse(true);
+                token.setLastActive(LocalDateTime.now());
+                String tokenStr = token.generateToken();
+                tokenRepository.save(token);
+                gymMemberLoggingIn.setToken(token);
+                userAccountManagementService.updateGymMember(gymMemberLoggingIn);
+                return "GM " + tokenStr;
+            }
+            return "Password is incorrect.";
+        }
+    }
+
+    @PostMapping("/logout/{id}")
+    public String logOut(@PathVariable("id") long userID) {
+        List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(userID);
+        if (gymMembers == null) {
+            List<GymStaff> gymStaffs = userAccountManagementService.getGymStaffByID(userID);
+            if (gymStaffs == null)
+                return "No user found with ID " + userID;
+            else {
+                GymStaff curGymStaff = gymStaffs.get(0);
+                curGymStaff.getToken().setLastActive(LocalDateTime.now());
+                curGymStaff.getToken().setInUse(false);
+                tokenRepository.save(curGymStaff.getToken());
+                userAccountManagementService.saveGymStaff(curGymStaff);
+
+                return "GymStaff with ID " + userID + " successfully logged out";
+            }
+        } else {
+            GymMember curGymMember = gymMembers.get(0);
+            curGymMember.getToken().setLastActive(LocalDateTime.now());
+            curGymMember.getToken().setInUse(false);
+            tokenRepository.save(curGymMember.getToken());
+            userAccountManagementService.saveGymMember(curGymMember);
+            return "GymStaff with ID " + userID + " successfully logged out";
         }
     }
 }
