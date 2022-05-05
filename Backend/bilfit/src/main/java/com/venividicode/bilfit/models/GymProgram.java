@@ -14,8 +14,8 @@ public class GymProgram {
 	private Long ID;
 	//@OneToOne
 	//private GymMember owner;
-	//@OneToOne
-	//private GymStaff author;
+	@OneToOne
+	private GymStaff author;
 	private String description;
 
 }

@@ -15,6 +15,6 @@ public class GymProgramRequest {
 	@OneToOne
 	private GymMember owner;
 	private String description;
-	@Enumerated
-	private RequestStatus status;
+	//@Enumerated
+	//private RequestStatus status;
 }
