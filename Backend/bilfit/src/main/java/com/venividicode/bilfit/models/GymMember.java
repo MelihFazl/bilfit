@@ -24,7 +24,7 @@ public class GymMember extends User {
 	private List<Reservation> reservations;
 	private Boolean isRestricted;
 
-	//@OneToOne
-	//private GymProgram program;
+	@OneToOne
+	private GymProgram program;
 	//private MemberTypeStrategy typeStrategy;
 }
