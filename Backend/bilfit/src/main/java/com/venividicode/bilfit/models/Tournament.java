@@ -19,11 +19,13 @@ public class Tournament {
 	private Long ID;
 	private String name;
 	private LocalDateTime deadline;
-	private int maxQuota;
+	private Integer maxTeams;
+	private Integer maxNumberOfTeamMembers;
+	private Long sportCenterID;
 	@OneToMany
 	private List<TournamentRegistration> registrations;
 	private String description;
-	@OneToMany
+	@ManyToMany
 	private List<Field> fields;
 
 }
