@@ -30,12 +30,31 @@ const theme = createTheme();
 
 export default function SignIn() {
   const handleSubmit = (event) => {
+    
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    /*console.log({
       email: data.get('email'),
       password: data.get('password'),
-    });
+    })*/
+    
+    console.log("http://localhost:8080/user/login/" + data.get("email") + "?password=" + data.get("password"))
+    fetch("http://localhost:8080/user/login/" + data.get("email") + "?password=" + data.get("password")  , {
+      method:"POST",
+      Accept:"*/*",
+      "Accept-Encoding":"gzip, deflate, br",
+      Connection:"keep-alive"
+  }).then((result)=>{
+          result.text().then((token) => {
+          localStorage.setItem("usertoken", token)
+          localStorage.setItem("userid", data.get("email"))
+          //Now Users can login
+      })
+  })
+
+  
+
+    
   };
 
   return (
@@ -81,7 +100,7 @@ export default function SignIn() {
               label="Remember me"
             />
             <Button
-              href = "/home"
+              //href = "/home"
               type="submit"
               fullWidth
               variant="contained"
