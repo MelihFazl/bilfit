@@ -12,8 +12,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import "./Login.css";
+import { useParams, withRouter, useHistory } from 'react-router-dom';
+import { useState } from "react";
 
 function Copyright(props) {
+  
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
@@ -22,6 +25,7 @@ function Copyright(props) {
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
+      
     </Typography>
   );
 }
@@ -29,7 +33,9 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  const [myToken, setMyToken] = useState();
   const handleSubmit = (event) => {
+   
     
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -37,18 +43,39 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     })*/
-    
+  
     console.log("http://localhost:8080/user/login/" + data.get("email") + "?password=" + data.get("password"))
     fetch("http://localhost:8080/user/login/" + data.get("email") + "?password=" + data.get("password")  , {
       method:"POST",
       Accept:"*/*",
       "Accept-Encoding":"gzip, deflate, br",
       Connection:"keep-alive"
-  }).then((result)=>{
-          result.text().then((token) => {
-          localStorage.setItem("usertoken", token)
-          localStorage.setItem("userid", data.get("email"))
-          //Now Users can login
+  }).then((result)=>{   
+          result.text().then((resultStr) => {
+          let signal = true;  
+          if(resultStr.substring(0,2) === "GM")
+          {
+            localStorage.setItem("usertype", "member")
+          }
+          else if(resultStr.substring(0, 2) === "GS")
+          {
+            localStorage.setItem("usertype", "staff")
+          }
+          else if(resultStr.length < 400)
+          {
+            alert(resultStr)
+            signal = false;
+          }
+          else 
+            localStorage.setItem("usertype", "admin")
+          if(signal)
+          {
+            localStorage.setItem("usertoken", resultStr)
+            localStorage.setItem("userid", data.get("email"))
+            setMyToken(resultStr);
+            if(myToken !== "")
+            history.push("/home");
+          }
       })
   })
 
@@ -56,7 +83,8 @@ export default function SignIn() {
 
     
   };
-
+  const history =  useHistory();
+  
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
