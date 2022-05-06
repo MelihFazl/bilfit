@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,10 +24,9 @@ public class Reservation {
 	private SportCenter reservationPlace;
 	@Enumerated
 	private ReservationStatus status;
-	@OneToOne
-	private GymMember reserver;
 
-	private LocalDateTime reservationTime;
+	private Long reserverID;
+	private LocalDate reservationDate;
 	@OneToOne
 	private Field reservationField;
 }

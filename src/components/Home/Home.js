@@ -24,6 +24,7 @@ import Carousel from 'react-material-ui-carousel'
 
 
 function Home() {
+    handleData()
     const firstItemRef = useRef(null);
     //css styling
     const boxStyle1 = {
@@ -134,3 +135,11 @@ function Home() {
 }
 
 export default Home;
+ const handleData =() => {
+        fetch("http://localhost:8080/announcement/" , {
+            method:"GET",
+        }).then(result=>result.json()).then((result) => {
+          console.log(result);
+          console.log(new Date(result[0].date.toString().substring(0, 10)))
+          //Use state, announcements use the result coming from here kerem kardesim
+    })}

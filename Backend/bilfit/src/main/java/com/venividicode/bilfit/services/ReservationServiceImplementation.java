@@ -4,11 +4,9 @@ import com.venividicode.bilfit.models.*;
 import com.venividicode.bilfit.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -26,6 +24,8 @@ public class ReservationServiceImplementation implements ReservationService{
     GymMemberRepository gymMemberRepository;
     @Autowired
     TimeSlotOnDayRepository timeSlotOnDayRepository;
+    @Autowired
+    TimeSlotRepository timeSlotRepository;
     @Override
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
@@ -39,7 +39,7 @@ public class ReservationServiceImplementation implements ReservationService{
         GymMember reserver = gymMemberRepository.getById(reserverID);
         List<SportActivity> availableActivities = reservationPlace.getAvailableActivities();
         String timeInterval = reservation.getReservedTimeInterval();
-        LocalDateTime reservationTime = reservation.getReservationTime();
+        LocalDate reservationDate = reservation.getReservationDate();
         SportActivity matchedActivity = null;
         for(int i = 0; availableActivities.size() > i; i++)
         {
@@ -49,7 +49,7 @@ public class ReservationServiceImplementation implements ReservationService{
             }
         }
         if(matchedActivity == null)
-            return "There is not a activity named " + reservationActivity.getActivity() + "under the sport center " + reservationPlace.getName();
+            return "There is not any activity named " + reservationActivity.getActivity() + " under the sport center " + reservationPlace.getName();
 
         Field matchedField = null;
         List<Field> fields = matchedActivity.getFields();
@@ -66,30 +66,36 @@ public class ReservationServiceImplementation implements ReservationService{
         if(matchedField == null)
             return "There is no field named " + reservationField.getName() + " under the sport center " + reservationPlace.getName() + " under the activity " + reservationActivity.getActivity();
 
-        String matchedTimeSlot = null;
+        TimeSlot matchedTimeSlot = null;
         int indexTimeSlot = 0;
-        Instant instant = reservationTime.toInstant(ZoneOffset.UTC);
-        LocalDate localDate = LocalDate.of(2022, 5, 15); //THIS WILL BE AUTOMATIC CHANGE THIS
+        int indexTimeSlotSlot = 0;
+
         List<TimeSlotOnDay> timeSlotOnDays = matchedField.getOccupiableTimeSlotsOnDay();
         for(int i = 0; timeSlotOnDays.size() > i; i++ )
         {
-            if(timeSlotOnDays.get(i).getDate().toString().equals(localDate.toString()))
+            if(timeSlotOnDays.get(i).getDate().toString().equals(reservationDate.toString()))
             {
-                if(timeSlotOnDays.get(i).getTimeSlots().contains(timeInterval))
+                for(int j = 0; timeSlotOnDays.get(i).getTimeSlotList().size() > j; j++)
                 {
-                    indexTimeSlot = i;
-                    matchedTimeSlot = timeInterval;
-                    break;
+                    if(timeSlotOnDays.get(i).getTimeSlotList().get(j).getTimeSlot().equals(timeInterval))
+                    {
+                        indexTimeSlot = i;
+                        indexTimeSlotSlot = j;
+                        matchedTimeSlot = timeSlotOnDays.get(i).getTimeSlotList().get(j);
+                        break;
+                    }
                 }
             }
         }
 
-        if(matchedTimeSlot == null)
-            return "The activity " + reservationActivity.getActivity() + " is already occupied at "
-                    + timeInterval + " on "  + reservationTime.getDayOfMonth() + "-" + reservationTime.getMonthValue() + "-" + reservationTime.getYear();
+        if(matchedTimeSlot.getCurrentCount() >= matchedField.getMaxQuota())
+            return "The activity " + reservationActivity.getActivity() + " has no quota at "
+                    + timeInterval + " on "  + reservationDate.getDayOfMonth() + "-" + reservationDate.getMonthValue() + "-" + reservationDate.getYear();
 
 
-        timeSlotOnDays.get(indexTimeSlot).getTimeSlots().remove(matchedTimeSlot);
+        matchedTimeSlot.setCurrentCount(matchedTimeSlot.getCurrentCount() + 1);
+        timeSlotRepository.save(matchedTimeSlot);
+        //timeSlotOnDays.get(indexTimeSlot).getTimeSlotList().remove(matchedTimeSlot);
         timeSlotOnDayRepository.save(timeSlotOnDays.get(indexTimeSlot));
         fieldRepository.save(matchedField);
         matchedActivity.setFields(fields);
@@ -98,11 +104,12 @@ public class ReservationServiceImplementation implements ReservationService{
         reservation.setReservationField(reservationField);
         reservation.setReservationPlace(reservationPlace);
         reservation.setReservationActivity(reservationActivity);
-        reserver.getReservations().add(reservation);
+        reservation.setReserverID(reserver.getID());
         reservationRepository.save(reservation);
+        reserver.getReservations().add(reservation);
         gymMemberRepository.save(reserver);
         return "Your reservation for activity " + reservationActivity.getActivity() + " in field " + reservationField.getName()
-                + " on " + localDate + " on time slot " + matchedTimeSlot + " was successfully made.";
+                + " on " + reservationDate + " on time slot " + matchedTimeSlot.getTimeSlot() + " was successfully made.";
     }
 
     @Override

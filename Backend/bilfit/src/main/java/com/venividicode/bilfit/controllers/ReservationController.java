@@ -1,11 +1,14 @@
 package com.venividicode.bilfit.controllers;
 
+import com.venividicode.bilfit.models.GymMember;
 import com.venividicode.bilfit.models.Reservation;
 import com.venividicode.bilfit.models.ReservationStatus;
 import com.venividicode.bilfit.services.ReservationService;
+import com.venividicode.bilfit.services.UserAccountManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,6 +18,9 @@ public class ReservationController
 {
     @Autowired
     ReservationService reservationService;
+
+    @Autowired
+    UserAccountManagementService userAccountManagementService;
 
     @PostMapping("/make")
     public  String makeReservation(@RequestBody Reservation reservation, @RequestParam long fieldID,
@@ -29,5 +35,18 @@ public class ReservationController
     public List<Reservation> getAll()
     {
         return reservationService.getAllReservations();
+    }
+
+    @GetMapping("/getByUserID/{id}")
+    public List<Reservation> getReservationsByUserID(@PathVariable("id") long userID)
+    {
+        List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(userID);
+        if(gymMembers == null)
+            return null;
+        GymMember curGymMember = gymMembers.get(0);
+        List<Reservation> result = new ArrayList<>();
+        for(int i = 0; curGymMember.getReservations().size() > i; i++)
+            result.add(curGymMember.getReservations().get(i));
+        return  result;
     }
 }

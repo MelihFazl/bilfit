@@ -32,6 +32,8 @@ import { InputAdornment, TableFooter, TableSortLabel } from '@mui/material';
 import { Sort } from '@mui/icons-material';
 import TextField from '@mui/material/TextField';
 import Search from '@mui/icons-material/Search';
+import { set } from 'date-fns';
+import { render } from 'react-dom';
 
 // Button positions will be fixed
 // Right side of the table will be fixed
@@ -75,7 +77,8 @@ function Input(props) {
 
 function Reservation() {
   //variables
-  const userType = 0; // if its type is 0  => regular user 1=> staff
+  
+  const [userType, setUserType] = useState(); // if its type is 0  => regular user 1=> staff
   const pages = [5, 10, 15];
   const [reservations, setReservations] = useState([]);
   const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users
@@ -87,6 +90,8 @@ function Reservation() {
   const [filterFn, setFilterFn] = useState({ fn: items => { return items; } });
   const [searchSelection, setSearchSelection] = useState();
   //methods
+
+  
 
   //In order to print the headings from a map
   const headCells1 = [
@@ -102,12 +107,32 @@ function Reservation() {
 
 
   useEffect(() => {
-    fetch('http://localhost:3000/reservations')
-      .then((res) => res.json())
-      .then((result) => {
-        setReservations(result);
-      });
-  }, []);
+  if(localStorage.getItem("usertype") === "member")
+    setUserType(0)
+  else if(localStorage.getItem("usertype") === "staff")
+    setUserType(1)
+  
+  if(userType === 1)
+  {
+    fetch('http://localhost:8080/reservation/')
+    .then((res) => res.json())
+    .then((result) => {
+      console.log(result)
+      setReservations(result);
+    });
+  } 
+  else if (userType === 0)
+  {
+    fetch('http://localhost:8080/reservation/getByUserID/' + localStorage.getItem("userid"))
+    .then((res) => res.json())
+    .then((result) => {
+      console.log(result)
+      setReservations(result);
+    });
+  }
+  setInfo1(userType ? 0 : 1)
+  setInfo2(userType ? 1 : 0)
+}, [userType, showInfo1, showInfo2]);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -126,17 +151,14 @@ function Reservation() {
           return items;
         else
           switch (searchSelection) {
-            case "resDate": return items.filter(x => x.resDate.includes(target.value));
-            case "resTime": return items.filter(x => x.resTime.includes(target.value));
-            case "resActivity": return items.filter(x => x.resActivity.includes(target.value));
-            case "resLocation": return items.filter(x => x.resLocation.includes(target.value));
-            case "resSportsCenter": return items.filter(x => x.resSportsCenter.includes(target.value));
-            case "resStatus": return items.filter(x => x.resStatus.includes(target.value));
-            default: return items.filter(x => x.resActivity.includes(target.value));
+            case "resDate": return items.filter(x => x.reservationDate.includes(target.value));
+            case "resTime": return items.filter(x => x.reservedTimeInterval.includes(target.value));
+            case "resActivity": return items.filter(x => x.reservationActivity.name.includes(target.value));
+            case "resLocation": return items.filter(x => x.reservationField.name.includes(target.value));
+            case "resSportsCenter": return items.filter(x => x.reservationPlace.name.includes(target.value));
+            case "resStatus": return items.filter(x => x.status.includes(target.value));
+            default: return items.filter(x => x.reservationActivity.activity.includes(target.value));
           }
-
-
-
       }
     })
   }
@@ -264,22 +286,22 @@ function Reservation() {
                     {reservationsAfterSortingAndPaging().map((reservation, index) => (
                       <StyledTableRow key={reservation.id} component="th" scope="row"  >
                         <StyledTableCell className='cellItem'>
-                          {reservation.resDate}
+                          {reservation.reservationDate}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
-                          {reservation.resTime}
+                          {reservation.reservedTimeInterval}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
-                          {reservation.resActivity}
+                          {reservation.reservationActivity.activity}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem'  >
-                          {reservation.resLocation}
+                          {reservation.reservationField.name}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem'>
-                          {reservation.resSportsCenter}
+                          {reservation.reservationPlace.name}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
-                          {reservation.resStatus}
+                          {reservation.status}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
                           <Stack className='mainStack' direction="row"  // This stack is for delete and cancel reservation buttons
@@ -349,22 +371,23 @@ function Reservation() {
                   </TableRow>
                 </TableHead>
                 <TableBody >
-                  {reservations.map((reservation, index) => (
+                  {reservations.map((reservation, index) => 
+                  (
                     <StyledTableRow key={reservation.id} component="th" scope="row"  >
+                      <StyledTableCell className='cellItem' >
+                        {reservation.reservedTimeInterval}
+                      </StyledTableCell>
                       <StyledTableCell className='cellItem'>
-                        {reservation.resDate}
+                        {reservation.reservationDate}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
-                        {reservation.timeSlot}
-                      </StyledTableCell>
-                      <StyledTableCell className='cellItem' >
-                        {reservation.activity}
+                        {reservation.reservationActivity.activity}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'  >
                         {reservation.campus}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'>
-                        {reservation.location}
+                        {reservation.reservationPlace.name}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
                         {reservation.reserverName}
@@ -408,7 +431,9 @@ function Reservation() {
                       <StyledTableCell className='cellItem' >
                       </StyledTableCell>
                     </StyledTableRow>
-                  ))}
+                  ))
+                  console.log("yarah")
+                  }
                 </TableBody>
               </Table>
             </TableContainer>

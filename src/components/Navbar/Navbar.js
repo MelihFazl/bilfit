@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { Button } from './Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
@@ -59,9 +59,21 @@ function Navbar() {
 
     
     const handleClick = () => setClick(!click);
+    const handleLogout =() => {
+        let id = localStorage.getItem("userid")
+        fetch("http://localhost:8080/user/logout/" + id, {
+            method: "POST"
+        }).then((result) => {
+            result.text().then((actualResult) => {
+                console.log(actualResult)
+                if(actualResult.includes("success"))
+                    history.push("/")
+            })
+        })
+    }
     const closeMobileMenu = () => setClick(false);
     window.addEventListener("resize", showButton);
-
+    const history =  useHistory();
     return (
         <>
             <nav className="navbar">
@@ -148,8 +160,8 @@ function Navbar() {
                             </ul>
 
                     }
-                    <Link to= '/' className='btn-mobile'>
-                        {button && <Button buttonStyle="btn--outline">Log Out</Button>}
+                    <Link className='btn-mobile'>
+                        {button && <Button buttonStyle="btn--outline" onClick={handleLogout}>Log Out</Button>}
                     </Link>
                     
                 </div>

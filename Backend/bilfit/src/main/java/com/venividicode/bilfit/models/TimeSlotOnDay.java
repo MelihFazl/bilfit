@@ -17,6 +17,6 @@ public class TimeSlotOnDay {
     @Id
     private Long ID;
     private LocalDate date;
-    @ElementCollection
-    private List<String> timeSlots;
+    @OneToMany
+    private List<TimeSlot> timeSlotList;
 }

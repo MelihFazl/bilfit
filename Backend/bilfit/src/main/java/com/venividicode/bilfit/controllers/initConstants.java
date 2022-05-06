@@ -1,9 +1,6 @@
 package com.venividicode.bilfit.controllers;
 
-import com.venividicode.bilfit.models.Field;
-import com.venividicode.bilfit.models.SportActivity;
-import com.venividicode.bilfit.models.SportCenter;
-import com.venividicode.bilfit.models.TimeSlotOnDay;
+import com.venividicode.bilfit.models.*;
 import com.venividicode.bilfit.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,6 +28,9 @@ public class initConstants {
     @Autowired
     private TimeSlotOnDayRepository timeSlotOnDayRepository;
 
+    @Autowired
+    private TimeSlotRepository timeSlotRepository;
+
     @GetMapping
     public boolean initConstants() {
         List<String> occupiableTimeSlots = new ArrayList<>();
@@ -46,12 +46,41 @@ public class initConstants {
         badmintonNorth.setMaxQuota(4);
         TimeSlotOnDay timeSlotOnDay = new TimeSlotOnDay();
         timeSlotOnDay.setDate(LocalDate.of(2022, 05, 15));
-        timeSlotOnDay.setTimeSlots(occupiableTimeSlots);
+        TimeSlot timeSlot1 = new TimeSlot();
+        timeSlot1.setTimeSlot("10.00-12.00");
+        timeSlot1.setCurrentCount(0);
+        TimeSlot timeSlot2 = new TimeSlot();
+        timeSlot2.setTimeSlot("13.00-15.00");
+        timeSlot2.setCurrentCount(0);
+        TimeSlot timeSlot3 = new TimeSlot();
+        timeSlot3.setTimeSlot("15.00-17.00");
+        timeSlot3.setCurrentCount(0);
+        TimeSlot timeSlot4 = new TimeSlot();
+        timeSlot4.setTimeSlot("17.00-19.00");
+        timeSlot4.setCurrentCount(0);
+        TimeSlot timeSlot5 = new TimeSlot();
+        timeSlot5.setTimeSlot("19.00-21.00");
+        timeSlot5.setCurrentCount(0);
+        TimeSlot timeSlot6 = new TimeSlot();
+        timeSlot6.setTimeSlot("21.00-23.00");
+        timeSlot6.setCurrentCount(0);
+        timeSlotRepository.save(timeSlot1);
+        timeSlotRepository.save(timeSlot2);
+        timeSlotRepository.save(timeSlot3);
+        timeSlotRepository.save(timeSlot4);
+        timeSlotRepository.save(timeSlot5);
+        timeSlotRepository.save(timeSlot6);
+        List<TimeSlot> timeSlots = new ArrayList<>();
+        timeSlots.add(timeSlot1);
+        timeSlots.add(timeSlot2);
+        timeSlots.add(timeSlot3);
+        timeSlots.add(timeSlot4);
+        timeSlots.add(timeSlot5);
+        timeSlots.add(timeSlot6);
+        timeSlotOnDay.setTimeSlotList(timeSlots);
         List<TimeSlotOnDay> timeSlotOnDays = new ArrayList<>();
         timeSlotOnDays.add(timeSlotOnDay);
-
         timeSlotOnDayRepository.save(timeSlotOnDay);
-
         badmintonNorth.setOccupiableTimeSlotsOnDay(timeSlotOnDays);
         Field badmintonSouth = new Field();
         badmintonSouth.setName("Main Badminton-South");
