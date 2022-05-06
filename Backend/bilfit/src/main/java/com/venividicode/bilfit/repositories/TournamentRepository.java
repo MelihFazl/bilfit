@@ -4,7 +4,16 @@ import com.venividicode.bilfit.models.Tournament;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface TournamentRepository extends JpaRepository<Tournament, Long> {
-    //TODO
+public interface TournamentRepository extends JpaRepository<Tournament, Long>
+{
+    public List<Tournament> findById(long id);
+
+    public Tournament deleteById(long id);
+
+    public List<Tournament> findByName(String name);
+
+    //is findByDeadline necessary?
 }

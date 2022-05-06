@@ -76,7 +76,7 @@ public class SportCourseController
         System.out.println(oldCourse.getID());
         try{
             sportCourseService.patchCourse(editedCourse, oldCourse.getID());
-            return  "Gym Member with ID " + courseID + " was successfully edited.";
+            return  "Course with ID " + courseID + " was successfully edited.";
         }
         catch (Exception e)
         {
