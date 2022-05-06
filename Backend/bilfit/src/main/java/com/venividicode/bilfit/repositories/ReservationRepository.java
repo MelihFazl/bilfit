@@ -9,6 +9,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * ReservationRepository to access the database and do
+ * operations related to Repository object
+ * @author Veni Vidi Code
+ */
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     public List<Reservation> findById(long Id);

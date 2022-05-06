@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * TokenRepository to access the database and do
+ * operations related to Token object
+ * @author Veni Vidi Code
+ */
 @Repository
 public interface TokenRepository extends JpaRepository<Token, Long>
 {

@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * SportActivityRepository to access the database and do
+ * operations related to SportActivity object
+ * @author Veni Vidi Code
+ */
 @Repository
 public interface SportActivityRepository extends JpaRepository<SportActivity, Long> {
 

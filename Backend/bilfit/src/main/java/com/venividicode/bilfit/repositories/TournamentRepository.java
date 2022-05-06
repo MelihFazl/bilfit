@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * TournamentRepository to access the database and do
+ * operations related to Tournament object
+ * @author Veni Vidi Code
+ */
 @Repository
 public interface TournamentRepository extends JpaRepository<Tournament, Long>
 {

@@ -10,6 +10,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * SportCenterRepository to access the database and do
+ * operations related to SportCenter object
+ * @author Veni Vidi Code
+ */
 @Repository
 public interface SportCenterRepository extends JpaRepository<SportCenter, Long> {
     public List<SportCenter> findById(long id);

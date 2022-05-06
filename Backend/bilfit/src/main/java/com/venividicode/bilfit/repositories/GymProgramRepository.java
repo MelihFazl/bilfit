@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * GymProgramRepository to access the database and do
+ * operations related to GymProgram object
+ * @author Veni Vidi Code
+ */
 @Repository
 public interface GymProgramRepository extends JpaRepository<GymProgram, Long> {
 
