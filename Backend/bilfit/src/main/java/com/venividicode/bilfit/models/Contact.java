@@ -1,27 +1,26 @@
 package com.venividicode.bilfit.models;
-
-
 import javax.persistence.*;
 import java.util.List;
 
 
+/**
+ * A model class representing the Contact entity
+ * @author Veni Vidi Code
+ */
 @Entity
 public class Contact {
 
+    // auto generated ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
-    /**
-     * regarding the mappings below: I thought of Contact as a single entity storing all the information
-     * of all the gym staffs, instead of one Contact storing information of one gym staff. That's why mappings
-     * are OneToMany. This may need to be revisited later on.
-     */
     @OneToMany
     private List<SportCenter> sportCenters;
     @OneToMany
     private List<GymStaff> gymStaffs;
 
 
+    // simple get and set methods below
     public Long getID() {
         return ID;
     }
