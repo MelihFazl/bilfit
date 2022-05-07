@@ -29,7 +29,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import SvgIcon from '@mui/material/SvgIcon';
 import { InputAdornment, TableFooter, TableSortLabel } from '@mui/material';
-import { Sort } from '@mui/icons-material';
+import { Sort, UpdateSharp } from '@mui/icons-material';
 import TextField from '@mui/material/TextField';
 import Search from '@mui/icons-material/Search';
 import { set } from 'date-fns';
@@ -78,9 +78,10 @@ function Input(props) {
 function Reservation() {
   //variables
   
-  const [userType, setUserType] = useState(); // if its type is 0  => regular user 1=> staff
+  const userType = (localStorage.getItem("usertype") === "staff") ? 1 : 0
   const pages = [5, 10, 15];
   const [reservations, setReservations] = useState([]);
+  const [memberResults, setMemberResults] = useState([]);
   const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users
   const [showInfo2, setInfo2] = useState(() => userType ? 1 : 0); //visibility setting for staff
   const [page, setPage] = useState(0);
@@ -105,34 +106,63 @@ function Reservation() {
     { id: 'resButton2', label: '', disableSorting: true }
   ]
 
-
   useEffect(() => {
-  if(localStorage.getItem("usertype") === "member")
-    setUserType(0)
-  else if(localStorage.getItem("usertype") === "staff")
-    setUserType(1)
-  
-  if(userType === 1)
-  {
-    fetch('http://localhost:8080/reservation/')
-    .then((res) => res.json())
-    .then((result) => {
-      console.log(result)
-      setReservations(result);
-    });
+   
+  if(userType === 1) //this could be hard. if you solve this, you may be a very famous programmer 
+  {  
+    fetch('http://localhost:8080/reservation').then((res) => res.json()).then((result) => {
+      
+      setReservations(result)
+    }); 
   } 
-  else if (userType === 0)
+  else if (userType === 0)  //gym member reservation. this is easy.
   {
     fetch('http://localhost:8080/reservation/getByUserID/' + localStorage.getItem("userid"))
     .then((res) => res.json())
     .then((result) => {
-      console.log(result)
       setReservations(result);
     });
   }
-  setInfo1(userType ? 0 : 1)
-  setInfo2(userType ? 1 : 0)
-}, [userType, showInfo1, showInfo2]);
+ 
+}, []);
+
+useEffect(() => {
+   
+  if(userType === 1) //this could be hard. if you solve this, you may be a very famous programmer 
+  {  
+    updateMember();
+  } 
+  
+ 
+}, [reservations]);
+
+/*useEffect(() => {
+   
+  if(userType === 1) //this could be hard. if you solve this, you may be a very famous programmer 
+  {  
+    console.log("girdi mi")
+    for(let i = 0; memberResults.length > i; i++)
+    {
+      console.log(i);
+      reservations[i] = {...reservations[i], phoneNumber: memberResults[i].phoneNumber, name: memberResults[i].name}
+      //result[index] = {...result[index], ...memberResult[0],id: result[index].id}
+    }
+  } 
+  
+ 
+}, [memberResults]);*/
+
+
+  async function updateMember ()
+  {
+    for(let i = 0; reservations.length > i; i++)
+    {
+      await fetch("http://localhost:8080/user/" + reservations[i].reserverID).then((res) => res.json()).then((result) => {
+          memberResults.push(result[0])
+      });
+    }
+    return memberResults;
+  }
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -202,6 +232,7 @@ function Reservation() {
   const handleSearchSelection = (event) => {
     setSearchSelection(event.target.value);
   };
+  
 
   /**
  * Below variables are for icons of buttons (importing the icon)
@@ -233,6 +264,7 @@ function Reservation() {
 
   return (
     <>
+    <Button className='sabirabi' onClick={()=>{console.log(reservations); console.log(memberResults);}}/>
       <Stack className='mainStackUser' direction="column"
         spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header' >My Reservations</h1> </div>
@@ -267,6 +299,7 @@ function Reservation() {
                 </FormControl>
               </Box>
               </Stack>
+              
               <TableContainer component={Paper} >
                 <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table" >
                   <TableHead>
@@ -384,16 +417,16 @@ function Reservation() {
                         {reservation.reservationActivity.activity}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'  >
-                        {reservation.campus}
-                      </StyledTableCell>
-                      <StyledTableCell className='cellItem'>
                         {reservation.reservationPlace.name}
                       </StyledTableCell>
-                      <StyledTableCell className='cellItem' >
-                        {reservation.reserverName}
+                      <StyledTableCell className='cellItem'>
+                        {reservation.reservationField.name}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
-                        {reservation.reserverPhone}
+                        {memberResults && (memberResults.map((member) => member.id === reservation.reserverID ? (<>{member.name}</>) : (<></>)))}
+                       </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        {memberResults[0].name}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
                         {reservation.reserverID}
@@ -432,7 +465,6 @@ function Reservation() {
                       </StyledTableCell>
                     </StyledTableRow>
                   ))
-                  console.log("yarah")
                   }
                 </TableBody>
               </Table>
@@ -442,5 +474,6 @@ function Reservation() {
       </Stack>
     </>
   );
-}
+                }
+
 export default Reservation;

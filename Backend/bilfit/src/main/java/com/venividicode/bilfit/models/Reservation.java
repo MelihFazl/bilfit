@@ -24,8 +24,8 @@ public class Reservation {
 	private SportCenter reservationPlace;
 	@Enumerated
 	private ReservationStatus status;
-
 	private Long reserverID;
+
 	private LocalDate reservationDate;
 	@OneToOne
 	private Field reservationField;
