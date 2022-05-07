@@ -43,10 +43,6 @@ public class ReservationController
         List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(userID);
         if(gymMembers == null)
             return null;
-        GymMember curGymMember = gymMembers.get(0);
-        List<Reservation> result = new ArrayList<>();
-        for(int i = 0; curGymMember.getReservations().size() > i; i++)
-            result.add(curGymMember.getReservations().get(i));
-        return  result;
+        return  reservationService.getByReserver(userID);
     }
 }

@@ -31,7 +31,7 @@ public class Reservation {
 	@Enumerated
 	private ReservationStatus status;
 	// ID of the gym member who made the reservation
-	private Long reserverID;
+	private GymMember reserver;
 	// date of the reservation
 	private LocalDate reservationDate;
 	// field of the reservation
