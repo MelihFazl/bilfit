@@ -3,6 +3,7 @@ package com.venividicode.bilfit.controllers;
 import com.venividicode.bilfit.models.GymMember;
 import com.venividicode.bilfit.models.Reservation;
 import com.venividicode.bilfit.models.ReservationStatus;
+import com.venividicode.bilfit.models.SportCenter;
 import com.venividicode.bilfit.services.ReservationService;
 import com.venividicode.bilfit.services.UserAccountManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,11 @@ public class ReservationController
         if(gymMembers == null)
             return null;
         return  reservationService.getByReserver(userID);
+    }
+
+    @GetMapping("/sportCenter")
+    public List<SportCenter> getAllSportCenter()
+    {
+        return reservationService.getAllSportCenters();
     }
 }

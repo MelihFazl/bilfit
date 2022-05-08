@@ -150,4 +150,9 @@ public class ReservationServiceImplementation implements ReservationService{
         }
         return result;
     }
+
+    @Override
+    public List<SportCenter> getAllSportCenters() {
+        return sportCenterRepository.findAll();
+    }
 }
