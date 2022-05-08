@@ -78,9 +78,10 @@ function Input(props) {
 function Reservation() {
   //variables
   
-  const [userType, setUserType] = useState(); // if its type is 0  => regular user 1=> staff
+  const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
   const pages = [5, 10, 15];
   const [reservations, setReservations] = useState([]);
+  const [memberResults, setMemberResults] = useState([]);
   const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users
   const [showInfo2, setInfo2] = useState(() => userType ? 1 : 0); //visibility setting for staff
   const [page, setPage] = useState(0);
@@ -104,35 +105,24 @@ function Reservation() {
     { id: 'resButton1', label: '', disableSorting: true },
     { id: 'resButton2', label: '', disableSorting: true }
   ]
-
-
   useEffect(() => {
-  if(localStorage.getItem("usertype") === "member")
-    setUserType(0)
-  else if(localStorage.getItem("usertype") === "staff")
-    setUserType(1)
-  
-  if(userType === 1)
-  {
-    fetch('http://localhost:8080/reservation/')
-    .then((res) => res.json())
-    .then((result) => {
-      console.log(result)
-      setReservations(result);
-    });
-  } 
-  else if (userType === 0)
-  {
-    fetch('http://localhost:8080/reservation/getByUserID/' + localStorage.getItem("userid"))
-    .then((res) => res.json())
-    .then((result) => {
-      console.log(result)
-      setReservations(result);
-    });
-  }
-  setInfo1(userType ? 0 : 1)
-  setInfo2(userType ? 1 : 0)
-}, [userType, showInfo1, showInfo2]);
+    if(userType === 1)
+    {
+      fetch('http://localhost:8080/reservation/')
+      .then((res) => res.json())
+      .then((result) => {
+        setReservations(result);
+      });
+    } 
+    else if(userType === 0)
+    {
+      fetch('http://localhost:8080/reservation/getByUserID/' + localStorage.getItem("userid"))
+      .then((res) => res.json())
+      .then((result) => {
+        setReservations(result);
+      });
+    } 
+}, []);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -233,6 +223,8 @@ function Reservation() {
 
   return (
     <>
+    <Button className='sabılader' onClick={()=>{console.log(reservations)}}/>
+
       <Stack className='mainStackUser' direction="column"
         spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header' >My Reservations</h1> </div>
@@ -267,6 +259,7 @@ function Reservation() {
                 </FormControl>
               </Box>
               </Stack>
+              
               <TableContainer component={Paper} >
                 <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table" >
                   <TableHead>
@@ -384,19 +377,19 @@ function Reservation() {
                         {reservation.reservationActivity.activity}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'  >
-                        {reservation.campus}
-                      </StyledTableCell>
-                      <StyledTableCell className='cellItem'>
                         {reservation.reservationPlace.name}
                       </StyledTableCell>
-                      <StyledTableCell className='cellItem' >
-                        {reservation.reserverName}
+                      <StyledTableCell className='cellItem'>
+                        {reservation.reservationField.name}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
-                        {reservation.reserverPhone}
+                        {reservation.reserver.name}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
-                        {reservation.reserverID}
+                        {reservation.reserver.phoneNumber}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        {reservation.reserver.id}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
                         {reservation.status}
@@ -432,7 +425,6 @@ function Reservation() {
                       </StyledTableCell>
                     </StyledTableRow>
                   ))
-                  console.log("yarah")
                   }
                 </TableBody>
               </Table>

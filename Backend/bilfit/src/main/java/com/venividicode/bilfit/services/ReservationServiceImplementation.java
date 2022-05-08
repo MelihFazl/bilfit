@@ -106,6 +106,7 @@ public class ReservationServiceImplementation implements ReservationService{
         reservation.setReservationPlace(reservationPlace);
         reservation.setReservationActivity(reservationActivity);
         reservation.setReserver(reserver);
+        gymMemberRepository.save(reserver);
         reservationRepository.save(reservation);
         return "Your reservation for activity " + reservationActivity.getActivity() + " in field " + reservationField.getName()
                 + " on " + reservationDate + " on time slot " + matchedTimeSlot.getTimeSlot() + " was successfully made.";
@@ -142,9 +143,9 @@ public class ReservationServiceImplementation implements ReservationService{
     public List<Reservation> getByReserver(long reserverID) {
         List<Reservation> checklist = getAllReservations();
         List<Reservation> result = new ArrayList<>();
-        for (int i = 0; i < checklist.size(); i++)
+        for (int i = 0; checklist.size() > i; i++)
         {
-            if(checklist.get(i).getID() == reserverID)
+            if(checklist.get(i).getReserver().getID() == reserverID)
                 result.add(checklist.get(i));
         }
         return result;
