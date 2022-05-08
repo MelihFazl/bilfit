@@ -15,4 +15,6 @@ public interface ReservationService {
     public List<Reservation> getByReservationField(Field reservationField);
     public List<Reservation> getByReservationPlace(SportCenter reservationPlace);
     public List<Reservation> getByReservationActivity(SportActivity reservationActivity);
+    public List<Reservation> getByReserver(long reserverID);
+    public List<SportCenter> getAllSportCenters();
 }

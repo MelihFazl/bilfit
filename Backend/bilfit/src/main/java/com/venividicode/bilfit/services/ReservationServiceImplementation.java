@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -104,10 +105,9 @@ public class ReservationServiceImplementation implements ReservationService{
         reservation.setReservationField(reservationField);
         reservation.setReservationPlace(reservationPlace);
         reservation.setReservationActivity(reservationActivity);
-        reservation.setReserverID(reserver.getID());
-        reservationRepository.save(reservation);
-        reserver.getReservations().add(reservation);
+        reservation.setReserver(reserver);
         gymMemberRepository.save(reserver);
+        reservationRepository.save(reservation);
         return "Your reservation for activity " + reservationActivity.getActivity() + " in field " + reservationField.getName()
                 + " on " + reservationDate + " on time slot " + matchedTimeSlot.getTimeSlot() + " was successfully made.";
     }
@@ -137,5 +137,22 @@ public class ReservationServiceImplementation implements ReservationService{
     @Override
     public List<Reservation> getByReservationActivity(SportActivity reservationActivity) {
         return reservationRepository.findByReservationActivity(reservationActivity);
+    }
+
+    @Override
+    public List<Reservation> getByReserver(long reserverID) {
+        List<Reservation> checklist = getAllReservations();
+        List<Reservation> result = new ArrayList<>();
+        for (int i = 0; checklist.size() > i; i++)
+        {
+            if(checklist.get(i).getReserver().getID() == reserverID)
+                result.add(checklist.get(i));
+        }
+        return result;
+    }
+
+    @Override
+    public List<SportCenter> getAllSportCenters() {
+        return sportCenterRepository.findAll();
     }
 }

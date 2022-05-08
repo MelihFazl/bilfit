@@ -26,8 +26,8 @@ public class GymMember extends User {
 	private String gender;
 	private LocalDateTime birthday;
 	// all the reservations made by the gym member
-	@OneToMany
-	private List<Reservation> reservations;
+	//@OneToMany
+	//private List<Reservation> reservations;
 	// whether the user is restricted or not
 	private Boolean isRestricted;
 	// the gym program written for this user
