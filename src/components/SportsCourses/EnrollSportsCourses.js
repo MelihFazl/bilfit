@@ -102,7 +102,7 @@ const sportCenters = [
   },
 ];
 function EnrollSportsCourses() {
-  const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
+  const userType = (localStorage.getItem("usertype") == "staff") ? 0 : 1;
   const [courses, setCourses] = useState([]);
   //variables for unique button states 
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -113,8 +113,14 @@ function EnrollSportsCourses() {
 
 
   //Below are new course data when staff added
-  const [newCourseDate, setNewCourseDate] = useState('');
-  const [newCourseTime, setNewCourseTime] = useState('');
+  const [newCourseDay1, setNewCourseDay1] = useState('');
+  const [newCourseTime1, setNewCourseTime1] = useState('');
+  const [newCourseDay2, setNewCourseDay2] = useState('');
+  const [newCourseTime2, setNewCourseTime2] = useState('');
+  const [newCourseDay3, setNewCourseDay3] = useState('');
+  const [newCourseTime3, setNewCourseTime3] = useState('');
+  const [newCourseDay4, setNewCourseDay4] = useState('');
+  const [newCourseTime4, setNewCourseTime4] = useState('');
   const [newCourseActivity, setNewCourseActivity] = useState('');
   const [newCourseLocation, setNewCourseLocation] = useState('');
   const [newCourseSportCenter, setNewCourseSportCenter] = useState('');
@@ -123,21 +129,36 @@ function EnrollSportsCourses() {
   const [newCourseStartDate, setNewCourseStartDate] = useState('');
   const [newCourseFinishDate, setNewCourseFinishDate] = useState('');
   const [newCourseWeeklyCount, setNewCourseWeeklyCount] = useState(0);
+  const [weekProgram, setWeekProgram] = useState([]);
+  const [weekTimeProgram, setWeekTimeProgram] = useState([]);
 
+  const updatedCheckedState = [];
   /* */
+
+  /*const handleOnChange = (number, text) => {
+    if (number === 0) {
+      weekProgram.push(text);
+      //setWeekProgram(updatedCheckedState);
+      console.log(text);
+    }
+    if (number === 1) {
+      weekTimeProgram.push(text);
+    }
+  };
+
   const render = (count) => {
     const items = [];
     for (var i = 0; i < count; i++) {
       items.push(
         <>
-          <TextField className="newCourse" style={{ marginRight: '0.25rem', marginLeft: '0.25rem', marginTop: '0.25rem', marginBottom: '0.25rem' }} onChange={event => setNewCourseTime(event.target.value)}
+          <TextField className="newCourse" style={{ marginRight: '0.25rem', marginLeft: '0.25rem', marginTop: '0.25rem', marginBottom: '0.25rem' }} onChange={event => { setNewCourseDay(event.target.value); handleOnChange(0, event.target.value) }}
             autoFocus
-            id="Course Date"
+            id="Course Day"
             select
-            label="Course Date"
+            label="Course Day"
             required
             color='secondary'
-            helperText="Please select Course Date"
+            helperText="Please select Course Day"
             focused
           >
             {week.map((option) => (
@@ -146,7 +167,7 @@ function EnrollSportsCourses() {
               </MenuItem>
             ))}
           </TextField>
-          <TextField className="newCourse" onChange={event => setNewCourseFinishDate(event.target.value)/*bilmiyorum*/}
+          <TextField className="newCourse" onChange={event => { setNewCourseTime(event.target.value); handleOnChange(1, event.target.value) }}
             autoFocus
             id="newCourseTime"
             label="Course Time"
@@ -161,7 +182,7 @@ function EnrollSportsCourses() {
       )
     }
     return items;
-  }
+  }*/
 
   const deleteCourse = (courseID) => {
     fetch('http://localhost:8080/course/delete/' + courseID, { method: 'DELETE' })
@@ -189,16 +210,39 @@ function EnrollSportsCourses() {
       });
   }
 
+  const cancelNewResInfo = () => {
+    setNewCourseDay1('');
+    setNewCourseTime1('');
+    setNewCourseDay2('');
+    setNewCourseTime2('');
+    setNewCourseDay3('');
+    setNewCourseTime3('');
+    setNewCourseDay4('');
+    setNewCourseTime4('');
+    setNewCourseActivity('');
+    setNewCourseLocation('');
+    setNewCourseActivity('');
+    setNewCourseLastRegDate('');
+    setNewCourseTotalQuota('');
+    setNewCourseStartDate('');
+    setNewCourseFinishDate('');
+  }
+
   const addNewSportsCourse = () => {
-    console.log(newCourseActivity);
+    if(newCourseDay1 === '' || newCourseTime1 === '' || newCourseActivity === '' || newCourseLocation === '' || newCourseActivity === '' || newCourseLastRegDate === '' || newCourseTotalQuota === '' ||newCourseStartDate === '' || newCourseFinishDate === ''){
+      alert("You have empty required fields");
+    }
+    else{
+      setOpen3(false); cancelNewResInfo();
+    }
+    /*console.log(newCourseActivity);
     console.log(newCourseFinishDate);
-    console.log(newCourseDate);
     console.log(newCourseLastRegDate);
     console.log(newCourseStartDate);
     console.log(newCourseLocation);
     console.log(newCourseSportCenter);
     console.log(newCourseTotalQuota);
-    console.log(newCourseTime);
+    console.log(newCourseDay1);*/
   }
   const FontAwesomeSvgIcon = React.forwardRef((props, ref) => {
     const { icon } = props;
@@ -275,29 +319,116 @@ function EnrollSportsCourses() {
               variant="standard"
               focused
             />
-            <TextField className="newCourse" onChange={event => setNewCourseWeeklyCount(event.target.value)}
+            <TextField className="newCourse" style={{ marginRight: '0.25rem', marginLeft: '0.25rem', marginTop: '0.25rem', marginBottom: '0.25rem' }} onChange={event => { setNewCourseDay1(event.target.value) }}
               autoFocus
-              margin="dense"
-              id="newCourseWeeklyCount"
-              label="Course Program Weekly Count"
+              id="Course Day"
+              select
+              label="Course Day"
+              type="date"
               required
-
-              type="number"
               color='secondary'
-
-              fullWidth
+              helperText="Please select Course Day"
+              focused
+            >
+              {week.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField className="newCourse" onChange={event => { setNewCourseTime1(event.target.value) }}
+              autoFocus
+              id="newCourseTime"
+              label="Course Time"
+              type="time"
+              color='secondary'
+              required
               variant="standard"
               focused
             />
-            {render(newCourseWeeklyCount)}
+            <TextField className="newCourse" style={{ marginRight: '0.25rem', marginLeft: '0.25rem', marginTop: '0.25rem', marginBottom: '0.25rem' }} onChange={event => { setNewCourseDay2(event.target.value) }}
+              autoFocus
+              id="Course Day"
+              select
+              label="Course Day"
+              type="date"
+              color='secondary'
+              helperText="Please select Course Day"
+              focused
+            >
+              {week.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField className="newCourse" onChange={event => { setNewCourseTime2(event.target.value) }}
+              autoFocus
+              id="newCourseTime"
+              label="Course Time"
+              type="time"
+              color='secondary'
+              variant="standard"
+              focused
+            />
+            <TextField className="newCourse" style={{ marginRight: '0.25rem', marginLeft: '0.25rem', marginTop: '0.25rem', marginBottom: '0.25rem' }} onChange={event => { setNewCourseDay3(event.target.value) }}
+              autoFocus
+              id="Course Day"
+              select
+              label="Course Day"
+              type="date"
+              color='secondary'
+              helperText="Please select Course Day"
+              focused
+            >
+              {week.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField className="newCourse" onChange={event => { setNewCourseTime3(event.target.value) }}
+              autoFocus
+              id="newCourseTime"
+              label="Course Time"
+              type="time"
+              color='secondary'
 
+              variant="standard"
+              focused
+            />
+            <TextField className="newCourse" style={{ marginRight: '0.25rem', marginLeft: '0.25rem', marginTop: '0.25rem', marginBottom: '0.25rem' }} onChange={event => { setNewCourseDay4(event.target.value) }}
+              autoFocus
+              id="Course Day"
+              select
+              label="Course Day"
+              type="date"
+              color='secondary'
+              helperText="Please select Course Day"
+              focused
+            >
+              {week.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField className="newCourse" onChange={event => { setNewCourseTime4(event.target.value) }}
+              autoFocus
+              id="newCourseTime"
+              label="Course Time"
+              type="time"
+              color='secondary'
+              variant="standard"
+              focused
+            />
             <TextField className="newCourse" onChange={event => setNewCourseLastRegDate(event.target.value)} style={{ marginBottom: '0.5rem' }}
               autoFocus
               margin="dense"
               id="newCourseLastRegDate"
               color='secondary'
               label="Course Last Registration Date"
-              type="text"
+              type="date"
               required
 
               fullWidth
@@ -322,7 +453,7 @@ function EnrollSportsCourses() {
                 </MenuItem>
               ))}
             </TextField>
-            <TextField className="newCourse" onChange={event => setNewCourseLocation(event.target.value)} style={{ marginLeft: '0.5rem' }}
+            <TextField className="newCourse" onChange={event => setNewCourseLocation(event.target.value)}
               autoFocus
               margin="dense"
               id="newCourseLocation"
@@ -352,10 +483,10 @@ function EnrollSportsCourses() {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => {
-              setOpen3(false);
+              setOpen3(false); cancelNewResInfo();
             }} >Cancel </Button>
             <Button onClick={() => {
-              setOpen3(false); addNewSportsCourse();
+              addNewSportsCourse();
             }}>Add</Button>
           </DialogActions>
         </Dialog>
