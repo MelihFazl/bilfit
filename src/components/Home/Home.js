@@ -20,12 +20,41 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 import { useRef } from 'react'
 import { Paper, Button } from '@mui/material'
 import Carousel from 'react-material-ui-carousel'
+import { useEffect } from 'react';
+import { useState } from "react";
 
 
 
 function Home() {
+
+    const [announcements, setAnnouncements] = useState([]);
+
+
+    /**
+     * useEffect(() => {
+    if(userType === 1)
+    {
+      fetch('http://localhost:8080/reservation/')
+      .then((res) => res.json())
+      .then((result) => {
+        setReservations(result);
+      });
+    } 
+}, []);
+     */
+
     handleData()
     const firstItemRef = useRef(null);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/announcement/')
+        .then((res) => res.json())
+        .then((result) => {
+            setAnnouncements(result);
+            console.log(announcements);
+        });
+    }, []);
+
     //css styling
     const boxStyle1 = {
         float: 'left',
@@ -85,46 +114,21 @@ function Home() {
                         sports and fitness programs and an environment in which they can participate in variety of activities,
                         team and individual sports and games while getting in shape and staying active all year long.<br /><br /> With our new
                         website, we hope that you will have a better experience when you want to use the sports facilities of Bilkent University.
-                        <br /><br />
+                        
                         We wish you healthy days,<br /><br />Veni Vidi Code</p>
                 </Box>
                 <Box style={boxStyle2} ref={firstItemRef}>
                     <h2 style={headerStyle2}>Announcements</h2>
                     <List style={listStyle}>
+                        {announcements.slice(0).reverse().map((announcement, index) =>
+                        (
                         <ListItem>
                             <ListItemIcon><CampaignIcon /></ListItemIcon>
-                            <ListItemText primary="You can now register for the running marathon. You need to make it yes yes yes yes" secondary=" Final Date: Jan 9, 2014" />{/*The data information can be later coming from an input*/}
+                            <ListItemText primary={announcement.title} secondary={announcement.description} />{/*The data information can be later coming from an input*/}
                         </ListItem>
-                        <Divider />
-                        <ListItem>
-                            <ListItemIcon><CampaignIcon /></ListItemIcon>
-                            <ListItemText primary="Work" secondary="Jan 7, 2014" />
-                        </ListItem>
-                        <Divider />
-                        <ListItem>
-                            <ListItemIcon><CampaignIcon /></ListItemIcon>
-                            <ListItemText primary="Vacation" secondary="July 20, 2014" />
-                        </ListItem>
-                        <Divider />
-                        <ListItem>
-                            <ListItemIcon><CampaignIcon /></ListItemIcon>
-                            <ListItemText primary="Vacation" secondary="July 20, 2014" />
-                        </ListItem>
-                        <Divider />
-                        <ListItem>
-                            <ListItemIcon><CampaignIcon /></ListItemIcon>
-                            <ListItemText primary="Vacation" secondary="July 20, 2014" />
-                        </ListItem>
-                        <Divider />
-                        <ListItem>
-                            <ListItemIcon><CampaignIcon /></ListItemIcon>
-                            <ListItemText primary="Vacation" secondary="July 20, 2014" />
-                        </ListItem>
-                        <Divider />
-                        <ListItem>
-                            <ListItemIcon><CampaignIcon /></ListItemIcon>
-                            <ListItemText primary="Vacation" secondary="July 20, 2014" />
-                        </ListItem>
+                        ))
+                        }
+                        
                     </List>
                 </Box>
             </Stack>
