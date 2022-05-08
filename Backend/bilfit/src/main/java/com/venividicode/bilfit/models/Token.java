@@ -1,5 +1,4 @@
 package com.venividicode.bilfit.models;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,11 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-
+/**
+ * A model class representing the Token entity
+ * Token is used for authentication purposes
+ * @author Veni Vidi Code
+ */
 @Entity
 @Getter
 @Setter

@@ -26,7 +26,15 @@ import { faPenToSquare } from '@fortawesome/free-solid-svg-icons/faPenToSquare';
 import { Button } from '../Navbar/Button'
 import MenuItem from '@mui/material/MenuItem';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons/faTrashCan';
-
+import Input from '../Controls/Input.js';
+import { stableSort, getComparator } from '../SearchAndSortMethods/SearchAndSort.js';
+import { InputAdornment, TableFooter, TableSortLabel } from '@mui/material';
+import Toolbar from '@mui/material/Toolbar';
+import Search from '@mui/icons-material/Search';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import TablePagination from '@mui/material/TablePagination';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -70,6 +78,7 @@ function AdminPanel() {
     const [newUserMail, setNewUserMail] = useState('');
     const [newUserGender, setNewUserGender] = useState('');
     const [newUserBirthDate, setNewUserBirthDate] = useState('');
+    const[newUserPassword, setNewUserPassword] = useState('')
 
     //Below are for editing users
     const [editUserID, setEditUserID] = useState('');
@@ -78,6 +87,32 @@ function AdminPanel() {
     const [editUserGender, setEditUserGender] = useState('');
     const [editUserBirthDate, setEditUserBirthDate] = useState('');
 
+    const pages = [5, 10, 15];
+    const headCells1 = [
+        { id: 'schoolID', label: 'ID' },
+        { id: 'email', label: 'Mail' },
+        { id: 'name', label: 'Full Name' },
+        { id: 'phoneNumber', label: 'Phone Number' },
+        { id: 'birthdate', label: 'Birth Date' },
+        { id: 'gender', label: 'Gender' },
+        { id: 'weight', label: 'Weight' },
+        { id: 'height', label: 'Height' },
+        { id: 'resButton1', label: '', disableSorting: true }
+    ]
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
+    const [order, setOrder] = useState();
+    const [orderBy, setOrderBy] = useState();
+    const [filterFn, setFilterFn] = useState({ fn: items => { return items; } });
+    const [searchSelection, setSearchSelection] = useState();
+
+    useEffect(() => {
+        fetch('http://localhost:3000/users')
+            .then((res) => res.json())
+            .then((result) => {
+                setUsers(result);
+            });
+    }, []);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -101,14 +136,53 @@ function AdminPanel() {
         setEditUserBirthDate('');
     };
 
+    const handlePageChange = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleRowsPerPageChange = event => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const handleSearch = e => {
+        let target = e.target;
+        setFilterFn({
+            fn: items => {
+                if (target.value == "")
+                    return items;
+                else
+                    switch (searchSelection) {
+                        case "schoolID": return items.filter(x => x.schoolID.includes(target.value));
+                        case "email": return items.filter(x => x.email.includes(target.value));
+                        case "name": return items.filter(x => x.name.includes(target.value));
+                        case "phoneNumber": return items.filter(x => x.phoneNumber.includes(target.value));
+                        case "birthdate": return items.filter(x => x.birthdate.includes(target.value));
+                        case "gender": return items.filter(x => x.gender.includes(target.value));
+                        case "weight": return items.filter(x => x.weight.includes(target.value));
+                        case "height": return items.filter(x => x.height.includes(target.value));
+                        default: return items.filter(x => x.name.includes(target.value));
+                    }
+            }
+        })
+    };
+
+    const usersAfterSortingAndPaging = () => {
+        return stableSort(filterFn.fn(users), getComparator(order, orderBy)).slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+    }
+
+    const handleSortRequest = cellId => {
+        const isAscending = orderBy === cellId && order === "asc";
+        setOrder(isAscending ? "desc" : "asc");
+        setOrderBy(cellId);
+    }
+
+    const handleSearchSelection = (event) => {
+        setSearchSelection(event.target.value);
+    };
+
     //fetching data from restAPI
-    useEffect(() => {
-        fetch('http://localhost:3000/users')
-            .then((res) => res.json())
-            .then((result) => {
-                setUsers(result);
-            });
-    }, []);
+
 
     /* //This will take the values in  editUser.. consts and adding to database
     const submitEditingUser(index) =>{
@@ -194,6 +268,18 @@ function AdminPanel() {
 
                             focused
                         />
+                        <TextField className="newUser" onChange={event => setNewUserPassword(event.target.value)}
+                            autoFocus
+                            margin="dense"
+                            id="newUserPassword"
+                            label="User Password"
+                            type="password"
+                            required={true}
+                            fullWidth
+                            variant="standard"
+                            color='secondary'
+                            focused
+                        />
                         <TextField className="newUser" onChange={event => setNewUserBirthDate(event.target.value)}
                             autoFocus
                             margin="dense"
@@ -231,10 +317,10 @@ function AdminPanel() {
                         </TextField>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => { 
+                        <Button onClick={() => {
                             setOpen(false); cancelNewUser()
                         }}>Cancel </Button>
-                        <Button onClick={(newUserID != '' && newUserMail != '' && newUserGender!= '' && newUserBirthDate!= '' && newUserGender!= '') ? (event) =>setOpen(false) : (event) => alert("All fields must be filled") /*ADD SONRASI SIFIRLAMAK LAZIM*/ }>Add</Button>
+                        <Button onClick={(newUserID != '' && newUserMail != '' && newUserGender != '' && newUserBirthDate != '' && newUserGender != '') ? (event) => setOpen(false) : (event) => alert("All fields must be filled") /*ADD SONRASI SIFIRLAMAK LAZIM*/}>Add</Button>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -247,31 +333,57 @@ function AdminPanel() {
                     spacing={6}>
 
                     <div className="UserContainer">
+                        <Stack className='selectionStack' direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            spacing={6}>
+                            <Toolbar>
+                                <Input label="Search Reservations" InputProps={{
+                                    startAdornment: (<InputAdornment position='start'><Search /></InputAdornment>)
+                                }} onChange={handleSearch} />
+                            </Toolbar>
+                            <Box width='12rem'>
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label">Search By</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={searchSelection}
+                                        label="Search By"
+                                        onChange={handleSearchSelection}
+                                    >
+                                        {headCells1.map(headCell => (
+                                            !headCell.disableSorting && <MenuItem value={headCell.id}>{headCell.label}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </Stack>
                         <TableContainer component={Paper} >
                             <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
                                 <TableHead>
                                     <TableRow>
-                                        <StyledTableCell>User ID</StyledTableCell>
-                                        <StyledTableCell align='right'>User Mail</StyledTableCell>
-                                        <StyledTableCell align='right'>User Full Name</StyledTableCell>
-                                        <StyledTableCell align='right'>User Phone Number</StyledTableCell>
-                                        <StyledTableCell align='right'>User Birth Date</StyledTableCell>
-                                        <StyledTableCell align='right'>User Gender</StyledTableCell>
-                                        <StyledTableCell align='right'>User Weight</StyledTableCell>
-                                        <StyledTableCell align='right'>User Height</StyledTableCell>
-                                        <StyledTableCell align='right'></StyledTableCell>
+                                        {headCells1.map(headCell => (
+                                            <StyledTableCell key={headCell.id} >
+                                                {headCell.disableSorting ? headCell.label :
+                                                    <TableSortLabel onClick={() => { handleSortRequest(headCell.id) }}
+                                                        direction={(orderBy === headCell.id) ? order : 'asc'} active={orderBy == headCell.id}>
+                                                        {headCell.label}
+                                                    </TableSortLabel>}
+                                            </StyledTableCell>
+                                        ))}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody >
-                                    {users.map((user, index) => (
+                                    {usersAfterSortingAndPaging().map((user, index) => (
                                         <StyledTableRow key={user.id} component="th" scope="row"  >
+                                            <StyledTableCell className='cellItem'>
+                                                {user.schoolID}
+                                            </StyledTableCell>
                                             <StyledTableCell className='cellItem'>
                                                 {user.email}
                                             </StyledTableCell>
-                                            <StyledTableCell className='cellItem'>
-                                                {user.id} {newUserID}
-                                            </StyledTableCell>
-                                            <StyledTableCell className='cellItem' > {newUserName}
+                                            <StyledTableCell className='cellItem' >
                                                 {user.name}
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem' >
@@ -317,7 +429,6 @@ function AdminPanel() {
                                                                 id="UserID"
                                                                 label="User ID"
                                                                 color='secondary'
-
                                                                 placeholder={user.id}
                                                                 type="number"
                                                                 fullWidth
@@ -332,7 +443,6 @@ function AdminPanel() {
                                                                 label="User Full Name"
                                                                 placeholder={user.name}
                                                                 color='secondary'
-
                                                                 type="text"
                                                                 fullWidth
                                                                 variant="standard"
@@ -346,13 +456,12 @@ function AdminPanel() {
                                                                 label="User Mail"
                                                                 placeholder={user.email}
                                                                 color='secondary'
-
                                                                 type="mail"
                                                                 fullWidth
                                                                 variant="standard"
-
                                                                 focused
                                                             />
+
                                                             <TextField className="editUser" onChange={event => setEditUserBirthDate(event.target.value)}
                                                                 autoFocus
                                                                 margin="dense"
@@ -360,7 +469,6 @@ function AdminPanel() {
                                                                 label="User Birth Date"
                                                                 placeholder={user.birthdate}
                                                                 color='secondary'
-
                                                                 type="date"
                                                                 fullWidth
                                                                 variant="standard"
@@ -386,7 +494,7 @@ function AdminPanel() {
                                                             </TextField>
                                                         </DialogContent>
                                                         <DialogActions>
-                                                            <Button onClick={() => {setOpen2(false); cancelEditingUser()}}>Cancel</Button>
+                                                            <Button onClick={() => { setOpen2(false); cancelEditingUser() }}>Cancel</Button>
                                                             <Button onClick={() => { setOpen2(false); /*submitEditingUser(index)*/ }}>Submit</Button>
                                                         </DialogActions>
                                                     </Dialog>
@@ -407,6 +515,11 @@ function AdminPanel() {
                                     ))}
                                 </TableBody>
                             </Table>
+                            <TablePagination component='div' page={page} rowsPerPageOptions={pages} rowsPerPage={rowsPerPage}
+                                count={users.length} onPageChange={handlePageChange}
+                                onRowsPerPageChange={handleRowsPerPageChange}
+                                sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }}>
+                            </TablePagination>
                         </TableContainer>
                     </div>
                 </Stack>

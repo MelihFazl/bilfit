@@ -2,18 +2,13 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import TablePagination from '@mui/material/TablePagination';
 import './Reservation.css';
 import { styled } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -28,13 +23,19 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import SvgIcon from '@mui/material/SvgIcon';
-import { InputAdornment, TableFooter, TableSortLabel } from '@mui/material';
-import { Sort, UpdateSharp } from '@mui/icons-material';
+import { Sort } from '@mui/icons-material';
 import TextField from '@mui/material/TextField';
-import Search from '@mui/icons-material/Search';
 import { set } from 'date-fns';
 import { render } from 'react-dom';
-
+import Input from '../Controls/Input.js';
+import { stableSort, getComparator } from '../SearchAndSortMethods/SearchAndSort.js';
+import { InputAdornment, TableFooter, TableSortLabel } from '@mui/material';
+import Toolbar from '@mui/material/Toolbar';
+import Search from '@mui/icons-material/Search';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import TablePagination from '@mui/material/TablePagination';
 // Button positions will be fixed
 // Right side of the table will be fixed
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -59,26 +60,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function Input(props) {
-
-  const { name, label, value, error = null, onChange, ...other } = props;
-  return (
-    <TextField
-      variant="outlined"
-      label={label}
-      name={name}
-      value={value}
-      onChange={onChange}
-      {...other}
-      {...(error && { error: true, helperText: error })}
-    />
-  )
-}
-
 function Reservation() {
   //variables
   
-  const userType = (localStorage.getItem("usertype") === "staff") ? 1 : 0
+  const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
   const pages = [5, 10, 15];
   const [reservations, setReservations] = useState([]);
   const [memberResults, setMemberResults] = useState([]);
@@ -105,64 +90,24 @@ function Reservation() {
     { id: 'resButton1', label: '', disableSorting: true },
     { id: 'resButton2', label: '', disableSorting: true }
   ]
-
   useEffect(() => {
-   
-  if(userType === 1) //this could be hard. if you solve this, you may be a very famous programmer 
-  {  
-    fetch('http://localhost:8080/reservation').then((res) => res.json()).then((result) => {
-      
-      setReservations(result)
-    }); 
-  } 
-  else if (userType === 0)  //gym member reservation. this is easy.
-  {
-    fetch('http://localhost:8080/reservation/getByUserID/' + localStorage.getItem("userid"))
-    .then((res) => res.json())
-    .then((result) => {
-      setReservations(result);
-    });
-  }
- 
-}, []);
-
-useEffect(() => {
-   
-  if(userType === 1) //this could be hard. if you solve this, you may be a very famous programmer 
-  {  
-    updateMember();
-  } 
-  
- 
-}, [reservations]);
-
-/*useEffect(() => {
-   
-  if(userType === 1) //this could be hard. if you solve this, you may be a very famous programmer 
-  {  
-    console.log("girdi mi")
-    for(let i = 0; memberResults.length > i; i++)
+    if(userType === 1)
     {
-      console.log(i);
-      reservations[i] = {...reservations[i], phoneNumber: memberResults[i].phoneNumber, name: memberResults[i].name}
-      //result[index] = {...result[index], ...memberResult[0],id: result[index].id}
-    }
-  } 
-  
- 
-}, [memberResults]);*/
-
-
-  async function updateMember ()
-  {
-    for(let i = 0; reservations.length > i; i++)
-    {
-      await fetch("http://localhost:8080/user/" + reservations[i].reserverID).then((res) => res.json()).then((result) => {
-          memberResults.push(result[0])
+      fetch('http://localhost:8080/reservation/')
+      .then((res) => res.json())
+      .then((result) => {
+        setReservations(result);
       });
-    }
-    return memberResults;
-  }
+    } 
+    else if(userType === 0)
+    {
+      fetch('http://localhost:8080/reservation/getByUserID/' + localStorage.getItem("userid"))
+      .then((res) => res.json())
+      .then((result) => {
+        setReservations(result);
+      });
+    } 
+}, []);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -183,7 +128,7 @@ useEffect(() => {
           switch (searchSelection) {
             case "resDate": return items.filter(x => x.reservationDate.includes(target.value));
             case "resTime": return items.filter(x => x.reservedTimeInterval.includes(target.value));
-            case "resActivity": return items.filter(x => x.reservationActivity.name.includes(target.value));
+            case "resActivity": return items.filter(x => x.reservationActivity.activity.includes(target.value));
             case "resLocation": return items.filter(x => x.reservationField.name.includes(target.value));
             case "resSportsCenter": return items.filter(x => x.reservationPlace.name.includes(target.value));
             case "resStatus": return items.filter(x => x.status.includes(target.value));
@@ -191,32 +136,6 @@ useEffect(() => {
           }
       }
     })
-  }
-
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-  }
-
-  function getComparator(order, orderBy) {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-
-  function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
   }
 
   const reservationsAfterSortingAndPaging = () => {
@@ -264,7 +183,6 @@ useEffect(() => {
 
   return (
     <>
-    <Button className='sabirabi' onClick={()=>{console.log(reservations); console.log(memberResults);}}/>
       <Stack className='mainStackUser' direction="column"
         spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header' >My Reservations</h1> </div>
@@ -423,13 +341,13 @@ useEffect(() => {
                         {reservation.reservationField.name}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
-                        {memberResults && (memberResults.map((member) => member.id === reservation.reserverID ? (<>{member.name}</>) : (<></>)))}
-                       </StyledTableCell>
-                      <StyledTableCell className='cellItem' >
-                        {memberResults[0].name}
+                        {reservation.reserver.name}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
-                        {reservation.reserverID}
+                        {reservation.reserver.phoneNumber}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        {reservation.reserver.id}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
                         {reservation.status}

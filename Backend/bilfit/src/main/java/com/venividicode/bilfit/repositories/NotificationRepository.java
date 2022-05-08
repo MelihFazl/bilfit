@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * NotificationRepository to access the database and do
+ * operations related to Notification object
+ * @author Veni Vidi Code
+ */
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 

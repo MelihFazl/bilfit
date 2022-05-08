@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * AnnouncementRepository to access the database and do
+ * operations related to Announcement object
+ * @author Veni Vidi Code
+ */
 @Repository
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
 

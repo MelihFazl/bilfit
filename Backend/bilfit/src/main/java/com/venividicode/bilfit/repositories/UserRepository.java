@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * UserRepository to access the database and do
+ * operations related to User object
+ * @author Veni Vidi Code
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
