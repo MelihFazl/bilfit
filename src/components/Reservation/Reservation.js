@@ -2,18 +2,13 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import TablePagination from '@mui/material/TablePagination';
 import './Reservation.css';
 import { styled } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -28,13 +23,19 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import SvgIcon from '@mui/material/SvgIcon';
-import { InputAdornment, TableFooter, TableSortLabel } from '@mui/material';
 import { Sort } from '@mui/icons-material';
 import TextField from '@mui/material/TextField';
-import Search from '@mui/icons-material/Search';
 import { set } from 'date-fns';
 import { render } from 'react-dom';
-
+import Input from '../Controls/Input.js';
+import { stableSort, getComparator } from '../SearchAndSortMethods/SearchAndSort.js';
+import { InputAdornment, TableFooter, TableSortLabel } from '@mui/material';
+import Toolbar from '@mui/material/Toolbar';
+import Search from '@mui/icons-material/Search';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import TablePagination from '@mui/material/TablePagination';
 // Button positions will be fixed
 // Right side of the table will be fixed
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -58,22 +59,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
-function Input(props) {
-
-  const { name, label, value, error = null, onChange, ...other } = props;
-  return (
-    <TextField
-      variant="outlined"
-      label={label}
-      name={name}
-      value={value}
-      onChange={onChange}
-      {...other}
-      {...(error && { error: true, helperText: error })}
-    />
-  )
-}
 
 function Reservation() {
   //variables
@@ -151,32 +136,6 @@ function Reservation() {
           }
       }
     })
-  }
-
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-  }
-
-  function getComparator(order, orderBy) {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-
-  function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
   }
 
   const reservationsAfterSortingAndPaging = () => {
