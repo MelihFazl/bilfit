@@ -36,7 +36,7 @@ function App() {
                 <Route path="/my-tournaments" component={MyTournaments} />
                 <Route path="/tournament-requests" component={TournamentRequests} />
                 <Route path="/enroll-tournament" component={EnrollTournaments} />
-                <Route path="/courses" component={SportsCourses}/>
+                <Route path="/courses" component={EnrollSportsCourses}/>
                 <Route path="/my-profile" component={User} />
                 <Route path="/contact" component={Contact} />
                 <Route path="/admin-panel" component={AdminPanel} />

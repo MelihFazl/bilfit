@@ -49,17 +49,26 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 function SportsCourses() {
-    const userType = 0; // if its type is 0  => regular user 1=> staff
+    const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
     const [courses, setCourses] = useState([]);
     //variables for unique button states 
 
     useEffect(() => {
-        fetch('http://localhost:3000/courses')
-            .then((res) => res.json())
-            .then((result) => {
-                setCourses(result);
-            });
-    }, [])
+        if (userType == 1) {
+            fetch('http://localhost:8080/course')
+                .then((res) => res.json())
+                .then((result) => {
+                    setCourses(result);
+                });
+        }
+        else if (userType == 0) {
+            fetch('http://localhost:8080/course/participant/' + localStorage.getItem("userid"))
+                .then((res) => res.json())
+                .then((result) => {
+                    setCourses(result);
+                });
+        }
+    }, [courses]);
 
     const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users and staff
     const [open1, setOpen1] = React.useState(false); // these are for dialogs
@@ -68,8 +77,23 @@ function SportsCourses() {
     const [currentIndex, setCurrentIndex] = React.useState(0);
 
     const leaveCourse = (courseID) => {
-        alert(courseID.toString());
-        //With this function course is deleted from user
+        if (userType == 1) {
+            fetch('http://localhost:8080/course/delete/' + courseID, { method: 'DELETE' })
+                .then((result) => {
+                    result.text().then((resultStr) => {
+                        alert(resultStr);
+                    })
+                });
+        }
+        else if (userType == 0) {
+            fetch('http://localhost:8080/course/remove/' + courseID + '/participant/' + localStorage.getItem("userid"), { method: 'POST' })
+                .then((result) => {
+                    result.text().then((resultStr) => {
+                        alert(resultStr);
+                    })
+                });
+
+        }
     }
 
     return (
@@ -98,25 +122,26 @@ function SportsCourses() {
                                     {courses.map((course, index) => (
                                         <StyledTableRow key={courses.id} component="th" scope="row"  >
                                             <StyledTableCell className='cellItem'>
-                                                {course.activity}
+                                                {course.type}
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem' >
                                                 <Table size="small" aria-label="a dense table">
-                                                    <TableRow><StyledTableCell > {course.timeSlot1/*This will change the type of data*/}</StyledTableCell></TableRow>
-                                                    <TableRow><StyledTableCell> {course.timeSlot2/*This will change the type of data*/}</StyledTableCell></TableRow>
+                                                    {course.courseDays.map(day => (
+                                                        <TableRow><StyledTableCell >{day}</StyledTableCell></TableRow>
+                                                    ))}
                                                 </Table>
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem' >
                                                 <Table size="small" aria-label="a dense table">
-                                                    <TableRow><StyledTableCell > {course.startDate}</StyledTableCell></TableRow>
-                                                    <TableRow><StyledTableCell> {course.finishDate}</StyledTableCell></TableRow>
+                                                    <TableRow><StyledTableCell > {course.startingDate}</StyledTableCell></TableRow>
+                                                    <TableRow><StyledTableCell> {course.endingDate}</StyledTableCell></TableRow>
                                                 </Table>
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem'  >
-                                                {course.campus}
+                                                {course.location.name}
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem'>
-                                                {course.location}
+                                                {course.field}
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem' >
                                                 <Stack className='mainStack' direction="row"  // This stack is for enroll course button
@@ -192,33 +217,34 @@ function SportsCourses() {
                                     {courses.map((course, index) => (
                                         <StyledTableRow key={courses.id} component="th" scope="row"  >
                                             <StyledTableCell className='cellItem'>
-                                                {course.activity}
+                                                {course.type}
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem' >
                                                 <Table size="small" aria-label="a dense table">
-                                                    <TableRow><StyledTableCell > {course.timeSlot1/*This will change the type of data*/}</StyledTableCell></TableRow>
-                                                    <TableRow><StyledTableCell> {course.timeSlot2/*This will change the type of data*/}</StyledTableCell></TableRow>
+                                                    {course.courseDays.map(day => (
+                                                        <TableRow><StyledTableCell >{day}</StyledTableCell></TableRow>
+                                                    ))}
                                                 </Table>
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem' >
                                                 <Table size="small" aria-label="a dense table">
-                                                    <TableRow><StyledTableCell > {course.startDate}</StyledTableCell></TableRow>
-                                                    <TableRow><StyledTableCell> {course.finishDate}</StyledTableCell></TableRow>
+                                                    <TableRow><StyledTableCell > {course.startingDate}</StyledTableCell></TableRow>
+                                                    <TableRow><StyledTableCell> {course.endingDate}</StyledTableCell></TableRow>
                                                 </Table>
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem'  >
-                                                {course.campus}
+                                                {course.location.name}
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem'>
-                                                {course.location}
+                                                {course.field}
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem'>
-                                                {course.lastRegDate}
+                                                {course.lastRegistrationDate}
                                             </StyledTableCell>
                                             <StyledTableCell>
                                                 <Table size="small" aria-label="a dense table">
-                                                    {course.teammates.map(teammate => (
-                                                        <TableRow><StyledTableCell >{teammate.name}</StyledTableCell></TableRow>
+                                                    {course.participants.map(participant => (
+                                                        <TableRow><StyledTableCell >{participant.name}</StyledTableCell></TableRow>
 
                                                     ))}
                                                 </Table>
@@ -261,7 +287,7 @@ function SportsCourses() {
                                                             </Button>
                                                         </DialogActions>
                                                     </Dialog>
-        
+
                                                 </Stack>
                                             </StyledTableCell>
                                         </StyledTableRow>

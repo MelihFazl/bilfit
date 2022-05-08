@@ -89,23 +89,23 @@ const week = [
 
 const sportCenters = [
   {
-      value: 'Main',
-      label: 'Main Sport Center',
+    value: 'Main',
+    label: 'Main Sport Center',
   },
   {
-      value: 'Dorm',
-      label: 'Dormitory Sport Center',
+    value: 'Dorm',
+    label: 'Dormitory Sport Center',
   },
   {
-      value: 'East',
-      label: 'East Sport Center',
+    value: 'East',
+    label: 'East Sport Center',
   },
 ];
 function EnrollSportsCourses() {
-  const userType = 1; // if its type is 0  => regular user 1=> staff
+  const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
   const [courses, setCourses] = useState([]);
   //variables for unique button states 
-
+  const [currentIndex, setCurrentIndex] = React.useState(0);
   const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users and staff
   const [open1, setOpen1] = React.useState(false); // these are for dialogs
   const [open2, setOpen2] = React.useState(false);
@@ -119,18 +119,18 @@ function EnrollSportsCourses() {
   const [newCourseLocation, setNewCourseLocation] = useState('');
   const [newCourseSportCenter, setNewCourseSportCenter] = useState('');
   const [newCourseLastRegDate, setNewCourseLastRegDate] = useState('');
-  const [newCourseTotalNumber, setNewCourseTotalQuota] = useState('');
+  const [newCourseTotalQuota, setNewCourseTotalQuota] = useState('');
   const [newCourseStartDate, setNewCourseStartDate] = useState('');
   const [newCourseFinishDate, setNewCourseFinishDate] = useState('');
   const [newCourseWeeklyCount, setNewCourseWeeklyCount] = useState(0);
 
-/* */
+  /* */
   const render = (count) => {
     const items = [];
     for (var i = 0; i < count; i++) {
       items.push(
         <>
-          <TextField className="newCourse" style = {{marginRight: '0.25rem', marginLeft: '0.25rem',  marginTop: '0.25rem',  marginBottom: '0.25rem'}} onChange={event => setNewCourseTime(event.target.value)}
+          <TextField className="newCourse" style={{ marginRight: '0.25rem', marginLeft: '0.25rem', marginTop: '0.25rem', marginBottom: '0.25rem' }} onChange={event => setNewCourseTime(event.target.value)}
             autoFocus
             id="Course Date"
             select
@@ -163,26 +163,42 @@ function EnrollSportsCourses() {
     return items;
   }
 
+  const deleteCourse = (courseID) => {
+    fetch('http://localhost:8080/course/delete/' + courseID, { method: 'DELETE' })
+      .then((result) => {
+        result.text().then((resultStr) => {
+          alert(resultStr);
+        })
+      });
+  }
+
   useEffect(() => {
-    fetch('http://localhost:3000/reservations')
+    fetch('http://localhost:8080/course')
       .then((res) => res.json())
       .then((result) => {
         setCourses(result);
       });
-  }, []);
+  }, [courses]);
 
   const enrollNewCourse = (courseID) => {
-    // This function will take the chosen course id and sends to the database
+    fetch('http://localhost:8080/course/enroll/' + courseID + '/participant/' + localStorage.getItem("userid"), { method: 'POST' })
+      .then((result) => {
+        result.text().then((resultStr) => {
+          alert(resultStr);
+        })
+      });
   }
-
-  const deleteCourse = (courseID) => {
-    // This function will take the chosen course id and delete it from the database
-  }
-
 
   const addNewSportsCourse = () => {
-    // This function will add the new course to the database
-
+    console.log(newCourseActivity);
+    console.log(newCourseFinishDate);
+    console.log(newCourseDate);
+    console.log(newCourseLastRegDate);
+    console.log(newCourseStartDate);
+    console.log(newCourseLocation);
+    console.log(newCourseSportCenter);
+    console.log(newCourseTotalQuota);
+    console.log(newCourseTime);
   }
   const FontAwesomeSvgIcon = React.forwardRef((props, ref) => {
     const { icon } = props;
@@ -235,8 +251,8 @@ function EnrollSportsCourses() {
             <TextField className="newCourse" onChange={event => setNewCourseStartDate(event.target.value)}
               autoFocus
               margin="dense"
-              id={"newTournamentStartDate"}
-              label="Tournament Start Date"
+              id={"newCourseStartDate"}
+              label="Course Start Date"
               color='secondary'
               type="date"
               required
@@ -248,18 +264,18 @@ function EnrollSportsCourses() {
             <TextField className="newCourse" onChange={event => setNewCourseFinishDate(event.target.value)}
               autoFocus
               margin="dense"
-              id={"newTournamentFinishDate"}
+              id={"newCourseFinishDate"}
               required
 
               color='secondary'
 
-              label="Tournament Finish Date"
+              label="Course Finish Date"
               type="date"
               fullWidth
               variant="standard"
               focused
             />
-            <TextField className="newCourse" onChange={event => setNewCourseWeeklyCount(event.target.value)} 
+            <TextField className="newCourse" onChange={event => setNewCourseWeeklyCount(event.target.value)}
               autoFocus
               margin="dense"
               id="newCourseWeeklyCount"
@@ -275,7 +291,7 @@ function EnrollSportsCourses() {
             />
             {render(newCourseWeeklyCount)}
 
-            <TextField className="newCourse" onChange={event => setNewCourseLastRegDate(event.target.value)} style={{marginBottom: '0.5rem'}}
+            <TextField className="newCourse" onChange={event => setNewCourseLastRegDate(event.target.value)} style={{ marginBottom: '0.5rem' }}
               autoFocus
               margin="dense"
               id="newCourseLastRegDate"
@@ -289,24 +305,24 @@ function EnrollSportsCourses() {
               focused
             />
             <TextField className="newCourse" onChange={event => setNewCourseSportCenter(event.target.value)}
-            autoFocus
-            id="newCourseSportsCenter"
-            required
+              autoFocus
+              id="newCourseSportsCenter"
+              required
 
-            select
-            label="Course Sports Center"
-            color='secondary'
-            helperText="Please select Course Sports Center"
-            value={newCourseSportCenter}
-            focused
-          >
-            {sportCenters.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField className="newCourse" onChange={event => setNewCourseLocation(event.target.value)} style={{marginLeft: '0.5rem'}}
+              select
+              label="Course Sports Center"
+              color='secondary'
+              helperText="Please select Course Sports Center"
+              value={newCourseSportCenter}
+              focused
+            >
+              {sportCenters.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField className="newCourse" onChange={event => setNewCourseLocation(event.target.value)} style={{ marginLeft: '0.5rem' }}
               autoFocus
               margin="dense"
               id="newCourseLocation"
@@ -315,6 +331,20 @@ function EnrollSportsCourses() {
 
               label="Course Location"
               type="text"
+              fullWidth
+              variant="standard"
+              focused
+            />
+            <TextField className="newCourse" onChange={event => setNewCourseTotalQuota(event.target.value)}
+              autoFocus
+              margin="dense"
+              id="newCourseTotalQuota"
+              label="Course Total Quota"
+              required
+
+              type="number"
+              color='secondary'
+
               fullWidth
               variant="standard"
               focused
@@ -357,31 +387,32 @@ function EnrollSportsCourses() {
                   {courses.map((course, index) => (
                     <StyledTableRow key={courses.id} component="th" scope="row"  >
                       <StyledTableCell className='cellItem'>
-                        {course.activity}
+                        {course.type}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
                         <Table size="small" aria-label="a dense table">
-                          <TableRow><StyledTableCell > {course.timeSlot1/*This will change the type of data*/}</StyledTableCell></TableRow>
-                          <TableRow><StyledTableCell> {course.timeSlot2/*This will change the type of data*/}</StyledTableCell></TableRow>
+                          {course.courseDays.map(day => (
+                            <TableRow><StyledTableCell >{day}</StyledTableCell></TableRow>
+                          ))}
                         </Table>
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
                         <Table size="small" aria-label="a dense table">
-                          <TableRow><StyledTableCell > {course.startDate}</StyledTableCell></TableRow>
-                          <TableRow><StyledTableCell> {course.finishDate}</StyledTableCell></TableRow>
+                          <TableRow><StyledTableCell > {course.startingDate}</StyledTableCell></TableRow>
+                          <TableRow><StyledTableCell> {course.endingDate}</StyledTableCell></TableRow>
                         </Table>
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'  >
-                        {course.campus}
+                        {course.location.name}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'>
-                        {course.location}
+                        {course.field}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'>
-                        {course.status}
+                        {course.lastRegistrationDate}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem'>
-                        {course.totalNumber}
+                        {course.availableQuota}
                       </StyledTableCell>
                       <StyledTableCell className='cellItem' >
                         <Stack className='mainStack' direction="row"  // This stack is for enroll reservation button
@@ -397,7 +428,7 @@ function EnrollSportsCourses() {
                             }}
                           >
                             <IconButton aria-label="Example">
-                              <FontAwesomeIcon icon={faFilePen} onClick={() => setOpen1(true)} /* it will be modified according to array that comes from backend */ />
+                              <FontAwesomeIcon icon={faFilePen} onClick={() => { setOpen1(true); setCurrentIndex(course.id) }} /* it will be modified according to array that comes from backend */ />
                             </IconButton></Box>
 
                           <Box className='button2' style={{ display: showInfo1 ? "none" : "block" }}
@@ -408,7 +439,7 @@ function EnrollSportsCourses() {
                             }}
                           >
                             <IconButton aria-label="Example">
-                              <FontAwesomeIcon icon={faXmark} onClick={() => setOpen2(true)} /* it will be modified according to array that comes from backend */ />
+                              <FontAwesomeIcon icon={faXmark} onClick={() => { setOpen2(true); setCurrentIndex(course.id) }} /* it will be modified according to array that comes from backend */ />
                             </IconButton></Box>
                           <Dialog
                             open={open1}
@@ -426,7 +457,7 @@ function EnrollSportsCourses() {
                             </DialogContent>
                             <DialogActions>
                               <Button color='secondary' onClick={() => setOpen1(false)}>Cancel</Button>
-                              <Button color='secondary' onClick={() => { setOpen1(false); enrollNewCourse(course.id) }} autoFocus>
+                              <Button color='secondary' onClick={() => { setOpen1(false); enrollNewCourse(currentIndex) }} autoFocus>
                                 Enroll
                               </Button>
                             </DialogActions>
@@ -447,7 +478,7 @@ function EnrollSportsCourses() {
                             </DialogContent>
                             <DialogActions>
                               <Button color='secondary' onClick={() => setOpen2(false)}>Cancel</Button>
-                              <Button color='secondary' onClick={() => { setOpen2(false); deleteCourse(course.id) }} autoFocus>
+                              <Button color='secondary' onClick={() => { setOpen2(false); deleteCourse(currentIndex) }} autoFocus>
                                 Delete
                               </Button>
                             </DialogActions>
