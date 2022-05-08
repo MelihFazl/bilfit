@@ -71,7 +71,7 @@ const sportCenters = [
     },
 ];
 function EnrollTournaments() {
-    const userType = 1; // if its type is 0  => regular user  1=> staff
+    const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
     const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users and staff
     const [checkedState1, setCheckedState1] = useState(new Array().fill(false)); //array of unique buttons
     const [tournaments, setTournaments] = useState([]);
@@ -272,7 +272,7 @@ function EnrollTournaments() {
                 </Dialog>
             </div>
             <Stack className='mainStackUser' direction="column"
-                spacing={3} alignItems="center"    >
+                spacing={3} alignItems="center">
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'>Available Tournaments</h1> </div>
                 <Stack className='mainStack' direction="row"
                     justifyContent="center"

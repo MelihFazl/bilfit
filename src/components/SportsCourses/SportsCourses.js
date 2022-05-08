@@ -49,7 +49,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 function SportsCourses() {
-    const userType = 0; // if its type is 0  => regular user 1=> staff
+    const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
     const [courses, setCourses] = useState([]);
     //variables for unique button states 
 
@@ -168,7 +168,7 @@ function SportsCourses() {
             </Stack>
             <Stack className='mainStackUser' direction="column" style={{ display: showInfo1 ? "none" : "block" }}
                 spacing={3} alignItems="center"    >
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'> All Sports Courses Enrollments</h1> </div>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'> Enrolled Courses</h1> </div>
                 <Stack className='mainStack' direction="row"
                     justifyContent="center"
                     alignItems="center"

@@ -27,7 +27,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-
+import Input from '../Controls/Input.js';
+import { stableSort, getComparator } from '../SearchAndSortMethods/SearchAndSort.js';
+import { InputAdornment, TableFooter, TableSortLabel } from '@mui/material';
+import Toolbar from '@mui/material/Toolbar';
+import Search from '@mui/icons-material/Search';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import TablePagination from '@mui/material/TablePagination';
 
 
 
@@ -89,20 +97,20 @@ const week = [
 
 const sportCenters = [
   {
-      value: 'Main',
-      label: 'Main Sport Center',
+    value: 'Main',
+    label: 'Main Sport Center',
   },
   {
-      value: 'Dorm',
-      label: 'Dormitory Sport Center',
+    value: 'Dorm',
+    label: 'Dormitory Sport Center',
   },
   {
-      value: 'East',
-      label: 'East Sport Center',
+    value: 'East',
+    label: 'East Sport Center',
   },
 ];
 function EnrollSportsCourses() {
-  const userType = 1; // if its type is 0  => regular user 1=> staff
+  const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
   const [courses, setCourses] = useState([]);
   //variables for unique button states 
 
@@ -124,13 +132,33 @@ function EnrollSportsCourses() {
   const [newCourseFinishDate, setNewCourseFinishDate] = useState('');
   const [newCourseWeeklyCount, setNewCourseWeeklyCount] = useState(0);
 
-/* */
+  //these are added in order to sort and page the tables
+  const pages = [5, 10, 15];
+  const headCells1 = [
+    { id: 'weeklyCourse', label: 'Weekly Course Program' },
+    { id: 'startFinishDate', label: 'Start - Finish Date' },
+    { id: 'sportsCenter', label: 'Sports Center' },
+    { id: 'phoneNumber', label: 'Phone Number' },
+    { id: 'Location', label: 'Location' },
+    { id: 'lastReg', label: 'Last Registration' },
+    { id: 'availableQuota', label: 'Available Quota' },
+    { id: 'resButton1', label: '', disableSorting: true }
+  ]
+  
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
+  const [order, setOrder] = useState();
+  const [orderBy, setOrderBy] = useState();
+  const [filterFn, setFilterFn] = useState({ fn: items => { return items; } });
+  const [searchSelection, setSearchSelection] = useState();
+
+  /* */
   const render = (count) => {
     const items = [];
     for (var i = 0; i < count; i++) {
       items.push(
         <>
-          <TextField className="newCourse" style = {{marginRight: '0.25rem', marginLeft: '0.25rem',  marginTop: '0.25rem',  marginBottom: '0.25rem'}} onChange={event => setNewCourseTime(event.target.value)}
+          <TextField className="newCourse" style={{ marginRight: '0.25rem', marginLeft: '0.25rem', marginTop: '0.25rem', marginBottom: '0.25rem' }} onChange={event => setNewCourseTime(event.target.value)}
             autoFocus
             id="Course Date"
             select
@@ -184,6 +212,53 @@ function EnrollSportsCourses() {
     // This function will add the new course to the database
 
   }
+
+  //Below code handles sorting and paging
+   const handlePageChange = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleRowsPerPageChange = event => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const handleSearch = e => {
+        let target = e.target;
+        setFilterFn({
+            fn: items => {
+                if (target.value == "")
+                    return items;
+                else
+                    switch (searchSelection) {
+                        case "schoolID": return items.filter(x => x.schoolID.includes(target.value));
+                        case "email": return items.filter(x => x.email.includes(target.value));
+                        case "name": return items.filter(x => x.name.includes(target.value));
+                        case "phoneNumber": return items.filter(x => x.phoneNumber.includes(target.value));
+                        case "birthdate": return items.filter(x => x.birthdate.includes(target.value));
+                        case "gender": return items.filter(x => x.gender.includes(target.value));
+                        case "weight": return items.filter(x => x.weight.includes(target.value));
+                        case "height": return items.filter(x => x.height.includes(target.value));
+                        default: return items.filter(x => x.name.includes(target.value));
+                    }
+            }
+        })
+    };
+
+    const usersAfterSortingAndPaging = () => {
+        return stableSort(filterFn.fn(users), getComparator(order, orderBy)).slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+    }
+
+    const handleSortRequest = cellId => {
+        const isAscending = orderBy === cellId && order === "asc";
+        setOrder(isAscending ? "desc" : "asc");
+        setOrderBy(cellId);
+    }
+
+    const handleSearchSelection = (event) => {
+        setSearchSelection(event.target.value);
+    };
+
   const FontAwesomeSvgIcon = React.forwardRef((props, ref) => {
     const { icon } = props;
 
@@ -259,7 +334,7 @@ function EnrollSportsCourses() {
               variant="standard"
               focused
             />
-            <TextField className="newCourse" onChange={event => setNewCourseWeeklyCount(event.target.value)} 
+            <TextField className="newCourse" onChange={event => setNewCourseWeeklyCount(event.target.value)}
               autoFocus
               margin="dense"
               id="newCourseWeeklyCount"
@@ -275,7 +350,7 @@ function EnrollSportsCourses() {
             />
             {render(newCourseWeeklyCount)}
 
-            <TextField className="newCourse" onChange={event => setNewCourseLastRegDate(event.target.value)} style={{marginBottom: '0.5rem'}}
+            <TextField className="newCourse" onChange={event => setNewCourseLastRegDate(event.target.value)} style={{ marginBottom: '0.5rem' }}
               autoFocus
               margin="dense"
               id="newCourseLastRegDate"
@@ -289,24 +364,24 @@ function EnrollSportsCourses() {
               focused
             />
             <TextField className="newCourse" onChange={event => setNewCourseSportCenter(event.target.value)}
-            autoFocus
-            id="newCourseSportsCenter"
-            required
+              autoFocus
+              id="newCourseSportsCenter"
+              required
 
-            select
-            label="Course Sports Center"
-            color='secondary'
-            helperText="Please select Course Sports Center"
-            value={newCourseSportCenter}
-            focused
-          >
-            {sportCenters.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField className="newCourse" onChange={event => setNewCourseLocation(event.target.value)} style={{marginLeft: '0.5rem'}}
+              select
+              label="Course Sports Center"
+              color='secondary'
+              helperText="Please select Course Sports Center"
+              value={newCourseSportCenter}
+              focused
+            >
+              {sportCenters.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField className="newCourse" onChange={event => setNewCourseLocation(event.target.value)} style={{ marginLeft: '0.5rem' }}
               autoFocus
               margin="dense"
               id="newCourseLocation"
@@ -333,7 +408,7 @@ function EnrollSportsCourses() {
 
       <Stack className='mainStackUser' direction="column"
         spacing={3} alignItems="center"    >
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'> Available Sports Courses</h1> </div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'> Available Courses</h1> </div>
         <Stack className='mainStack' direction="row"
           justifyContent="center"
           alignItems="center"
@@ -458,6 +533,11 @@ function EnrollSportsCourses() {
                   ))}
                 </TableBody>
               </Table>
+              <TablePagination component='div' page={page} rowsPerPageOptions={pages} rowsPerPage={rowsPerPage}
+                                count={users.length} onPageChange={handlePageChange}
+                                onRowsPerPageChange={handleRowsPerPageChange}
+                                sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }}>
+                            </TablePagination>
             </TableContainer>
           </div>
         </Stack>

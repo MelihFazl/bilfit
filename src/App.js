@@ -8,38 +8,80 @@ import User from './components/User/User';
 import Home from './components/Home/Home';
 import MyReservations from './components/Reservation/Reservation';
 import MakeReservation from './components/Reservation/MakeReservation';
-import Tournaments from './components/Tournaments/Tournaments';
 import EnrollTournaments from './components/Tournaments/EnrollTournaments';
-import MyTournaments from './components/Tournaments/Tournaments';
+import Tournaments from './components/Tournaments/Tournaments';
 import Login from './components/Login/Login';
 import Contact from './components/Contact/Contact';
-import TournamentRequests from './components/Tournaments/TournamentRequests'; 
+import TournamentRequests from './components/Tournaments/TournamentRequests';
 import AdminPanel from './components/AdminPanel/AdminPanel';
+import AdminPanel2 from './components/AdminPanel/AdminPanel2';
+
 import EnrollSportsCourses from './components/SportsCourses/EnrollSportsCourses';
 import SportsCourses from './components/SportsCourses/SportsCourses';
 import "./App.css";
+import { useState } from "react";
 
 function App() {
+  const [userType, setUserType] = useState(localStorage.getItem("usertype"));
+  /*function userPages() {
+    setUserType(localStorage.getItem("usertype"));
+    if (userType === "staff") {
+      return (
+        <>
+          <Navbar />
+          <Route exact path="/home" component={Home} />
+          <Route path="/my-reservations" component={MyReservations} />
+          <Route path="/my-profile" component={User} />
+          <Route path="/total-reservations" component={MyReservations} />
+          <Route path="/enrolled-tournaments" component={Tournaments} />
+          <Route path="/available-tournaments" component={EnrollTournaments} />
+          <Route path="/enrolled-courses" component={SportsCourses} />
+          <Route path="/available-courses" component={EnrollSportsCourses} />
+        </>
+      )
+    }
+    else if (userType === "member") {
+      <>
+        <Navbar />
+        <Route exact path="/home" component={Home} />
+        <Route path="/make-reservation" component={MakeReservation} />
+        <Route path="/my-reservations" component={MyReservations} />
+        <Route path="/my-tournaments" component={Tournaments} />
+        <Route path="/tournament-requests" component={TournamentRequests} />
+        <Route path="/enroll-tournament" component={EnrollTournaments} />
+        <Route path="/my-profile" component={User} />
+        <Route path="/contact" component={Contact} />
+        <Route path="/available-tournaments" component={EnrollTournaments} />
+        <Route path="/enroll-course" component={EnrollSportsCourses} />
+        <Route path="/my-courses" component={SportsCourses} />
+        <Route path="/available-courses" component={EnrollSportsCourses} />
+      </>
+    }
+  }*/
   return (
     <div className="bg_image">
       <BrowserRouter>
         <>
-        
           <Switch>
-              <Route exact path="/" component={Login} />
+            <Route exact path="/" component={Login} />
             <>
-              <Navbar/>
-              
-                <Route exact path="/home" component={Home} />
-                <Route path="/make-reservation" component={MakeReservation} />
-                <Route path="/my-reservations" component={MyReservations} />
-                <Route path="/my-tournaments" component={MyTournaments} />
-                <Route path="/tournament-requests" component={TournamentRequests} />
-                <Route path="/enroll-tournament" component={EnrollTournaments} />
-                <Route path="/courses" component={SportsCourses}/>
-                <Route path="/my-profile" component={User} />
-                <Route path="/contact" component={Contact} />
-                <Route path="/admin-panel" component={AdminPanel} />
+              <Navbar />
+              <Route exact path="/home" component={Home} />
+              <Route path="/make-reservation" component={MakeReservation} />
+              <Route path="/my-reservations" component={MyReservations} />
+              <Route path="/my-tournaments" component={Tournaments} />
+              <Route path="/tournament-requests" component={TournamentRequests} />
+              <Route path="/enroll-tournament" component={EnrollTournaments} />
+              <Route path="/my-profile" component={User} />
+              <Route path="/contact" component={Contact} />
+              <Route path="/admin-panel" component={AdminPanel2} />
+              <Route path="/total-reservations" component={MyReservations} />
+              <Route path="/enrolled-tournaments" component={Tournaments} />
+              <Route path="/available-tournaments" component={EnrollTournaments} />
+              <Route path="/enroll-course" component={EnrollSportsCourses} />
+              <Route path="/enrolled-courses" component={SportsCourses} />
+              <Route path="/my-courses" component={SportsCourses} />
+              <Route path="/available-courses" component={EnrollSportsCourses} />
             </>
           </Switch>
         </>

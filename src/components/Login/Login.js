@@ -19,7 +19,7 @@ function Copyright(props) {
   
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+      {'Copyright Â© '}
       <Link color="inherit" href="">
         Bilfit
       </Link>{' '}
@@ -155,4 +155,3 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
-
