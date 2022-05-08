@@ -89,20 +89,20 @@ const week = [
 
 const sportCenters = [
   {
-    value: 'Main',
+    value: '1',
     label: 'Main Sport Center',
   },
   {
-    value: 'Dorm',
+    value: '2',
     label: 'Dormitory Sport Center',
   },
   {
-    value: 'East',
+    value: '3',
     label: 'East Sport Center',
   },
 ];
 function EnrollSportsCourses() {
-  const userType = (localStorage.getItem("usertype") == "staff") ? 0 : 1;
+  const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
   const [courses, setCourses] = useState([]);
   //variables for unique button states 
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -229,10 +229,43 @@ function EnrollSportsCourses() {
   }
 
   const addNewSportsCourse = () => {
-    if(newCourseDay1 === '' || newCourseTime1 === '' || newCourseActivity === '' || newCourseLocation === '' || newCourseActivity === '' || newCourseLastRegDate === '' || newCourseTotalQuota === '' ||newCourseStartDate === '' || newCourseFinishDate === ''){
+    if (newCourseDay1 === '' || newCourseTime1 === '' || newCourseActivity === '' || newCourseLocation === '' || newCourseActivity === '' || newCourseLastRegDate === '' || newCourseTotalQuota === '' || newCourseStartDate === '' || newCourseFinishDate === '') {
       alert("You have empty required fields");
     }
-    else{
+    else {
+      let request = "http://localhost:8080/course/add?";
+      if (newCourseDay1 !== '' && newCourseTime1 !== '')
+        request = request + "courseDays=" + newCourseDay1 + " " + newCourseTime1 + "&";
+      if (newCourseDay2 !== '' && newCourseTime2 !== '')
+        request = request + "courseDays=" +  newCourseDay2 + " " + newCourseTime2 + "&";
+      if (newCourseDay3 !== '' && newCourseTime3 !== '')
+        request = request + "courseDays=" +  newCourseDay3 + " " + newCourseTime3 + "&";
+      if (newCourseDay4 !== '' && newCourseTime4 !== '')
+        request = request + "courseDays=" +  newCourseDay4 + " " + newCourseTime4 + "&";
+
+      console.log(request + "sportCenterID=" + newCourseSportCenter);
+      fetch(request + "sportCenterID=" + newCourseSportCenter, {
+        method: "POST",
+        Accept: "/",
+        "Accept-Encoding": "gzip, deflate, br",
+        Connection: "keep-alive",
+        headers: {
+          Accept: "application/json",
+          'Content-Type': "application/json"
+        },
+        body: JSON.stringify({
+          type: newCourseActivity,
+          startingDate: newCourseStartDate, 
+          endingDate: newCourseFinishDate,
+          field: newCourseLocation,
+          maxQuota: newCourseTotalQuota,
+          lastRegistrationDate: newCourseLastRegDate
+        })
+      }).then((result) => {
+        result.text().then((actualResult) => {
+          alert(actualResult)
+        })
+      })
       setOpen3(false); cancelNewResInfo();
     }
     /*console.log(newCourseActivity);
