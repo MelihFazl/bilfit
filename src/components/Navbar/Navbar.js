@@ -202,7 +202,7 @@ function Navbar() {
                                 {dropdown2 && <Dropdown ChooseMenu={"tournamentDropdown"} />}
                             </li>
                             <li className="nav-item" onMouseEnter={onMouseEnter3} onMouseLeave={onMouseLeave3}>
-                                <Link to="/courses" className="nav-links" onClick={closeMobileMenu}>
+                                <Link  className="nav-links" onClick={closeMobileMenu}>
                                     Courses <FontAwesomeIcon icon={faCaretDown} width='30px' />
                                 </Link>
                                 {dropdown3 && <Dropdown ChooseMenu={"courseDropdown"} />}

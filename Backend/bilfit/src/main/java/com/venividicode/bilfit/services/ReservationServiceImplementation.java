@@ -140,6 +140,39 @@ public class ReservationServiceImplementation implements ReservationService{
     }
 
     @Override
+    public Reservation deleteReservationByID(long reservationID)
+    {
+        List<Reservation> checkList = reservationRepository.findById(reservationID);
+        if(checkList == null)
+            return null;
+        Reservation reservation = checkList.get(0);
+        Field matchedField = reservation.getReservationField();
+        TimeSlot matchedTimeSlot = null;
+        int indexTimeSlot = 0;
+        List<TimeSlotOnDay> timeSlotOnDays = matchedField.getOccupiableTimeSlotsOnDay();
+        for(int i = 0; timeSlotOnDays.size() > i; i++ )
+        {
+            if(timeSlotOnDays.get(i).getDate().toString().equals(reservation.getReservationDate().toString()))
+            {
+                for(int j = 0; timeSlotOnDays.get(i).getTimeSlotList().size() > j; j++)
+                {
+                    if(timeSlotOnDays.get(i).getTimeSlotList().get(j).getTimeSlot().equals(reservation.getReservedTimeInterval()))
+                    {
+                        indexTimeSlot = i;
+                        matchedTimeSlot = timeSlotOnDays.get(i).getTimeSlotList().get(j);
+                        break;
+                    }
+                }
+            }
+        }
+        matchedTimeSlot.setCurrentCount(matchedTimeSlot.getCurrentCount() - 1);
+        timeSlotRepository.save(matchedTimeSlot);
+        timeSlotOnDayRepository.save(timeSlotOnDays.get(indexTimeSlot));
+        reservationRepository.deleteById(reservation.getID());
+        return reservation;
+    }
+
+    @Override
     public List<Reservation> getByReserver(long reserverID) {
         List<Reservation> checklist = getAllReservations();
         List<Reservation> result = new ArrayList<>();
