@@ -5,7 +5,7 @@ package com.venividicode.bilfit.models;
  * @author Veni Vidi Code
  */
 public enum ReservationStatus {
-	Upcoming,
+	Not_Attended,
 	Attended,
-	NotAttended
+	Cancelled
 }

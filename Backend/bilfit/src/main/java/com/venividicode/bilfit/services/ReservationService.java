@@ -18,4 +18,5 @@ public interface ReservationService {
     public Reservation deleteReservationByID(long reservationID);
     public List<Reservation> getByReserver(long reserverID);
     public List<SportCenter> getAllSportCenters();
+    public String cancel(Reservation reservation);
 }

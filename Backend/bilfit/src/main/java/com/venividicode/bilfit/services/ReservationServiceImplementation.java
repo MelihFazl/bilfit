@@ -188,4 +188,40 @@ public class ReservationServiceImplementation implements ReservationService{
     public List<SportCenter> getAllSportCenters() {
         return sportCenterRepository.findAll();
     }
+
+    @Override
+    public String cancel(Reservation reservation) {
+
+        reservation.setStatus(ReservationStatus.Cancelled);
+        LocalDate resDate = reservation.getReservationDate();
+        Field resField = reservation.getReservationField();
+
+        TimeSlotOnDay matchedTimeSlotOnDay = null;
+        TimeSlot matchedTimeSlot = null;
+        int index = 0;
+        int index2 = 0;
+        for (int i = 0; resField.getOccupiableTimeSlotsOnDay().size() > i; i++) {
+            if (resField.getOccupiableTimeSlotsOnDay().get(i).getDate().toString().equals(resDate.toString())) {
+                index = i;
+                matchedTimeSlotOnDay = resField.getOccupiableTimeSlotsOnDay().get(i);
+                List<TimeSlot> timeSlots = resField.getOccupiableTimeSlotsOnDay().get(i).getTimeSlotList();
+                for (int j = 0; timeSlots.size() > j; j++) {
+                    if (timeSlots.get(j).getTimeSlot().equals(reservation.getReservedTimeInterval())) {
+                        index = j;
+                        matchedTimeSlot = timeSlots.get(j);
+                        System.out.println("NULL GELİRSE PİÇİM");
+                        timeSlots.get(j).setCurrentCount(timeSlots.get(j).getCurrentCount() - 1);
+                    }
+                }
+            }
+        }
+        timeSlotRepository.save(matchedTimeSlot);
+        timeSlotOnDayRepository.save(matchedTimeSlotOnDay);
+        fieldRepository.save(resField);
+        sportActivityRepository.save(reservation.getReservationActivity());
+        sportCenterRepository.save(reservation.getReservationPlace());
+        return "The reservation on " + reservation.getReservationDate() + " between " + reservation.getReservedTimeInterval()
+                + " has been successfully cancelled.";
+
+    }
 }
