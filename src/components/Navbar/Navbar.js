@@ -156,6 +156,11 @@ function Navbar() {
                                 {dropdown3 && <Dropdown ChooseMenu={"staffCoursesDropdown"} />}
                             </li>
                             <li className="nav-item">
+                                <Link to="/all-members" className="nav-links" onClick={closeMobileMenu} >
+                                    All Members
+                                </Link>
+                            </li>
+                            <li className="nav-item">
                                 <Link to={{ pathname: "/my-profile/" + userId }} className="nav-links" onClick={closeMobileMenu}>
                                     My Profile
                                 </Link>
