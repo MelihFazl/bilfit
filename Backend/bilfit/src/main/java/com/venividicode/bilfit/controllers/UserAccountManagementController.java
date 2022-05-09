@@ -292,4 +292,26 @@ public class UserAccountManagementController {
             return "GymStaff with ID " + userID + " successfully logged out";
         }
     }
+
+    @PostMapping("/gymMember/restrict/{id}")
+    public String restrictGymMember(@PathVariable("id") long gymMemberID)
+    {
+        List<GymMember> memberList = userAccountManagementService.getGymMemberByID(gymMemberID);
+        if(memberList == null)
+            return "There is not any gym member with the ID " + gymMemberID;
+        GymMember member = memberList.get(0);
+        if(member.getIsRestricted())
+        {
+            member.setIsRestricted(false);
+            userAccountManagementService.patchGymMember(member, member.getID());
+            return "Gym member with ID " + gymMemberID + " is not restricted anymore.";
+        }
+        else
+        {
+            deleteUserWithID(member.getID());
+            member.setIsRestricted(true);
+            userAccountManagementService.saveGymMember(member);
+            return "Gym member with ID " + gymMemberID + " is restricted now.";
+        }
+    }
 }
