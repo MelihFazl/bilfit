@@ -202,16 +202,16 @@ function GymStaffPanel() {
 
   function handleBan(id)
   {
-    //USER NEEDS TO BE RESTRICTED!!!
-      /*fetch("http://localhost:8080/user/delete/" + id, {
-          method: "DELETE"
+      console.log("selamaleykum");
+      fetch("http://localhost:8080/user/gymMember/restrict/" + id, {
+          method: "POST"
       }).then((result) => {
           result.text().then((actualResult) => {
                 alert(actualResult)
                 setUserData()
-
+                console.log("aleykumselam");
           })
-      })*/
+      })
   }
   const handleClickOpen5 = () => {
     setOpen5(true);
