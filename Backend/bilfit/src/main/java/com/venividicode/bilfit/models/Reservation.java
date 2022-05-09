@@ -30,7 +30,6 @@ public class Reservation {
 	// status of the reservation
 	@Enumerated
 	private ReservationStatus status;
-	// ID of the gym member who made the reservation
 	@ManyToOne
 	private GymMember reserver;
 	// date of the reservation

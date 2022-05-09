@@ -65,6 +65,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={Login} />
             <>
+
               <Navbar />
               <Route exact path="/home" component={Home} />
               <Route path="/make-reservation" component={MakeReservation} />
@@ -82,6 +83,7 @@ function App() {
               <Route path="/enrolled-courses" component={SportsCourses} />
               <Route path="/my-courses" component={SportsCourses} />
               <Route path="/available-courses" component={EnrollSportsCourses} />
+
             </>
           </Switch>
         </>

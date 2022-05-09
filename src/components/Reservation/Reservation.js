@@ -128,7 +128,7 @@ function Reservation() {
           switch (searchSelection) {
             case "resDate": return items.filter(x => x.reservationDate.includes(target.value));
             case "resTime": return items.filter(x => x.reservedTimeInterval.includes(target.value));
-            case "resActivity": return items.filter(x => x.reservationActivity.name.includes(target.value));
+            case "resActivity": return items.filter(x => x.reservationActivity.activity.includes(target.value));
             case "resLocation": return items.filter(x => x.reservationField.name.includes(target.value));
             case "resSportsCenter": return items.filter(x => x.reservationPlace.name.includes(target.value));
             case "resStatus": return items.filter(x => x.status.includes(target.value));
@@ -151,6 +151,7 @@ function Reservation() {
   const handleSearchSelection = (event) => {
     setSearchSelection(event.target.value);
   };
+  
 
   /**
  * Below variables are for icons of buttons (importing the icon)
@@ -182,8 +183,6 @@ function Reservation() {
 
   return (
     <>
-    <Button className='sabılader' onClick={()=>{console.log(reservations)}}/>
-
       <Stack className='mainStackUser' direction="column"
         spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header' >My Reservations</h1> </div>
@@ -393,5 +392,6 @@ function Reservation() {
       </Stack>
     </>
   );
-}
+                }
+
 export default Reservation;

@@ -53,13 +53,85 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function User() {
     //variables
-    const userType = localStorage.getItem("usertype");
     const [button, setButton] = useState(true);//2 buttons may be needed
-    const [users, setUsers] = useState([]);
+    const [user, setUser] = useState([]);
     const [editClick, setEditClick] = useState(false);
     const [changePasswordClick, setChangePasswordClick] = useState(true);//when initial value false, doesn't work properly 
     const [openDialog, setOpenDialog] = useState(false);
     const [hidePassword, setHidePassowrd] = useState(true);
+
+    const [reqTitle, setReqTitle] = useState();
+    const [reqDescription, setReqDescription] = useState();
+
+    function submitRequest() {
+
+        // console.log(reqTitle)
+        // console.log(reqDescription)
+        console.log("reqDescription")
+        fetch('http://localhost:8080/user/gymProgram/sendRequest?memberId=' + user_id, {
+                
+                method: 'POST',
+                body : JSON.stringify({
+                    description : reqDescription,
+                }),
+                headers : {
+                    'Content-type' : 'application/json'
+                }
+            })
+            getUserData()
+
+    }
+
+    function changeTitle(newTitle) {
+        setReqTitle(newTitle)
+    }
+
+    function changeDesc(newDesc) {
+        setReqDescription(newDesc)
+    }
+
+    function changeWeight(user_id, newValue) {
+            fetch('http://localhost:8080/user/editGymMember/' + user_id, {
+                method: 'PATCH',
+                body : JSON.stringify({
+                    weight : newValue,
+                }),
+                headers : {
+                    'Content-type' : 'application/json'
+                }
+            })
+            getUserData()
+            getUserData()
+    }
+
+    function changeHeight(user_id, newValue) {
+            fetch('http://localhost:8080/user/editGymMember/' + user_id, {
+                method: 'PATCH',
+                body : JSON.stringify({
+                    height : newValue,
+                }),
+                headers : {
+                    'Content-type' : 'application/json'
+                }
+            })
+            getUserData()
+            getUserData()
+    }
+
+    function changePhoneNumber(user_id, newValue) {
+        console.log("first")
+            fetch('http://localhost:8080/user/editGymMember/' + user_id, {
+                method: 'PATCH',
+                body : JSON.stringify({
+                    phoneNumber : newValue,
+                }),
+                headers : {
+                    'Content-type' : 'application/json'
+                }
+            })
+            getUserData()
+            getUserData()
+    }
 
     const handleEditClick = () => {
         setEditClick(!editClick);
@@ -74,9 +146,6 @@ function User() {
 
 
 
-    var userId = 21902222;
-    //const { userId } = useParams(); Can be used in the future to get id from parameters
-
     //javascript mehods
 
     //in order to display the customly designed button
@@ -88,197 +157,232 @@ function User() {
     };
     window.addEventListener("resize", showButton);
 
-    //get users from fake rest api
-    useEffect(() => {
-        fetch('http://localhost:3000/users')
+    // get user id from local storage
+    let user_id = localStorage.getItem("userid");
+    let userId = 50 // delete this later
+
+    function getUserData() {
+        fetch('http://localhost:8080/user/'+ user_id)
             .then((res) => res.json())
             .then((result) => {
-                setUsers(result);
+                // console.log(result)
+                setUser(result[0]);
             });
+    }
+    //get users from fake rest api
+    useEffect(() => {
+        getUserData()
     }, []);
 
+    console.log(user)
+    //console.log(user[0])
 
-    if(userType === "member")
-    {
-        return(
-            <><Box sx={{
+
+
+
+
+    return (
+        <><Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'horizontal',
+            justifyContent: 'center',
+            margin: '2rem',
+        }}>
+
+            <Box sx={{
+                borderRadius: "2%",
                 display: 'flex',
                 alignItems: 'center',
-                flexDirection: 'horizontal',
-                justifyContent: 'center',
-                margin: '2rem',
+                flexDirection: 'column',
+                backgroundColor: "#F05454",
+                margin: '1rem',
+                padding: '2rem',
+                width: '30rem',
             }}>
-    
-                <Box sx={{
-                    borderRadius: "2%",
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    backgroundColor: "#F05454",
-                    margin: '1rem',
-                    padding: '2rem',
-                    width: '30rem',
-                }}>
-                    <Avatar alt="Remy Sharp" src="../images/gym_avatar.png"//dummy avatar, may change later
-                        sx={{ height: '7.5rem', width: '7.5rem' }} />
-                    <Typography variant="h4" sx={{ fontFamily: 'PT Sans, sans-serif' }} >
-                        {users.map((user) => user.id === userId ? (<div>{user.name}</div>) : (<></>))}
-                    </Typography>
-                    <Box sx={{ margin: '1rem' }}>
-                        {editClick ? button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Finish Edit</Button>
-                            : button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Edit Profile</Button>}
-                    </Box>
-                    <Box>
-                        {button && <Button buttonStyle="btn--outline" onClick={handleChangePasswordClick} margin="1rem" >Change Password</Button>}
-                    </Box>
+                <Avatar alt="Remy Sharp" src="../images/gym_avatar.png"//dummy avatar, may change later
+                    sx={{ height: '7.5rem', width: '7.5rem' }} />
+                <Typography variant="h4" sx={{ fontFamily: 'PT Sans, sans-serif' }} >
+                    {/* {users.map((user) => user.id === userId ? (<div>{user.name}</div>) : (<></>))} */}
+                    {user.name}
+                </Typography>
+                <Box sx={{ margin: '1rem' }}>
+                    {editClick ? button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Finish Edit</Button>
+                        : button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Edit Profile</Button>}
                 </Box>
-    
-                <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', margin: '1rem' }}>
-                    <TableContainer component={Paper} >
-                        <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
-                            <TableBody >
-                                <StyledTableRow component="th" scope="row"  >
-                                    <StyledTableCell className='cellItem'>
-                                        ID:
-                                    </StyledTableCell>
-                                    <StyledTableCell className='cellItem' >
-                                        {/*this method finds the user with specified id and displays the user that is found in the array. 
-                                    We may find a different method to accomplish this.*/}
-                                        {users.map((user) => user.id === userId ? (<div>{user.id}</div>) : (<></>))}
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                                <StyledTableRow component="th" scope="row"  >
-                                    <StyledTableCell className='cellItem'>
-                                        Gender:
-                                    </StyledTableCell>
-                                    <StyledTableCell className='cellItem' >
-                                        {users.map((user) => user.id === userId ? (<div>{user.gender}</div>) : (<></>))}
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                                <StyledTableRow component="th" scope="row"  >
-                                    <StyledTableCell className='cellItem'>
-                                        Birthdate:
-                                    </StyledTableCell>
-                                    <StyledTableCell className='cellItem' >
-                                        {users.map((user) => user.id === userId ? (<div>{user.birthdate}</div>) : (<></>))}
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                                <StyledTableRow component="th" scope="row"  >
-                                    <StyledTableCell className='cellItem'>
-                                        Weight:
-                                    </StyledTableCell>
-                                    <StyledTableCell className='cellItem' >
-                                        {/*Changing acquired input is not implemented, needs to be implemented after connection with database*/}
-                                        {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.weight}></TextField>) : (<></>)))
-                                            : (users.map((user) => user.id === userId ? (<div>{user.weight}</div>) : (<></>)))}
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                                <StyledTableRow component="th" scope="row"  >
-                                    <StyledTableCell className='cellItem'>
-                                        Height:
-                                    </StyledTableCell>
-                                    <StyledTableCell className='cellItem' >
-                                        {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.height}></TextField>) : (<></>)))
-                                            : (users.map((user) => user.id === userId ? (<div>{user.height}</div>) : (<></>)))}
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                                <StyledTableRow component="th" scope="row"  >
-                                    <StyledTableCell className='cellItem'>
-                                        Phone Number:
-                                    </StyledTableCell>
-                                    <StyledTableCell className='cellItem' >
-                                        {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.phoneNumber}></TextField>) : (<></>)))
-                                            : (users.map((user) => user.id === userId ? (<div>{user.phoneNumber}</div>) : (<></>)))}
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                                <StyledTableRow component="th" scope="row"  >
-                                    <StyledTableCell className='cellItem'>
-                                        Email:
-                                    </StyledTableCell>
-                                    <StyledTableCell className='cellItem' >
-                                        {users.map((user) => user.id === userId ? (<div>{user.email}</div>) : (<></>))}
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                <Box>
+                    {button && <Button buttonStyle="btn--outline" onClick={handleChangePasswordClick} margin="1rem" >Change Password</Button>}
                 </Box>
-    
-                {/*This is created for the change password dialog.*/}
-                <Dialog open={openDialog} onClose={handleChangePasswordClick}>
-                    <DialogTitle>Change Password</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Please enter your new password:
-                        </DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            color="secondary"
-                            label="New Password"
-                            type={hidePassword ? 'password' : 'name'}
-                            fullWidth
-                            variant="standard"
-                            InputProps={{
-                                endAdornment: <IconButton aria-label="Example" onClick={handleHidePassword}>
-                                    <FontAwesomeIcon icon={faEyeSlash} width='20px' />
-                                </IconButton>
-                            }}
-                        />
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            color="secondary"
-                            id="name"
-                            label="Re-Enter Password"
-                            type={hidePassword ? 'password' : 'name'}
-                            fullWidth
-                            variant="standard"
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleChangePasswordClick}>Cancel</Button>
-                        <Button onClick={handleChangePasswordClick}>Submit</Button>
-                    </DialogActions>
-                </Dialog>
-    
-    
-    
-            </Box >
-    
-                <div className="App">
-                    <Grid>
-                        <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto", marginBottom: '1rem'}}>
-                            <CardContent>
-                                <Typography gutterBottom variant="h5">
-                                    Request Gym Program
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary" component="p" gutterBottom>
-                                    Fill up the form and our gym staff will contact you as soon as possible.
-                                </Typography>
-                                <form>
-                                    <Grid container spacing={1}>
-                                        <Grid item xs={12}>
-                                            <TextField type="title" placeholder="Enter a title" label="Title" variant="outlined" fullWidth/>
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <TextField label="Message" multiline rows={4} placeholder="Enter your expactations from this program" variant="outlined" fullWidth required />
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            {button && <Button buttonStyle="btn--primary" style={{color:"#000"}} margin="1rem" >Submit</Button>}
-                                        </Grid>
-                                    </Grid>
-                                </form>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                </div>
-            </>
-        )
-    }
-    else if( userType === "staff"){
+            </Box>
 
-    }
+            <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', margin: '1rem' }}>
+                <TableContainer component={Paper} >
+                    <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
+                        <TableBody >
+                            <StyledTableRow component="th" scope="row"  >
+                                <StyledTableCell className='cellItem'>
+                                    ID:
+                                </StyledTableCell>
+                                <StyledTableCell className='cellItem' >
+                                    {/* {users.map((user) => user.id === userId ? (<div>{users.id}</div>) : (<></>))} */}
+                                    <div>{user.id}</div>
+                                </StyledTableCell>
+                            </StyledTableRow>
+                            <StyledTableRow component="th" scope="row"  >
+                                <StyledTableCell className='cellItem'>
+                                    Gender:
+                                </StyledTableCell>
+                                <StyledTableCell className='cellItem' >
+                                    {/* {users.map((user) => user.id === userId ? (<div>{user.gender}</div>) : (<></>))} */}
+                                    {user.gender}
+                                </StyledTableCell>
+                            </StyledTableRow>
+                            <StyledTableRow component="th" scope="row"  >
+                                <StyledTableCell className='cellItem'>
+                                    Birthdate:
+                                </StyledTableCell>
+                                <StyledTableCell className='cellItem' >
+                                    {/* {users.map((user) => user.id === userId ? (<div>{user.birthdate}</div>) : (<></>))} */}
+                                    {user.birthdate}
+                                </StyledTableCell>
+                            </StyledTableRow>
+                            <StyledTableRow component="th" scope="row"  >
+                                <StyledTableCell className='cellItem'>
+                                    Weight:
+                                </StyledTableCell>
+                                <StyledTableCell className='cellItem' >
+                                    {editClick && 
+                                        (<TextField type="number" defaultValue={user.weight} onChange={(e) => {
+                                            //console.log(e.target.value);
+                                            changeWeight(user_id, e.target.value);
+                                          }}></TextField>)
+                                    }
+                                    {!editClick &&
+                                        (<div>{user.weight}</div>)
+                                    }
+                                </StyledTableCell>
+                            </StyledTableRow>
+                            <StyledTableRow component="th" scope="row"  >
+                                <StyledTableCell className='cellItem'>
+                                    Height:
+                                </StyledTableCell>
+                                <StyledTableCell className='cellItem' >
+                                    {editClick && 
+                                        (<TextField type="number" defaultValue={user.height} onChange={(e) => {
+                                            //console.log(e.target.value);
+                                            changeHeight(user_id, e.target.value);
+                                          }}></TextField>)
+                                    }
+                                    {!editClick &&
+                                        (<div>{user.height}</div>)
+                                    }
+                                </StyledTableCell>
+                            </StyledTableRow>
+                            <StyledTableRow component="th" scope="row"  >
+                                <StyledTableCell className='cellItem'>
+                                    Phone Number:
+                                </StyledTableCell>
+                                <StyledTableCell className='cellItem' >
+                                {editClick && 
+                                        (<TextField type="number" defaultValue={user.phoneNumber} onChange={(e) => {
+                                            //console.log(e.target.value);
+                                            changePhoneNumber(user_id, e.target.value);
+                                          }}></TextField>)
+                                    }
+                                    {!editClick &&
+                                        (<div>{user.phoneNumber}</div>)
+                                    }
+                                </StyledTableCell>
+                            </StyledTableRow>
+                            <StyledTableRow component="th" scope="row"  >
+                                <StyledTableCell className='cellItem'>
+                                    Email:
+                                </StyledTableCell>
+                                <StyledTableCell className='cellItem' >
+                                    {/* {user.map((user) => user.id === userId ? (<div>{user.email}</div>) : (<></>))} */}
+                                    {user.email}
+                                </StyledTableCell>
+                            </StyledTableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+
+            {/*This is created for the change password dialog.*/}
+            <Dialog open={openDialog} onClose={handleChangePasswordClick}>
+                <DialogTitle>Change Password</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Please enter your new password:
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        color="secondary"
+                        label="New Password"
+                        type={hidePassword ? 'password' : 'name'}
+                        fullWidth
+                        variant="standard"
+                        InputProps={{
+                            endAdornment: <IconButton aria-label="Example" onClick={handleHidePassword}>
+                                <FontAwesomeIcon icon={faEyeSlash} width='20px' />
+                            </IconButton>
+                        }}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        color="secondary"
+                        id="name"
+                        label="Re-Enter Password"
+                        type={hidePassword ? 'password' : 'name'}
+                        fullWidth
+                        variant="standard"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleChangePasswordClick}>Cancel</Button>
+                    <Button onClick={handleChangePasswordClick}>Submit</Button>
+                </DialogActions>
+            </Dialog>
+
+
+
+        </Box >
+
+            <div className="App">
+                <Grid>
+                    <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto", marginBottom: '1rem'}}>
+                        <CardContent>
+                            <Typography gutterBottom variant="h5">
+                                Request Gym Program
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary" component="p" gutterBottom>
+                                Fill up the form and our gym staff will contact you as soon as possible.
+                            </Typography>
+                            <form>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={12}>
+                                        <TextField type="title" placeholder="Enter a title" onChange={(e) => {
+                                            changeTitle(e.target.value)}} 
+                                            label="Title" variant="outlined" fullWidth/>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField label="Message" multiline rows={4} onChange={(e) => {
+                                            changeDesc(e.target.value)}} 
+                                            placeholder="Enter your expactations from this program" variant="outlined" fullWidth required />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        {button && <Button buttonStyle="btn--primary" style={{color:"#000"}} margin="1rem" onClick={submitRequest}>Submit</Button>}
+                                    </Grid>
+                                </Grid>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </div>
+        </>
+    )
 }
 export default User;

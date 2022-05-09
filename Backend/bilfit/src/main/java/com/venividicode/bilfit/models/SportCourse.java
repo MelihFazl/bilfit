@@ -5,7 +5,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A model class representing the SportCourse entity
@@ -26,22 +28,22 @@ public class SportCourse {
 	private Long ID;
 	// type of the course (For ex: H.I.I.T)
 	private String type;
-	// textual description of the sport course
-	private String description;
 	// start and end dates of the sport course
 	private String startingDate;
 	private String endingDate;
+	private Integer maxQuota;
+	private Integer availableQuota;
 	// the final date that is possible to make reservation
 	private LocalDate lastRegistrationDate;
-	// instructor of this course
-	@ManyToMany
-	private List<GymStaff> instructors;
+	@ElementCollection
+	protected Set<String> courseDays = new HashSet();
 	// participants of this course
 	@ManyToMany
 	private List<GymMember> participants;
 	// location of this course
 	@OneToOne
 	private SportCenter location;
+	private String field;
 	public String getType() {
 		return this.type;
 	}

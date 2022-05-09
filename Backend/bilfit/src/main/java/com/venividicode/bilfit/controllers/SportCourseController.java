@@ -19,12 +19,11 @@ public class SportCourseController
 
     @PostMapping("/add")
     public String saveSportCourse(@RequestBody SportCourse sportCourse, @RequestParam long sportCenterID,
-                                  @RequestParam(value="participants") List<Long> participantID, @RequestParam(value="instructors") List<Long> instructorID)
+                                  @RequestParam(value="courseDays") List<String> courseDays)
     {
         try
         {
-            sportCourseService.saveSportCourse(sportCourse, sportCenterID, participantID, instructorID);
-            return "SportCourse with type " + sportCourse.getType() + " has been added.";
+            return sportCourseService.saveSportCourse(sportCourse, sportCenterID, courseDays);
         } catch (Exception e)
         {
             return "Something has gone wrong: " + e.toString() ;
@@ -39,7 +38,7 @@ public class SportCourseController
             return "SportCourse with specified ID " + id + " was not found.";
         }
         sportCourseService.deleteSportCourseByID(id);
-        return "SportCourse with specified ID " + id + " has been successfully deleted.";
+        return "SportCourse with name " + sportCoursesWithSpecifiedID.get(0).getType() + " has been successfully deleted.";
     }
 
     @GetMapping
@@ -64,6 +63,12 @@ public class SportCourseController
     public List<SportCourse> getCourseByLocation(@PathVariable("id") long id)
     {
         return sportCourseService.getSportCourseByLocation(id);
+    }
+
+    @GetMapping("/participant/{id}")
+    public List<SportCourse> getCourseByParticipant(@PathVariable("id") long id)
+    {
+        return sportCourseService.getSportCoursesByParticipants(id);
     }
 
     @PostMapping("/edit/{id}")
@@ -94,10 +99,7 @@ public class SportCourseController
         SportCourse course = sportCourses.get(0);
         if(course.getLastRegistrationDate().isBefore(LocalDate.now()))
             return  "Last registration date has passed.";
-
-        if(sportCourseService.addParticipant(courseID, gymMemberID)== null)
-            return "There is something wrong with the parameters.";
-        return "Participant with ID " + gymMemberID + " is added.";
+        return sportCourseService.addParticipant(courseID, gymMemberID);
     }
 
     @PostMapping("/remove/{courseID}/participant/{id}")
@@ -107,37 +109,6 @@ public class SportCourseController
         if (sportCourses == null)
             return "Wrong CourseID!";
         SportCourse course = sportCourses.get(0);
-
-        if(sportCourseService.removeParticipant(courseID, gymMemberID) == null)
-            return "There is something wrong with the parameters.";
-        return "Participant with ID " + gymMemberID + " is removed.";
-    }
-
-    @PostMapping("/enroll/{courseID}/instructor/{id}")
-    public String enrollInstructorToACourseWithID(@PathVariable("courseID") long courseID, @PathVariable("id") long instructorID)
-    {
-        List<SportCourse> sportCourses = sportCourseService.getSportCourseByID(courseID);
-        if (sportCourses == null)
-            return "Wrong CourseID!";
-        SportCourse course = sportCourses.get(0);
-        if(course.getLastRegistrationDate().isBefore(LocalDate.now()))
-            return  "Last registration date has passed.";
-
-        if(sportCourseService.addInstructor(courseID, instructorID) == null)
-            return "There is something wrong with the parameters.";
-        return "Instructor with ID " + instructorID + " is added.";
-    }
-
-    @PostMapping("/remove/{courseID}/instructor/{id}")
-    public String removeInstructorFromACourseWithID(@PathVariable("courseID") long courseID, @PathVariable("id") long instructorID)
-    {
-        List<SportCourse> sportCourses = sportCourseService.getSportCourseByID(courseID);
-        if (sportCourses == null)
-            return "Wrong CourseID!";
-        SportCourse course = sportCourses.get(0);
-
-        if (sportCourseService.removeInstructor(courseID, instructorID) == null)
-            return "There is something wrong with the parameters.";
-        return "Instructor with ID " + instructorID + " is removed.";
+        return sportCourseService.removeParticipant(courseID, gymMemberID) ;
     }
 }

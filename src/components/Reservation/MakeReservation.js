@@ -24,7 +24,7 @@ import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './MakeReservation.css';
 import { set } from 'date-fns';
-
+import { format } from "date-fns";
 
 
 const theme = createTheme({
@@ -33,7 +33,8 @@ const theme = createTheme({
       main: '#121212',
       contrastText: "#fff",
     }
-    }});
+  }
+});
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -63,45 +64,38 @@ const maxDate = new Date('2034-01-01T00:00:00.000');
 
 function MakeReservation() {
   const { reservationId } = useParams();
-  const[sportCenters, setSportCenters] = useState([]);
-  const[sportActivity, setSportActivity] = useState([]);
-  const[timeSlots, setTimeSlots] = useState([]);
+  const [sportsCenters, setSportsCenters] = useState([]);
+  const [sportActivity, setSportActivity] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [newDate, setNewDate] = useState(new Date());
 
   //Below are for keep new reservstion info
-  const[resSportCenter, setResSportCenter] = useState([]);
-  const[resActivity, setResActivity] = useState([]);
-  const[resDate, setResDate] = useState([]);
-  const[resTimeSlot, setResTimeSlot] = useState([]);
+  const [reservation, setReservation] = useState([]);
+  const [resSportCenter, setResSportCenter] = useState([]);
+  const [resLocation, setResLocation] = useState([]);
+  const [resActivity, setResActivity] = useState([]);
+  const [resTimeSlot, setResTimeSlot] = useState([]);
 
   const [date, setDate] = React.useState(new Date());
-  const [size, setSize] = React.useState(sportCenters.length);
+  const [size, setSize] = React.useState(sportsCenters.length);
   const currentDate = new Date();
   const blue = "#5584AC";
   const white = "#F5F5F5";
 
   useEffect(() => {
-    fetch('http://localhost:3000/sportCenters')
+    fetch('http://localhost:3000/sportsCenters')
       .then((res) => res.json())
       .then((result) => {
-        setSportCenters(result);
+        setSportsCenters(result);
 
       });
-      
+
   }, []);
 
-  useEffect(() => {
-    fetch('http://localhost:3000/activity')
-      .then((res) => res.json())
-      .then((result) => {
-        setSportActivity(result);
-        setSize(sportActivity.length);
-      });
-  }, []);
 
-  
   const [checkedState, setCheckedState] = useState(new Array(3).fill(false));
   const [checkedState2, setCheckedState2] = useState(new Array(50).fill(false));
- 
+
   const handleOnChange = (position, number) => {
     if (number == 1) {
       const updateAllStates = checkedState.fill(false);
@@ -116,6 +110,44 @@ function MakeReservation() {
       setCheckedState2(updatedCheckedState);
     }
   };
+
+  const displayActivities = (sportsCenter, index) => {
+    const data = []
+    if (resSportCenter === sportsCenter.name) {
+      sportsCenter.availableActivities.map((activity, index) => (
+        data.push(<StyledTableRow key={sportActivity}>
+          <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState2.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 2); setResActivity(activity.activity) }} >
+            {activity.activity}
+          </StyledTableCell>
+        </StyledTableRow>)));
+    }
+    return data;
+  }
+
+  const displayTimeSlots = (sportsCenter, activity, field, timeSlotsinDay) => {
+    const data = [];
+    let dbDate = new Date(timeSlotsinDay.date);
+
+    if (sportsCenter.name === resSportCenter && activity.activity === resActivity && field.name === resLocation && (dbDate.getDay() === date.getDay()) && dbDate.getMonth() === date.getMonth() && dbDate.getFullYear() === dbDate.getFullYear()) {
+      timeSlotsinDay.timeSlotList.map((timeSlot, index) => (
+
+        data.push(<FormControlLabel value={timeSlot.timeSlot} control={<Radio />} label={timeSlot.timeSlot} onChange={(event) => setResTimeSlot(event.target.value)} />)))
+    }
+    console.log(resTimeSlot);
+    return data;
+  }
+  const displayLocation = (sportsCenter, activity) => {
+    const data = []
+    if (sportsCenter.name === resSportCenter && activity.activity === resActivity) {
+      data.push(activity.fields.map((field, index) => (
+        <StyledTableRow key={index} className={checkedState2.at(index) ? "rowTrue" : "rowFalse"}>
+          <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState2.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 2); setResLocation(field.name) }} >
+            {field.name}
+          </StyledTableCell>
+        </StyledTableRow>)));
+    }
+    return data;
+  }
 
   return (
     <>
@@ -136,11 +168,11 @@ function MakeReservation() {
                   </TableRow>
                 </TableHead>
                 <TableBody >
-                  {sportCenters.map((row, index) => (
-                    <StyledTableRow key={row.id} className={checkedState.at(index) ? "rowTrue" : "rowFalse"} >
-                      <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState.at(index) ? blue : white }} key={"button" + row.id} onClick={() => { handleOnChange(index, 1); setResSportCenter(row.center) }} >
-                        {row.center}
-                        {checkedState.length.toString()}
+                  {sportsCenters.map((sportsCenter, index) => (
+                    <StyledTableRow key={sportsCenter.id} className={checkedState.at(index) ? "rowTrue" : "rowFalse"} >
+                      <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 1); setResSportCenter(sportsCenter.name) }} >
+                        {sportsCenter.name}
+
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}
@@ -157,36 +189,55 @@ function MakeReservation() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {sportActivity.map((row, index) => (
-                    <StyledTableRow key={row.id} className={checkedState2.at(index) ? "rowTrue" : "rowFalse"}>
-                      <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState2.at(index) ? blue : white }} key={"button" + row.id} onClick={() => { handleOnChange(index, 2); setResActivity(row.activity)  }} >
-                        {row.activity}
-                      </StyledTableCell>
-                    </StyledTableRow>
+                  {sportsCenters.map((sportsCenter, index) =>
+                    displayActivities(sportsCenter, index)
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className="fieldContainer">
+            <TableContainer component={Paper}>
+              <Table sx={{ width: '100%', backgroundColor: '#F5F5F5' }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell>Sports Activity Location</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {sportsCenters.map((sportsCenter, index) => (sportsCenter.availableActivities.map((activity, index) =>
+                    displayLocation(sportsCenter, activity)
+                  )
+
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
           </div>
+
           <div>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid container spacing={3} >
                 <Grid item xs={12} md={6} >
-                  <CalendarPicker date={date} onChange={(newDate) => {{ if (newDate.getDate() <= (currentDate.getDate() + 2) && newDate.getDate() >= currentDate.getDate() && currentDate.getMonth() == newDate.getMonth() && currentDate.getFullYear() == newDate.getFullYear()) { setDate(newDate) } else { alert("Invalid date (Only next 2 days can be picked)") }  }}} />
+
+                  <CalendarPicker date={date} onChange={(newDate) => { { if (newDate.getDate() <= (currentDate.getDate() + 2) && newDate.getDate() >= currentDate.getDate() && currentDate.getMonth() == newDate.getMonth() && currentDate.getFullYear() == newDate.getFullYear()) { setDate(newDate); } else { alert("Invalid date (Only next 2 days can be picked)") } } }} />
                 </Grid>
               </Grid>
             </LocalizationProvider>
           </div>
+
           <div className="timeContainer">
             <FormControl>
               <FormLabel id="demo-radio-buttons-group-label">Select Time Slot</FormLabel>
               <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue={timeSlots.at(0)}
+                //defaultValue={timeSlots.at(0)}
                 name="radio-buttons-group" >
-                {timeSlots.map((row, index) => (
-                  <FormControlLabel value={row} control={<Radio />} label={row}  />))}
-
+                {sportsCenters.map((sportsCenter, index) => (sportsCenter.availableActivities.map((activity, index) =>
+                (activity.fields.map((field, index) => (field.occupiableTimeSlotsOnDay.map((timeSlots, index) =>
+                  displayTimeSlots(sportsCenter, activity, field, timeSlots)))
+                )))
+                ))}
               </RadioGroup>
             </FormControl>
           </div>
@@ -195,12 +246,15 @@ function MakeReservation() {
           alignItems="center">
           <ThemeProvider theme={theme}>
             <Button className='submitButton' variant="contained" color="secondary" size='large' onClick={() => {
-    alert('clicked');
-  }} > Make Reservation</Button>
+              alert('clicked');
+            }} > Make Reservation</Button>
           </ThemeProvider>
+
+
         </Stack>
       </Stack>
     </>
+
   );
 
 }
