@@ -368,7 +368,7 @@ function AdminPanelStaff() {
 
             <Stack className='mainStackUser' direction="column"
                 spacing={3} alignItems="center"    >
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'>All Users</h1> </div>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'>All Staff</h1> </div>
                 <Stack className='mainStack' direction="row"
                     justifyContent="center"
                     alignItems="center"
