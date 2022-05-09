@@ -21,6 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Button from '@mui/material/Button';
+import {useHistory } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './MakeReservation.css';
 import { set } from 'date-fns';
@@ -83,19 +84,50 @@ function MakeReservation() {
   const white = "#F5F5F5";
 
   useEffect(() => {
-    fetch('http://localhost:3000/sportsCenters')
+    fetch('http://localhost:8080/reservation/sportCenter')
       .then((res) => res.json())
       .then((result) => {
         setSportsCenters(result);
-
       });
 
   }, []);
 
-
+  const myHistory = useHistory();
   const [checkedState, setCheckedState] = useState(new Array(3).fill(false));
   const [checkedState2, setCheckedState2] = useState(new Array(50).fill(false));
 
+  function handleReservation()
+  {
+    console.log(resSportCenter);
+    console.log("--------")
+    console.log(resActivity);
+    console.log("--------")
+    console.log(resLocation);
+    console.log("--------")
+    console.log(resTimeSlot);
+    console.log("--------")
+    console.log(reservation)
+    console.log("--------")
+    console.log(date)
+    fetch('http://localhost:8080/reservation/make?fieldID=' + resLocation.id + "&activityID=" + resActivity.id + "&sportCenterID=" + resSportCenter.id + "&reserverID=" + localStorage.getItem("userid"), {
+      method:"POST",
+      headers:{
+        'Content-type' : 'application/json'
+      },
+      body: JSON.stringify({
+        "reservedTimeInterval": resTimeSlot,
+        "reservationDate": date.toISOString().split('T')[0]
+      })
+    }).then((result) => {
+      result.text().then((actualResult) => {
+          alert(actualResult)
+          if(actualResult.includes("successfully"))
+            myHistory.push("/my-reservations")
+      })
+    })
+     
+  }
+  
   const handleOnChange = (position, number) => {
     if (number == 1) {
       const updateAllStates = checkedState.fill(false);
@@ -113,10 +145,10 @@ function MakeReservation() {
 
   const displayActivities = (sportsCenter, index) => {
     const data = []
-    if (resSportCenter === sportsCenter.name) {
+    if (resSportCenter.name === sportsCenter.name) {
       sportsCenter.availableActivities.map((activity, index) => (
         data.push(<StyledTableRow key={sportActivity}>
-          <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState2.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 2); setResActivity(activity.activity) }} >
+          <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState2.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 2); setResActivity(activity) }} >
             {activity.activity}
           </StyledTableCell>
         </StyledTableRow>)));
@@ -128,20 +160,20 @@ function MakeReservation() {
     const data = [];
     let dbDate = new Date(timeSlotsinDay.date);
 
-    if (sportsCenter.name === resSportCenter && activity.activity === resActivity && field.name === resLocation && (dbDate.getDay() === date.getDay()) && dbDate.getMonth() === date.getMonth() && dbDate.getFullYear() === dbDate.getFullYear()) {
+    if (sportsCenter.name === resSportCenter.name && activity.activity === resActivity.activity && field.name === resLocation.name && (dbDate.getDay() === date.getDay()) && dbDate.getMonth() === date.getMonth() && dbDate.getFullYear() === dbDate.getFullYear()) {
       timeSlotsinDay.timeSlotList.map((timeSlot, index) => (
 
         data.push(<FormControlLabel value={timeSlot.timeSlot} control={<Radio />} label={timeSlot.timeSlot} onChange={(event) => setResTimeSlot(event.target.value)} />)))
     }
-    console.log(resTimeSlot);
+  
     return data;
   }
   const displayLocation = (sportsCenter, activity) => {
     const data = []
-    if (sportsCenter.name === resSportCenter && activity.activity === resActivity) {
+    if (sportsCenter.name === resSportCenter.name && activity.activity === resActivity.activity) {
       data.push(activity.fields.map((field, index) => (
         <StyledTableRow key={index} className={checkedState2.at(index) ? "rowTrue" : "rowFalse"}>
-          <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState2.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 2); setResLocation(field.name) }} >
+          <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState2.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 2); setResLocation(field) }} >
             {field.name}
           </StyledTableCell>
         </StyledTableRow>)));
@@ -170,7 +202,7 @@ function MakeReservation() {
                 <TableBody >
                   {sportsCenters.map((sportsCenter, index) => (
                     <StyledTableRow key={sportsCenter.id} className={checkedState.at(index) ? "rowTrue" : "rowFalse"} >
-                      <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 1); setResSportCenter(sportsCenter.name) }} >
+                      <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 1); setResSportCenter(sportsCenter) }} >
                         {sportsCenter.name}
 
                       </StyledTableCell>
@@ -246,7 +278,7 @@ function MakeReservation() {
           alignItems="center">
           <ThemeProvider theme={theme}>
             <Button className='submitButton' variant="contained" color="secondary" size='large' onClick={() => {
-              alert('clicked');
+              alert('clicked'); handleReservation()
             }} > Make Reservation</Button>
           </ThemeProvider>
 
