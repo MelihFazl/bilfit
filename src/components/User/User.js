@@ -314,7 +314,10 @@ function User() {
         padding: '3rem',
     }
 
-    
+    const paragraphStyle2 = {
+        marginLeft: '3px',
+        fontFamily: 'Inter, sans-serif',
+    }
 
 
     const headerStyle2 = {
@@ -577,6 +580,7 @@ function User() {
                     <Box  style={boxStyle2}>
                     <h2 style={headerStyle2}>Gym Program Requests</h2>
                     <List style={listStyle}>
+                        {console.log(gymProgramRequests)}
                         {gymProgramRequests &&
                             gymProgramRequests.slice(0).reverse().map((request, index) =>
                             (
@@ -584,6 +588,9 @@ function User() {
                                 <ListItemText primary={request.description} secondary={request.owner.name+" (id:"+request.owner.id+")"} />
                             </ListItemButton>
                             ))
+                        }
+                        {(!gymProgramRequests || gymProgramRequests.length == 0) &&
+                            <h style={paragraphStyle2}>There is no pending gym program requests</h>
                         }
                     </List>
                 </Box>
