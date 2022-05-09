@@ -17,6 +17,7 @@ import ListItemText from '@mui/material/ListItemText';
 import CampaignIcon from '@mui/icons-material/Campaign';
 
 
+
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -79,6 +80,8 @@ function User() {
     const [program, setProgram] = useState()
     const [requestOwner, setRequestOwner] = useState()
     const [reqId, setReqId] = useState()
+    const [announcementTitle, setAnnouncementTitle] = useState()
+    const [announcementDescription, setAnnouncementDescription] = useState()
 
     
     function writeProgram(req) {
@@ -264,8 +267,27 @@ function User() {
         //console.log(program)
     }
 
-    
+    // make announcement for gym staff
+    function makeAnnouncementTitle(e) {
+        setAnnouncementTitle(e.target.value)
+    }
+    function makeAnnouncementDescription(e) {
+        setAnnouncementDescription(e.target.value)
+    }
 
+    // make announcement submit button
+    function submitAnnouncement() {
+        fetch('http://localhost:8080/announcement/make', {
+            method: 'POST',
+            body: JSON.stringify({
+                title: announcementTitle,
+                description: announcementDescription
+            }),
+            headers : {
+                'Content-type' : 'application/json'
+            }
+        })
+    }
     
     useEffect(() => {
         getUserData()
@@ -512,7 +534,7 @@ function User() {
             <div className="App">
                 <Grid>
                     {localStorage.getItem("usertype") == "member" && 
-                        <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto", marginBottom: '1rem'}}>
+                    <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto", marginBottom: '1rem'}}>
                         <CardContent>
                             <Typography gutterBottom variant="h5">
                                 Request Gym Program
@@ -548,20 +570,35 @@ function User() {
                 </Box>
                 }
                 {localStorage.getItem("usertype") == "staff" && 
-                    <Box  style={boxStyle3}>
+                <Box>
+                    <Box  style={boxStyle2}>
                     <h2 style={headerStyle2}>Gym Program Requests</h2>
                     <List style={listStyle}>
                         {gymProgramRequests &&
                             gymProgramRequests.slice(0).reverse().map((request, index) =>
                             (
                             <ListItemButton onClick={(e) => {writeProgram(request)}}>
-                                <ListItemIcon><CampaignIcon /></ListItemIcon>
                                 <ListItemText primary={request.description} secondary={request.owner.name+" (id:"+request.owner.id+")"} />
                             </ListItemButton>
                             ))
                         }
                     </List>
                 </Box>
+                <Box  style={boxStyle2}>
+                <h2 style={headerStyle2}>Make An Announcement</h2>
+                <List style={listStyle}>
+
+                        <ListItem>
+                            <TextField label={"Title"} fullWidth onChange={(e) => {makeAnnouncementTitle(e)}}></TextField> 
+                        </ListItem>
+                        <ListItem>
+                            <TextField label={"Description"} fullWidth onChange={(e) => {makeAnnouncementDescription(e)}}></TextField>                 
+                        </ListItem>
+                        <Button onClick={submitAnnouncement}>Announce!</Button>
+                </List>
+                </Box>
+                </Box>
+                
                 }
                     
                 
