@@ -287,6 +287,9 @@ function User() {
                 'Content-type' : 'application/json'
             }
         })
+        alert("Announcement has been published successfully!")
+        setAnnouncementTitle("")
+        setAnnouncementDescription("")
     }
     
     useEffect(() => {
@@ -560,7 +563,7 @@ function User() {
 
                 {localStorage.getItem("usertype") == "member" && user.program &&
                     <Box  style={boxStyle3}>
-                    <h2 style={headerStyle2}>Gym Programs</h2>
+                    <h2 style={headerStyle2}>Your Requested Gym Program Written By Our Staff</h2>
                     <List style={listStyle}>
                         <ListItem>
                             <ListItemIcon><CampaignIcon /></ListItemIcon>
@@ -589,10 +592,10 @@ function User() {
                 <List style={listStyle}>
 
                         <ListItem>
-                            <TextField label={"Title"} fullWidth onChange={(e) => {makeAnnouncementTitle(e)}}></TextField> 
+                            <TextField value={announcementTitle} label={"Title"} fullWidth onChange={(e) => {makeAnnouncementTitle(e)}}></TextField> 
                         </ListItem>
                         <ListItem>
-                            <TextField label={"Description"} fullWidth onChange={(e) => {makeAnnouncementDescription(e)}}></TextField>                 
+                            <TextField value={announcementDescription} label={"Description"} fullWidth onChange={(e) => {makeAnnouncementDescription(e)}}></TextField>                 
                         </ListItem>
                         <Button onClick={submitAnnouncement}>Announce!</Button>
                 </List>
