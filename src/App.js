@@ -17,19 +17,22 @@ import TournamentRequests from './components/Tournaments/TournamentRequests';
 import AdminPanel from './components/AdminPanel/AdminPanel';
 import EnrollSportsCourses from './components/SportsCourses/EnrollSportsCourses';
 import SportsCourses from './components/SportsCourses/SportsCourses';
+import AdminLogin from './components/AdminPanel/AdminLogin';
+import AdminPanelStaff from './components/AdminPanel/AdminPanelStaff';
 import "./App.css";
 
+const userType = localStorage.getItem("usertype");
 function App() {
+
   return (
     <div className="bg_image">
       <BrowserRouter>
         <>
         
-          <Switch>
+          <Switch> 
               <Route exact path="/" component={Login} />
             <>
               <Navbar/>
-              
                 <Route exact path="/home" component={Home} />
                 <Route path="/make-reservation" component={MakeReservation} />
                 <Route path="/my-reservations" component={MyReservations} />
@@ -40,10 +43,12 @@ function App() {
                 <Route path="/my-profile" component={User} />
                 <Route path="/contact" component={Contact} />
                 <Route path="/admin-panel" component={AdminPanel} />
+                <Route path="/admin-panel-staff" component={AdminPanelStaff} />
             </>
           </Switch>
         </>
       </BrowserRouter>
+      
     </div>
   )
 }

@@ -124,7 +124,7 @@ public class AdminController {
                 return token;
             }
             else
-                return "Password is incorrect.";
+                return "Login credentials are incorrect";
         }
     }
     @PostMapping("/logout/{id}")
