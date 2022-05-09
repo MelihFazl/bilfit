@@ -64,6 +64,35 @@ function User() {
     const [phone, setPhone] = useState();
     const [mail, setMail] = useState();
     const [hidePassword, setHidePassowrd] = useState(true);
+    const [reqTitle, setReqTitle] = useState();
+    const [reqDescription, setReqDescription] = useState();
+
+    function submitRequest() {
+
+        // console.log(reqTitle)
+        // console.log(reqDescription)
+        console.log("reqDescription")
+        fetch('http://localhost:8080/user/gymProgram/sendRequest?memberId=' + user_id, {
+                
+                method: 'POST',
+                body : JSON.stringify({
+                    description : reqDescription,
+                }),
+                headers : {
+                    'Content-type' : 'application/json'
+                }
+            })
+            getUserData()
+
+    }
+
+    function changeTitle(newTitle) {
+        setReqTitle(newTitle)
+    }
+
+    function changeDesc(newDesc) {
+        setReqDescription(newDesc)
+    }
 
     function changeWeight(user_id, newValue) {
             fetch('http://localhost:8080/user/editGymMember/' + user_id, {
@@ -76,6 +105,8 @@ function User() {
                 }
             })
             getUserData()
+            getUserData()
+
     }
 
     function changeHeight(user_id, newValue) {
@@ -88,6 +119,7 @@ function User() {
                     'Content-type' : 'application/json'
                 }
             })
+            getUserData()
             getUserData()
     }
 
@@ -102,6 +134,7 @@ function User() {
                     'Content-type' : 'application/json'
                 }
             })
+            getUserData()
             getUserData()
     }
 
@@ -141,7 +174,6 @@ function User() {
             .then((res) => res.json())
             .then((result) => {
                 // console.log(result)
-                console.log(result)
                 setUser(result[0]);
             });
     }
@@ -149,7 +181,6 @@ function User() {
     useEffect(() => {
         getUserData()
     }, []);
-
     //console.log(user[0])
 
 
@@ -376,13 +407,17 @@ function User() {
                             <form>
                                 <Grid container spacing={1}>
                                     <Grid item xs={12}>
-                                        <TextField type="title" placeholder="Enter a title" label="Title" variant="outlined" fullWidth/>
+                                        <TextField type="title" placeholder="Enter a title" onChange={(e) => {
+                                            changeTitle(e.target.value)}} 
+                                            label="Title" variant="outlined" fullWidth/>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <TextField label="Message" multiline rows={4} placeholder="Enter your expactations from this program" variant="outlined" fullWidth required />
+                                        <TextField label="Message" multiline rows={4} onChange={(e) => {
+                                            changeDesc(e.target.value)}} 
+                                            placeholder="Enter your expactations from this program" variant="outlined" fullWidth required />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        {button && <Button buttonStyle="btn--primary" style={{color:"#000"}} margin="1rem" >Submit</Button>}
+                                        {button && <Button buttonStyle="btn--primary" style={{color:"#000"}} margin="1rem" onClick={submitRequest}>Submit</Button>}
                                     </Grid>
                                 </Grid>
                             </form>
