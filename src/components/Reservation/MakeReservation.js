@@ -219,6 +219,7 @@ function MakeReservation() {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Grid container spacing={3} >
                 <Grid item xs={12} md={6} >
+
                   <CalendarPicker date={date} onChange={(newDate) => { { if (newDate.getDate() <= (currentDate.getDate() + 2) && newDate.getDate() >= currentDate.getDate() && currentDate.getMonth() == newDate.getMonth() && currentDate.getFullYear() == newDate.getFullYear()) { setDate(newDate); } else { alert("Invalid date (Only next 2 days can be picked)") } } }} />
                 </Grid>
               </Grid>

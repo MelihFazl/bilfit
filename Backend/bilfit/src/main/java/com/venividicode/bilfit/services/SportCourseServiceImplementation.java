@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SportCourseServiceImplementation implements SportCourseService
@@ -25,8 +27,6 @@ public class SportCourseServiceImplementation implements SportCourseService
     SportCenterRepository sportCenterRepository;
     @Autowired
     GymMemberRepository gymMemberRepository;
-    @Autowired
-    GymStaffRepository gymStaffRepository;
 
     private IgnoredPropertyCreator ignoredPropertyCreator;
 
@@ -49,6 +49,18 @@ public class SportCourseServiceImplementation implements SportCourseService
     }
 
     @Override
+    public List<SportCourse> getSportCoursesByParticipants(long id)
+    {
+        List<GymMember> gymMembers = gymMemberRepository.findById(id);
+        if(gymMembers == null)
+        {
+            return null;
+        }
+        else
+        return sportCourseRepository.findByParticipants(gymMembers.get(0));
+    }
+
+    @Override
     public List<SportCourse> getSportCourseByLocation(long sportCenterID)
     {
         List<SportCenter> sportCenter = sportCenterRepository.findById(sportCenterID);
@@ -58,39 +70,24 @@ public class SportCourseServiceImplementation implements SportCourseService
     }
 
     @Override
-    public SportCourse saveSportCourse(SportCourse course, long sportCenterID, List<Long> participantsID, List<Long> instructorsID)
+    public String saveSportCourse(SportCourse course, long sportCenterID, List<String> courseDays)
     {
         List<GymMember> participants = new ArrayList<GymMember>();
-        List<GymStaff> instructors = new ArrayList<GymStaff>();
-        for (int i= 0; i < participantsID.size(); i++)
-        {
-            List<GymMember> checkList = gymMemberRepository.findById(participantsID.get(i).longValue());
-            if(checkList != null)
-            {
-                participants.add(checkList.get(0));
-            }
-
-        }
-
-        for (int i= 0; i < instructorsID.size(); i++)
-        {
-            List<GymStaff> checkList = gymStaffRepository.findById(instructorsID.get(i).longValue());
-            if(checkList != null)
-            {
-                instructors.add(checkList.get(0));
-            }
-
-        }
         List<SportCenter> sportCenter = sportCenterRepository.findById(sportCenterID);
         if (sportCenter == null)
-            System.out.println("There is a problem with the SportCenter ID that is sent.");
+            return"There is a problem with the SportCenter ID that is sent.";
         else
         {
             course.setLocation(sportCenter.get(0));
         }
         course.setParticipants(participants);
-        course.setInstructors(instructors);
-        return sportCourseRepository.save(course);
+        Set<String> courseDaysMap = new HashSet<>();
+        for (int i = 0; i < courseDays.size(); i++)
+            courseDaysMap.add(courseDays.get(i));
+        course.setCourseDays(courseDaysMap);
+        course.setAvailableQuota(course.getMaxQuota());
+        sportCourseRepository.save(course);
+        return "New course has been successfully added.";
     }
 
     @Override
@@ -120,102 +117,58 @@ public class SportCourseServiceImplementation implements SportCourseService
     }
 
     @Override
-    public SportCourse addParticipant(long courseID, long participantID)
+    public String addParticipant(long courseID, long participantID)
     {
         List<SportCourse> sportCourses = sportCourseRepository.findById(courseID);
         List<GymMember> gymMembers = gymMemberRepository.findById(participantID);
         if(sportCourses == null ||gymMembers == null)
         {
-            return null;
+                return "Participant ID or Course ID is wrong.";
         }
         else
         {
             SportCourse course = sportCourses.get(0);
+            if (course.getAvailableQuota() == 0)
+                return "The quota for this course is full!";
             GymMember participant = gymMembers.get(0);
             List<GymMember> participants = course.getParticipants();
             for(int i=0; i < participants.size(); i++)
             {
                 if(participants.get(i).getID() == participantID)
                 {
-                    return course;
+                    return "You have already enrolled to this course.";
                 }
             }
             participants.add(participant);
             course.setParticipants(participants);
-            return patchCourse(course, courseID);
+            course.setAvailableQuota(course.getAvailableQuota()-1);
+            patchCourse(course, courseID);
+            return "You are successfully enrolled to this course";
         }
     }
 
     @Override
-    public SportCourse removeParticipant(long courseID, long participantID)
+    public String removeParticipant(long courseID, long participantID)
     {
         List<SportCourse> sportCourses = sportCourseRepository.findById(courseID);
         if(sportCourses == null)
         {
-            return null;
+            return "There is a problem related to Course ID";
         }
         SportCourse course = sportCourses.get(0);
         List<GymMember> participants = course.getParticipants();
         if (participants == null)
-            return null;
+            return "There is a problem related to participant ID";
 
         for (int i = 0; i < participants.size(); i++)
         {
             if(participants.get(i).getID() == participantID)
             {
                 participants.remove(i);
+                course.setAvailableQuota(course.getAvailableQuota()+1);
             }
         }
-        return patchCourse(course, courseID);
-    }
-
-    @Override
-    public SportCourse addInstructor(long courseID, long instructorID)
-    {
-        List<SportCourse> sportCourses = sportCourseRepository.findById(courseID);
-        List<GymStaff> gymStaffs = gymStaffRepository.findById(instructorID);
-        if(sportCourses == null ||gymStaffs == null)
-        {
-            return null;
-        }
-        else
-        {
-            SportCourse course = sportCourses.get(0);
-            GymStaff instructor = gymStaffs.get(0);
-            List<GymStaff> insturctors = course.getInstructors();
-            for(int i=0; i < insturctors.size(); i++)
-            {
-                if(insturctors.get(i).getID() == instructorID)
-                {
-                    return course;
-                }
-            }
-            insturctors.add(instructor);
-            course.setInstructors(insturctors);
-            return patchCourse(course, courseID);
-        }
-    }
-
-    @Override
-    public SportCourse removeInstructor(long courseID, long instructorID)
-    {
-        List<SportCourse> sportCourses = sportCourseRepository.findById(courseID);
-        if(sportCourses == null)
-        {
-            return null;
-        }
-        SportCourse course = sportCourses.get(0);
-        List<GymStaff> instructors = course.getInstructors();
-        if (instructors == null)
-            return null;
-
-        for (int i = 0; i < instructors.size(); i++)
-        {
-            if(instructors.get(i).getID() == instructorID)
-            {
-                instructors.remove(i);
-            }
-        }
-        return patchCourse(course, courseID);
+        patchCourse(course, courseID);
+        return "Done";
     }
 }

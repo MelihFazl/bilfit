@@ -56,7 +56,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 function Tournaments(){
-const userType = 0; // if its type is 0  => regular user 1=> staff
+  const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
   const [tournaments, setTournaments] = useState([]);
   //variables for unique button states 
   const [checkedState1, setCheckedState1] = useState(new Array().fill(false));
@@ -167,9 +167,10 @@ const userType = 0; // if its type is 0  => regular user 1=> staff
 
     return(
         <>
+        {/*The first stack will will be displayed for users*/}
         <Stack className='mainStackUser' direction="column" 
           spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
-           <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}> <h1 className='header'> My Tournaments</h1> </div>
+           <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}> <h1 className='header'>My Tournaments</h1> </div>
           <Stack className='mainStack' direction="row"
             justifyContent="center"
             alignItems="center"
@@ -254,6 +255,7 @@ const userType = 0; // if its type is 0  => regular user 1=> staff
             </div>
           </Stack>
         </Stack>
+        {/*The second stack will be displayed to staff*/}
         <Stack className='mainStackStaff' direction="column" 
           spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "none" : "block" }}    >
           <div  style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}> <h1 className='header' >Enrolled Tournaments</h1> </div>

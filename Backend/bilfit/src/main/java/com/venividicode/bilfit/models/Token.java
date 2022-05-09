@@ -31,7 +31,7 @@ public class Token {
 
     public String generateToken()
     {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@.-#?!";
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@.-*!";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
         while (salt.length() < 400) { // length of the random string.

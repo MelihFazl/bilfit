@@ -54,11 +54,84 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function User() {
     //variables
     const [button, setButton] = useState(true);//2 buttons may be needed
-    const [users, setUsers] = useState([]);
+    const [user, setUser] = useState([]);
     const [editClick, setEditClick] = useState(false);
     const [changePasswordClick, setChangePasswordClick] = useState(true);//when initial value false, doesn't work properly 
     const [openDialog, setOpenDialog] = useState(false);
     const [hidePassword, setHidePassowrd] = useState(true);
+
+    const [reqTitle, setReqTitle] = useState();
+    const [reqDescription, setReqDescription] = useState();
+
+    function submitRequest() {
+
+        // console.log(reqTitle)
+        // console.log(reqDescription)
+        console.log("reqDescription")
+        fetch('http://localhost:8080/user/gymProgram/sendRequest?memberId=' + user_id, {
+                
+                method: 'POST',
+                body : JSON.stringify({
+                    description : reqDescription,
+                }),
+                headers : {
+                    'Content-type' : 'application/json'
+                }
+            })
+            getUserData()
+
+    }
+
+    function changeTitle(newTitle) {
+        setReqTitle(newTitle)
+    }
+
+    function changeDesc(newDesc) {
+        setReqDescription(newDesc)
+    }
+
+    function changeWeight(user_id, newValue) {
+            fetch('http://localhost:8080/user/editGymMember/' + user_id, {
+                method: 'PATCH',
+                body : JSON.stringify({
+                    weight : newValue,
+                }),
+                headers : {
+                    'Content-type' : 'application/json'
+                }
+            })
+            getUserData()
+            getUserData()
+    }
+
+    function changeHeight(user_id, newValue) {
+            fetch('http://localhost:8080/user/editGymMember/' + user_id, {
+                method: 'PATCH',
+                body : JSON.stringify({
+                    height : newValue,
+                }),
+                headers : {
+                    'Content-type' : 'application/json'
+                }
+            })
+            getUserData()
+            getUserData()
+    }
+
+    function changePhoneNumber(user_id, newValue) {
+        console.log("first")
+            fetch('http://localhost:8080/user/editGymMember/' + user_id, {
+                method: 'PATCH',
+                body : JSON.stringify({
+                    phoneNumber : newValue,
+                }),
+                headers : {
+                    'Content-type' : 'application/json'
+                }
+            })
+            getUserData()
+            getUserData()
+    }
 
     const handleEditClick = () => {
         setEditClick(!editClick);
@@ -73,9 +146,6 @@ function User() {
 
 
 
-    var userId = 21902222;
-    //const { userId } = useParams(); Can be used in the future to get id from parameters
-
     //javascript mehods
 
     //in order to display the customly designed button
@@ -87,14 +157,29 @@ function User() {
     };
     window.addEventListener("resize", showButton);
 
-    //get users from fake rest api
-    useEffect(() => {
-        fetch('http://localhost:3000/users')
+    // get user id from local storage
+    let user_id = localStorage.getItem("userid");
+    let userId = 50 // delete this later
+
+    function getUserData() {
+        fetch('http://localhost:8080/user/'+ user_id)
             .then((res) => res.json())
             .then((result) => {
-                setUsers(result);
+                // console.log(result)
+                setUser(result[0]);
             });
+    }
+    //get users from fake rest api
+    useEffect(() => {
+        getUserData()
     }, []);
+
+    console.log(user)
+    //console.log(user[0])
+
+
+
+
 
     return (
         <><Box sx={{
@@ -118,7 +203,8 @@ function User() {
                 <Avatar alt="Remy Sharp" src="../images/gym_avatar.png"//dummy avatar, may change later
                     sx={{ height: '7.5rem', width: '7.5rem' }} />
                 <Typography variant="h4" sx={{ fontFamily: 'PT Sans, sans-serif' }} >
-                    {users.map((user) => user.id === userId ? (<div>{user.name}</div>) : (<></>))}
+                    {/* {users.map((user) => user.id === userId ? (<div>{user.name}</div>) : (<></>))} */}
+                    {user.name}
                 </Typography>
                 <Box sx={{ margin: '1rem' }}>
                     {editClick ? button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Finish Edit</Button>
@@ -138,9 +224,8 @@ function User() {
                                     ID:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    {/*this method finds the user with specified id and displays the user that is found in the array. 
-                                We may find a different method to accomplish this.*/}
-                                    {users.map((user) => user.id === userId ? (<div>{user.id}</div>) : (<></>))}
+                                    {/* {users.map((user) => user.id === userId ? (<div>{users.id}</div>) : (<></>))} */}
+                                    <div>{user.id}</div>
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
@@ -148,7 +233,8 @@ function User() {
                                     Gender:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    {users.map((user) => user.id === userId ? (<div>{user.gender}</div>) : (<></>))}
+                                    {/* {users.map((user) => user.id === userId ? (<div>{user.gender}</div>) : (<></>))} */}
+                                    {user.gender}
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
@@ -156,7 +242,8 @@ function User() {
                                     Birthdate:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    {users.map((user) => user.id === userId ? (<div>{user.birthdate}</div>) : (<></>))}
+                                    {/* {users.map((user) => user.id === userId ? (<div>{user.birthdate}</div>) : (<></>))} */}
+                                    {user.birthdate}
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
@@ -164,9 +251,15 @@ function User() {
                                     Weight:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    {/*Changing acquired input is not implemented, needs to be implemented after connection with database*/}
-                                    {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.weight}></TextField>) : (<></>)))
-                                        : (users.map((user) => user.id === userId ? (<div>{user.weight}</div>) : (<></>)))}
+                                    {editClick && 
+                                        (<TextField type="number" defaultValue={user.weight} onChange={(e) => {
+                                            //console.log(e.target.value);
+                                            changeWeight(user_id, e.target.value);
+                                          }}></TextField>)
+                                    }
+                                    {!editClick &&
+                                        (<div>{user.weight}</div>)
+                                    }
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
@@ -174,8 +267,15 @@ function User() {
                                     Height:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.height}></TextField>) : (<></>)))
-                                        : (users.map((user) => user.id === userId ? (<div>{user.height}</div>) : (<></>)))}
+                                    {editClick && 
+                                        (<TextField type="number" defaultValue={user.height} onChange={(e) => {
+                                            //console.log(e.target.value);
+                                            changeHeight(user_id, e.target.value);
+                                          }}></TextField>)
+                                    }
+                                    {!editClick &&
+                                        (<div>{user.height}</div>)
+                                    }
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
@@ -183,8 +283,15 @@ function User() {
                                     Phone Number:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    {editClick ? (users.map((user) => user.id === userId ? (<TextField type="number" defaultValue={user.phoneNumber}></TextField>) : (<></>)))
-                                        : (users.map((user) => user.id === userId ? (<div>{user.phoneNumber}</div>) : (<></>)))}
+                                {editClick && 
+                                        (<TextField type="number" defaultValue={user.phoneNumber} onChange={(e) => {
+                                            //console.log(e.target.value);
+                                            changePhoneNumber(user_id, e.target.value);
+                                          }}></TextField>)
+                                    }
+                                    {!editClick &&
+                                        (<div>{user.phoneNumber}</div>)
+                                    }
                                 </StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow component="th" scope="row"  >
@@ -192,7 +299,8 @@ function User() {
                                     Email:
                                 </StyledTableCell>
                                 <StyledTableCell className='cellItem' >
-                                    {users.map((user) => user.id === userId ? (<div>{user.email}</div>) : (<></>))}
+                                    {/* {user.map((user) => user.id === userId ? (<div>{user.email}</div>) : (<></>))} */}
+                                    {user.email}
                                 </StyledTableCell>
                             </StyledTableRow>
                         </TableBody>
@@ -256,13 +364,17 @@ function User() {
                             <form>
                                 <Grid container spacing={1}>
                                     <Grid item xs={12}>
-                                        <TextField type="title" placeholder="Enter a title" label="Title" variant="outlined" fullWidth/>
+                                        <TextField type="title" placeholder="Enter a title" onChange={(e) => {
+                                            changeTitle(e.target.value)}} 
+                                            label="Title" variant="outlined" fullWidth/>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <TextField label="Message" multiline rows={4} placeholder="Enter your expactations from this program" variant="outlined" fullWidth required />
+                                        <TextField label="Message" multiline rows={4} onChange={(e) => {
+                                            changeDesc(e.target.value)}} 
+                                            placeholder="Enter your expactations from this program" variant="outlined" fullWidth required />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        {button && <Button buttonStyle="btn--primary" style={{color:"#000"}} margin="1rem" >Submit</Button>}
+                                        {button && <Button buttonStyle="btn--primary" style={{color:"#000"}} margin="1rem" onClick={submitRequest}>Submit</Button>}
                                     </Grid>
                                 </Grid>
                             </form>

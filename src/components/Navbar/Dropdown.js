@@ -59,6 +59,78 @@ function Dropdown({ChooseMenu}) {
       </>
   );
   }
+  else if( ChooseMenu === "courseDropdown" ){//this will be returned for tournament dropdown menu on navbar
+      return (
+          <>
+          <ul
+            onClick={handleClick}
+            className={click ? 'dropdown-menu clicked' : 'dropdown-menu'}
+          >
+            {MenuItems[2].map((item, index) => {
+              return (
+                <li key={index}>
+                  <Link
+                    className={item.cName}
+                    to={item.path}
+                    onClick={() => setClick(false)}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+    );
+    }
+    else if( ChooseMenu === "staffTournamentDropdown"){//this will be returned for gym staff tournament dropdown menu on navbar
+      return (
+          <>
+          <ul
+            onClick={handleClick}
+            className={click ? 'dropdown-menu clicked' : 'dropdown-menu'}
+          >
+            {MenuItems[3].map((item, index) => {
+              return (
+                <li key={index}>
+                  <Link
+                    className={item.cName}
+                    to={item.path}
+                    onClick={() => setClick(false)}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+    );
+    }
+    else if( ChooseMenu === "staffCoursesDropdown"){//this will be returned for gym staff tournament dropdown menu on navbar
+      return (
+          <>
+          <ul
+            onClick={handleClick}
+            className={click ? 'dropdown-menu clicked' : 'dropdown-menu'}
+          >
+            {MenuItems[4].map((item, index) => {
+              return (
+                <li key={index}>
+                  <Link
+                    className={item.cName}
+                    to={item.path}
+                    onClick={() => setClick(false)}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+    );
+          }
   
 }
 

@@ -13,13 +13,17 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import "./Login.css";
 import { useParams, withRouter, useHistory } from 'react-router-dom';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import { useState } from "react";
 
 function Copyright(props) {
   
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+      {'Copyright Â© '}
       <Link color="inherit" href="">
         Bilfit
       </Link>{' '}
@@ -30,10 +34,13 @@ function Copyright(props) {
   );
 }
 
+
 const theme = createTheme();
 
 export default function SignIn() {
+
   const [myToken, setMyToken] = useState();
+  const [userType, setUserType] = useState("member");
   const handleSubmit = (event) => {
    
     
@@ -43,9 +50,13 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     })*/
-  
-    console.log("http://localhost:8080/user/login/" + data.get("email") + "?password=" + data.get("password"))
-    fetch("http://localhost:8080/user/login/" + data.get("email") + "?password=" + data.get("password")  , {
+    let adminLogin = (userType === "admin") ? true : false
+    let staffLogin = (userType === "staff") ? true : false
+
+    if(staffLogin)
+    {
+      console.log("http://localhost:8080/user/gymStaff/login/" + data.get("email") + "?password=" + data.get("password") )
+    fetch("http://localhost:8080/user/gymStaff/login/" + data.get("email") + "?password=" + data.get("password")  , {
       method:"POST",
       Accept:"*/*",
       "Accept-Encoding":"gzip, deflate, br",
@@ -53,11 +64,7 @@ export default function SignIn() {
   }).then((result)=>{   
           result.text().then((resultStr) => {
           let signal = true;  
-          if(resultStr.substring(0,2) === "GM")
-          {
-            localStorage.setItem("usertype", "member")
-          }
-          else if(resultStr.substring(0, 2) === "GS")
+          if(resultStr.substring(0, 2) === "GS")
           {
             localStorage.setItem("usertype", "staff")
           }
@@ -66,8 +73,6 @@ export default function SignIn() {
             alert(resultStr)
             signal = false;
           }
-          else 
-            localStorage.setItem("usertype", "admin")
           if(signal)
           {
             localStorage.setItem("usertoken", resultStr)
@@ -78,13 +83,75 @@ export default function SignIn() {
           }
       })
   })
+    }
+    else if(adminLogin)
+    {
+      fetch("http://localhost:8080/admin/login/" + data.get("email") + "?password=" + data.get("password")  , {
+        method:"POST",
+        Accept:"*/*",
+        "Accept-Encoding":"gzip, deflate, br",
+        Connection:"keep-alive"
+    }).then((result)=>{   
+            result.text().then((resultStr) => {
+            let signal = true; 
+            if(resultStr.length < 400)
+              signal = false;
+            if(signal)
+            {
+              localStorage.setItem("usertoken", resultStr)
+              localStorage.setItem("userid", data.get("email"))
+              setMyToken(resultStr);
+              localStorage.setItem("usertype", "admin")
+              history.push("/admin-panel");
+            }
+            else
+            {
+              alert(resultStr)
+            }
+        })
+    })
+    }
+    else
+    {
+      fetch("http://localhost:8080/user/gymMember/login/" + data.get("email") + "?password=" + data.get("password")  , {
+      method:"POST",
+      Accept:"*/*",
+      "Accept-Encoding":"gzip, deflate, br",
+      Connection:"keep-alive"
+  }).then((result)=>{   
+          result.text().then((resultStr) => {
+          let signal = true;  
+          if(resultStr.substring(0, 2) === "GM")
+          {
+            localStorage.setItem("usertype", "member")
+          }
+          else if(resultStr.length < 400)
+          {
+            alert(resultStr)
+            signal = false;
+          }
+          if(signal)
+          {
+            localStorage.setItem("usertoken", resultStr)
+            localStorage.setItem("userid", data.get("email"))
+            setMyToken(resultStr);
+            if(myToken !== "")
+            history.push("/home");
+          }
+      })
+  })
+    }
 
   
 
     
   };
   const history =  useHistory();
-  
+  const handleUserType = (event) => 
+  {
+    setUserType(event.target.value);
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -136,6 +203,20 @@ export default function SignIn() {
             >
                     Log In
             </Button>
+            <FormControl>
+      <FormLabel id="demo-row-radio-buttons-group-label">Login Type</FormLabel>
+      <RadioGroup
+        row
+        aria-labelledby="demo-row-radio-buttons-group-label"
+        name="row-radio-buttons-group"
+        onChange={handleUserType}
+        defaultValue= "member"
+      >
+        <FormControlLabel value="member" control={<Radio />} label="Gym Member" />
+        <FormControlLabel value="staff" control={<Radio />} label="Gym Staff" />
+        <FormControlLabel value="admin" control={<Radio />}  label="Admin" />
+      </RadioGroup>
+    </FormControl>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
@@ -155,4 +236,3 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
-

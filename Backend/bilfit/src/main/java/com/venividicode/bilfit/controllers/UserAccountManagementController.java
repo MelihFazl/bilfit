@@ -199,43 +199,48 @@ public class UserAccountManagementController {
         }
     }
 
-    @PostMapping("/login/{id}")
-    public String login(@RequestParam String password, @PathVariable("id") long userID) {
+    @PostMapping("/gymStaff/login/{id}")
+    public String loginGymStaff(@RequestParam String password, @PathVariable("id") long userID) {
         passwordHashHandler = PasswordHashHandler.getInstance();
         passwordHashHandler.setPassword(password);
-        List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(userID);
-        if (gymMembers == null) {
-            List<GymStaff> gymStaffs = userAccountManagementService.getGymStaffByID(userID);
-            if (gymStaffs == null)
-                return "No user was found with ID " + userID;
-            else {
-                GymStaff gymStaffLoggingIn = gymStaffs.get(0);
-                if (passwordHashHandler.hashPassword().equals(gymStaffLoggingIn.getHashedPassword())) {
-                    Token token = new Token();
-                    token.setInUse(true);
-                    token.setLastActive(LocalDateTime.now());
-                    String tokenStr = token.generateToken();
-                    tokenRepository.save(token);
-                    gymStaffLoggingIn.setToken(token);
-                    userAccountManagementService.updateGymStaff(gymStaffLoggingIn);
-                    return "GS " + tokenStr;
-                }
-                return "Password is incorrect.";
-            }
-        } else {
-            GymMember gymMemberLoggingIn = gymMembers.get(0);
-            if (passwordHashHandler.hashPassword().equals(gymMemberLoggingIn.getHashedPassword())) {
+        List<GymStaff> gymStaffs = userAccountManagementService.getGymStaffByID(userID);
+        if (gymStaffs == null)
+            return "No Gym Staff was found with ID " + userID;
+        else {
+            GymStaff gymStaffLoggingIn = gymStaffs.get(0);
+            if (passwordHashHandler.hashPassword().equals(gymStaffLoggingIn.getHashedPassword())) {
                 Token token = new Token();
                 token.setInUse(true);
                 token.setLastActive(LocalDateTime.now());
                 String tokenStr = token.generateToken();
                 tokenRepository.save(token);
-                gymMemberLoggingIn.setToken(token);
-                userAccountManagementService.updateGymMember(gymMemberLoggingIn);
-                return "GM " + tokenStr;
+                gymStaffLoggingIn.setToken(token);
+                userAccountManagementService.updateGymStaff(gymStaffLoggingIn);
+                return "GS " + tokenStr;
             }
-            return "Password is incorrect.";
+            return "Login credentials are incorrect";
         }
+    }
+
+    @PostMapping("/gymMember/login/{id}")
+    public String loginGymMember(@RequestParam String password, @PathVariable("id") long gymMemberID) {
+        passwordHashHandler = PasswordHashHandler.getInstance();
+        passwordHashHandler.setPassword(password);
+        List<GymMember> gymMembers = userAccountManagementService.getGymMemberByID(gymMemberID);
+        if (gymMembers == null)
+            return "No Gym Member was found with ID " + gymMemberID;
+        GymMember gymMemberLoggingIn = gymMembers.get(0);
+        if (passwordHashHandler.hashPassword().equals(gymMemberLoggingIn.getHashedPassword())) {
+            Token token = new Token();
+            token.setInUse(true);
+            token.setLastActive(LocalDateTime.now());
+            String tokenStr = token.generateToken();
+            tokenRepository.save(token);
+            gymMemberLoggingIn.setToken(token);
+            userAccountManagementService.updateGymMember(gymMemberLoggingIn);
+            return "GM " + tokenStr;
+        }
+        return "Login credentials are incorrect";
     }
 
     @PostMapping("/logout/{id}")
