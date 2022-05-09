@@ -17,4 +17,5 @@ public interface ReservationService {
     public List<Reservation> getByReservationActivity(SportActivity reservationActivity);
     public List<Reservation> getByReserver(long reserverID);
     public List<SportCenter> getAllSportCenters();
+    public String cancel(Reservation reservation);
 }
