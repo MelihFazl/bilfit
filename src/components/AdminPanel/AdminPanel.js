@@ -87,6 +87,7 @@ function AdminPanel() {
     const [editUserGender, setEditUserGender] = useState('');
     const [editUserBirthDate, setEditUserBirthDate] = useState('');
 
+    //these are added in order to sort and page the tables
     const pages = [5, 10, 15];
     const headCells1 = [
         { id: 'schoolID', label: 'ID' },
