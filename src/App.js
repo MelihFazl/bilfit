@@ -14,12 +14,12 @@ import Login from './components/Login/Login';
 import Contact from './components/Contact/Contact';
 import TournamentRequests from './components/Tournaments/TournamentRequests';
 import AdminPanel from './components/AdminPanel/AdminPanel';
-import AdminPanel2 from './components/AdminPanel/AdminPanel2';
 
 import EnrollSportsCourses from './components/SportsCourses/EnrollSportsCourses';
 import SportsCourses from './components/SportsCourses/SportsCourses';
 import "./App.css";
 import { useState } from "react";
+import AdminPanelStaff from './components/AdminPanel/AdminPanelStaff';
 
 function App() {
   const [userType, setUserType] = useState(localStorage.getItem("usertype"));
@@ -65,7 +65,6 @@ function App() {
           <Switch>
             <Route exact path="/" component={Login} />
             <>
-
               <Navbar />
               <Route exact path="/home" component={Home} />
               <Route path="/make-reservation" component={MakeReservation} />
@@ -75,7 +74,8 @@ function App() {
               <Route path="/enroll-tournament" component={EnrollTournaments} />
               <Route path="/my-profile" component={User} />
               <Route path="/contact" component={Contact} />
-              <Route path="/admin-panel" component={AdminPanel2} />
+              <Route path="/admin-panel" component={AdminPanel} />
+              <Route path="/admin-panel-staff" component={AdminPanelStaff} />
               <Route path="/total-reservations" component={MyReservations} />
               <Route path="/enrolled-tournaments" component={Tournaments} />
               <Route path="/available-tournaments" component={EnrollTournaments} />

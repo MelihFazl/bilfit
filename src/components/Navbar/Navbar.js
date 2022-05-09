@@ -117,7 +117,7 @@ function Navbar() {
     window.addEventListener("resize", showButton);
     const history = useHistory();
 
-    if (userType === "staff") {
+    if (userType === "staff" || userType === "admin") {
         return (
             <>
                 <nav className="navbar">
