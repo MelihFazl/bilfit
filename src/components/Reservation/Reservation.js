@@ -93,6 +93,8 @@ function Reservation() {
   const [searchSelection2, setSearchSelection2] = useState();
   //FOR GYM STAFF DELETING 
   const [open5, setOpen5] = React.useState(false);
+  const [open6, setOpen6] = React.useState(false);
+
   const [currentIndex, setCurrentIndex] = useState("");
 
   //methods
@@ -104,22 +106,34 @@ function Reservation() {
     setOpen5(true);
   };
 
+  const handleClose6 = () => {
+    setOpen6(false);
+  }
 
-  useEffect(() => {
+  const handleClickOpen6 = () => {
+    setOpen6(true);
+  }
+
+  const handleData = () =>
+  {
     if (userType === 1) {
-      fetch('http://localhost:8080/reservation/')
-        .then((res) => res.json())
-        .then((result) => {
-          setReservations(result);
-        });
-    }
-    else if (userType === 0) {
-      fetch('http://localhost:8080/reservation/getByUserID/' + localStorage.getItem("userid"))
-        .then((res) => res.json())
-        .then((result) => {
-          setReservations(result);
-        });
-    }
+    fetch('http://localhost:8080/reservation/')
+      .then((res) => res.json())
+      .then((result) => {
+        setReservations(result);
+      });
+  }
+  else if (userType === 0) {
+    fetch('http://localhost:8080/reservation/getByUserID/' + localStorage.getItem("userid"))
+      .then((res) => res.json())
+      .then((result) => {
+        setReservations(result);
+      });
+  }
+
+  };
+  useEffect(() => {
+    handleData()
   }, []);
 
   //Table actions for the gym member
@@ -236,19 +250,45 @@ function Reservation() {
   const handleSearchSelection2 = (event) => {
     setSearchSelection2(event.target.value);
   };
-  function handleAttendStatus(id) {
-    //THE ATTEND STATUS WILL BE CHANGED!!!
-    /*
-      fetch("http://localhost:8080/user/delete/" + id, {
-          method: "DELETE"
-      }).then((result) => {
-          result.text().then((actualResult) => {
-                alert(actualResult)
-                setUserData()
-
-          })
-      })*/
+  function handleAttendStatus(reservation) {
+      if(reservation.status === "Not_Attended")
+      {
+      fetch("http://localhost:8080/reservation/attend/" + reservation.id, {
+        method:"POST"
+      }).then(result => {
+        result.text().then((actualResult) => {
+            alert(actualResult)
+            handleData()
+            
+        })
+      })
+    }
+    else
+    {
+      alert("Cannot mark this reservation as attended!");
+    }
   }
+
+  function handleCancelStatus(reservation) {
+    if(reservation.status === "Not_Attended")
+    {
+    fetch("http://localhost:8080/reservation/cancel/" + reservation.id, {
+      method:"POST"
+    }).then(result => {
+      result.text().then((actualResult) => {
+          alert(actualResult)
+          handleData()
+          
+      })
+    })
+  }
+  else
+  {
+    alert("Cannot cancel that reservation 🤔");
+  }
+}
+
+  
 
 
   /**
@@ -501,9 +541,37 @@ function Reservation() {
                               }}
                             >
                               <IconButton aria-label="Example" onClick={() => { /* it will be modified according to array that comes from backend */
+                                handleClickOpen6();
+                                setCurrentIndex(reservation)
+                                console.log(reservation.id);
                               }}>
                                 <FontAwesomeIcon icon={faXmark} />
-                              </IconButton></Box>
+                              </IconButton>
+                              <Dialog
+                                open={open6}
+                                onClose={handleClose6}
+                                aria-labelledby="Warning"
+                                aria-describedby="Warning"
+                              >
+                                <DialogTitle id="alert-dialog-title">
+                                  {"Warning 😨"}
+                                </DialogTitle>
+                                <DialogContent>
+                                  <DialogContentText id="alert-dialog-description">
+                                    You are going to cancel the reservation. Are you sure?
+                                  </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                  <Button onClick={handleClose6}>Cancel</Button>
+                                  <Button onClick={() => {
+                                    setOpen6(false);
+                                    handleCancelStatus(currentIndex);
+                                  }} autoFocus>
+                                    I am Sure.
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
+                              </Box>
                             {/*Added for setting the attend user option*/}
                             <Box className='button2'
                               sx={{
@@ -526,7 +594,7 @@ function Reservation() {
                                 aria-describedby="Warning"
                               >
                                 <DialogTitle id="alert-dialog-title">
-                                  {"Warning 🥴"}
+                                  {"Warning 🤒"}
                                 </DialogTitle>
                                 <DialogContent>
                                   <DialogContentText id="alert-dialog-description">
@@ -537,7 +605,7 @@ function Reservation() {
                                   <Button onClick={handleClose5}>Cancel</Button>
                                   <Button onClick={() => {
                                     setOpen5(false);
-                                    handleAttendStatus(currentIndex.id);
+                                    handleAttendStatus(currentIndex);
                                   }} autoFocus>
                                     I am Sure.
                                   </Button>
