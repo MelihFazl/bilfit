@@ -3,8 +3,7 @@ package com.venividicode.bilfit.controllers;
 import com.venividicode.bilfit.helpers.PasswordHashHandler;
 import com.venividicode.bilfit.models.*;
 import com.venividicode.bilfit.repositories.TokenRepository;
-import com.venividicode.bilfit.services.AdminService;
-import com.venividicode.bilfit.services.UserAccountManagementService;
+import com.venividicode.bilfit.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +19,16 @@ public class UserAccountManagementController {
     @Autowired
     private AdminService adminService;
     private PasswordHashHandler passwordHashHandler = PasswordHashHandler.getInstance();
-
     @Autowired
     private TokenRepository tokenRepository;
-
+    @Autowired
+    private ReservationService reservationService;
+    @Autowired
+    private SportCourseService sportCourseService;
+    @Autowired
+    private TournamentService tournamentService;
+    @Autowired
+    private GymProgramService gymProgramService;
 
     @PostMapping("/gymMember/add")
     public String saveGymMember(@RequestParam String token, @RequestBody GymMember gymMember)    //test passed
@@ -108,10 +113,26 @@ public class UserAccountManagementController {
             return "User with ID " + userID + " does not exist.";
         else
         {
+            //Delete reservations
+            List<Reservation> checklist = reservationService.getByReserver(userID);
+            for (int i = 0; i < checklist.size(); i++)
+            {
+                reservationService.deleteReservationByID(checklist.get(i).getID());
+            }
+
+            //Delete course registrations
+            List<SportCourse>  sportCourses = sportCourseService.getSportCoursesByParticipants(userID);
+            for (int i = 0; i < sportCourses.size(); i++)
+            {
+                sportCourseService.removeParticipant(sportCourses.get(i).getID(), userID);
+            }
+            //Delete GymProgramRequests
+
+            //Delete Tournament registrations
+
             userAccountManagementService.deleteUserByID(userID);
             return "User with ID " + userID + " has been successfully deleted.";
         }
-
     }
 
     @PatchMapping("/changePassword/{id}")
