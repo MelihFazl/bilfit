@@ -9,6 +9,14 @@ import { TextField } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import CampaignIcon from '@mui/icons-material/Campaign';
+
+
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -59,16 +67,42 @@ function User() {
     const [changePasswordClick, setChangePasswordClick] = useState(true);//when initial value false, doesn't work properly 
     const [openDialog, setOpenDialog] = useState(false);
     const [hidePassword, setHidePassowrd] = useState(true);
+    // const [userType, setUserType] = useState(); // not using state for this, use localStorage.getItem("usertype")
 
-    const [reqTitle, setReqTitle] = useState();
     const [reqDescription, setReqDescription] = useState();
+    const [gymProgramRequests, setGymProgramRequests] = useState();
+    const [openPopUp, setOpenPopUp] = useState(false)
+    const [changePopUpClick, setChangePopUpClick] = useState(true)
+    const [requestOwnerName, setRequestOwnerName] = useState()
+    const [requestOwnerID, setRequestOwnerID] = useState()
+    const [reqDescriptionForStaff, setReqDescriptionForStaff] = useState()
+    const [program, setProgram] = useState()
+    const [requestOwner, setRequestOwner] = useState()
+    const [reqId, setReqId] = useState()
 
-    function submitRequest() {
+    
+    function writeProgram(req) {
+        // 1- display pop for staff to write program
+        // 2- send program (it will replace the latest program of the member)
+        // delete that request
 
+
+        
+        //console.log(member_id)  // works fine
+        setRequestOwnerName(req.owner.name)
+        setRequestOwnerID(req.owner.id)
+        setReqDescriptionForStaff(req.description)
+        setReqId(req.id);
+        setOpenPopUp(true);
+        //console.log(program)
+    }
+
+    function submitRequest(e) {
         // console.log(reqTitle)
         // console.log(reqDescription)
-        console.log("reqDescription")
-        fetch('http://localhost:8080/user/gymProgram/sendRequest?memberId=' + user_id, {
+        e.preventDefault();
+        //console.log(reqDescription)
+        fetch('http://localhost:8080/gymProgram/sendRequest?memberId=' + user_id, {
                 
                 method: 'POST',
                 body : JSON.stringify({
@@ -78,17 +112,11 @@ function User() {
                     'Content-type' : 'application/json'
                 }
             })
+            alert("Your gym program request has been sent!")
             getUserData()
-
     }
 
-    function changeTitle(newTitle) {
-        setReqTitle(newTitle)
-    }
 
-    function changeDesc(newDesc) {
-        setReqDescription(newDesc)
-    }
 
     function changeWeight(user_id, newValue) {
             fetch('http://localhost:8080/user/editGymMember/' + user_id, {
@@ -119,7 +147,7 @@ function User() {
     }
 
     function changePhoneNumber(user_id, newValue) {
-        console.log("first")
+        //console.log("first")
             fetch('http://localhost:8080/user/editGymMember/' + user_id, {
                 method: 'PATCH',
                 body : JSON.stringify({
@@ -140,6 +168,56 @@ function User() {
     const handleChangePasswordClick = () => {
         setChangePasswordClick(!changePasswordClick);
         setOpenDialog(changePasswordClick);
+    }
+
+    // added for write gym program pop-up
+    const handlePopUpClick = () => {
+        setChangePopUpClick(!changePopUpClick);
+        setOpenPopUp(changePopUpClick);
+    }
+
+    // added for after writing gym program and closing pop up
+    function closePopUpAndSend() {
+        //console.log(program)
+        // 1- get the user who sent the request (from state: requestOwnerID)
+        // 2- add gym program (save Gym Program)
+        // 3- delete that gym program request with DELETE
+
+
+        //1-
+        fetch('http://localhost:8080/user/'+ requestOwnerID)
+        .then((res) => res.json())
+        .then((result) => {
+            setRequestOwner(result);
+            //console.log(result);
+        });
+        //console.log(requestOwner)
+
+        //2-
+        fetch('http://localhost:8080/gymProgram/sendProgram/?memberId='+ requestOwnerID+'&staffId='+user_id, {
+                
+            method: 'POST',
+            body : JSON.stringify({
+                description : program,
+            }),
+            headers : {
+                'Content-type' : 'application/json'
+            }
+        })
+            
+        // 3-
+        fetch('http://localhost:8080/gymProgram/deleteRequest/' + reqId, {
+            method: 'DELETE'
+        }).then((result) => {
+            result.text().then((actualResult) =>{
+                getUserData()
+                //
+                setChangePopUpClick(!changePopUpClick);
+                setOpenPopUp(false);
+            })
+        })
+
+        
     }
 
     const handleHidePassword = () => setHidePassowrd(!hidePassword);
@@ -168,17 +246,72 @@ function User() {
                 // console.log(result)
                 setUser(result[0]);
             });
+        if (localStorage.getItem("usertype") == "staff" ) {
+            fetch('http://localhost:8080/gymProgram/getProgramRequests')
+            .then((res2) => res2.json())
+            .then((result2) => {
+                // console.log(result)
+                setGymProgramRequests(result2);
+            });
+        }
+        
+        
+
     }
-    //get users from fake rest api
+
+    function storeProgram(e) {
+        setProgram(e.target.value)
+        //console.log(program)
+    }
+
+    
+
+    
     useEffect(() => {
         getUserData()
     }, []);
 
-    console.log(user)
+    //console.log(user)
+    //console.log(gymProgramRequests)
     //console.log(user[0])
 
 
+    const boxStyle2 = {
+        float: 'left',
+        width: '50%',
+        padding: '3rem',
+    }
 
+    const boxStyle3 = {
+        
+        marginLeft: "25%",
+        width: '50%',
+        padding: '3rem',
+    }
+
+    
+
+
+    const headerStyle2 = {
+        /**marginLeft: '5rem',
+        marginTop: '3rem',*/
+        fontFamily: 'Inter, sans-serif',
+        textAlign: 'center',
+    };
+
+    const listStyle = {
+        /**marginTop: '2rem',
+        marginRight: '30rem',
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: '#6D8299',*/
+        fontFamily: 'Inter, sans-serif',
+        maxHeight: '40vh',
+        overflow: 'auto',
+        border: '2px solid #B3ADAB',
+        marginTop: '2rem',
+        backgroundColor: '#D9D7D7',
+    }
 
 
     return (
@@ -347,13 +480,39 @@ function User() {
                 </DialogActions>
             </Dialog>
 
+            {/*This is created for the gym staff to write a gym program*/}
+            <Dialog open={openPopUp} onClose={handlePopUpClick}>
+                <DialogTitle>Write gym program for Gym Member "{requestOwnerName}" with id "{requestOwnerID}"</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {reqDescriptionForStaff}
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        color="secondary"
+                        id="name"
+                        label="Write here..."
+                        fullWidth
+                        variant="standard"
+                        onChange={(e) => {storeProgram(e)}}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closePopUpAndSend}>Send</Button>
+                </DialogActions>
+            </Dialog>
+
+            
+
 
 
         </Box >
 
             <div className="App">
                 <Grid>
-                    <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto", marginBottom: '1rem'}}>
+                    {localStorage.getItem("usertype") == "member" && 
+                        <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto", marginBottom: '1rem'}}>
                         <CardContent>
                             <Typography gutterBottom variant="h5">
                                 Request Gym Program
@@ -364,22 +523,48 @@ function User() {
                             <form>
                                 <Grid container spacing={1}>
                                     <Grid item xs={12}>
-                                        <TextField type="title" placeholder="Enter a title" onChange={(e) => {
-                                            changeTitle(e.target.value)}} 
-                                            label="Title" variant="outlined" fullWidth/>
-                                    </Grid>
-                                    <Grid item xs={12}>
                                         <TextField label="Message" multiline rows={4} onChange={(e) => {
-                                            changeDesc(e.target.value)}} 
+                                            setReqDescription(e.target.value)}} 
                                             placeholder="Enter your expactations from this program" variant="outlined" fullWidth required />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        {button && <Button buttonStyle="btn--primary" style={{color:"#000"}} margin="1rem" onClick={submitRequest}>Submit</Button>}
+                                        {button && <Button buttonStyle="btn--primary" style={{color:"#000"}} margin="1rem" onClick={(e) => {submitRequest(e)}}>Submit</Button>}
                                     </Grid>
                                 </Grid>
                             </form>
                         </CardContent>
                     </Card>
+                    }
+
+                {localStorage.getItem("usertype") == "member" && user.program &&
+                    <Box  style={boxStyle3}>
+                    <h2 style={headerStyle2}>Gym Programs</h2>
+                    <List style={listStyle}>
+                        <ListItem>
+                            <ListItemIcon><CampaignIcon /></ListItemIcon>
+                            <ListItemText primary={user.program === null ? "..." : user.program.description} />
+                        </ListItem>
+                    </List>
+                </Box>
+                }
+                {localStorage.getItem("usertype") == "staff" && 
+                    <Box  style={boxStyle3}>
+                    <h2 style={headerStyle2}>Gym Program Requests</h2>
+                    <List style={listStyle}>
+                        {gymProgramRequests &&
+                            gymProgramRequests.slice(0).reverse().map((request, index) =>
+                            (
+                            <ListItemButton onClick={(e) => {writeProgram(request)}}>
+                                <ListItemIcon><CampaignIcon /></ListItemIcon>
+                                <ListItemText primary={request.description} secondary={request.owner.name+" (id:"+request.owner.id+")"} />
+                            </ListItemButton>
+                            ))
+                        }
+                    </List>
+                </Box>
+                }
+                    
+                
                 </Grid>
             </div>
         </>
