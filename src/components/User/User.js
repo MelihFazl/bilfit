@@ -58,8 +58,12 @@ function User() {
     const [editClick, setEditClick] = useState(false);
     const [changePasswordClick, setChangePasswordClick] = useState(true);//when initial value false, doesn't work properly 
     const [openDialog, setOpenDialog] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [weight, setWeight] = useState();
+    const [height, setHeight] = useState();
+    const [phone, setPhone] = useState();
+    const [mail, setMail] = useState();
     const [hidePassword, setHidePassowrd] = useState(true);
-
     const [reqTitle, setReqTitle] = useState();
     const [reqDescription, setReqDescription] = useState();
 
@@ -102,6 +106,7 @@ function User() {
             })
             getUserData()
             getUserData()
+
     }
 
     function changeHeight(user_id, newValue) {
@@ -134,7 +139,10 @@ function User() {
     }
 
     const handleEditClick = () => {
-        setEditClick(!editClick);
+        setOpen(true);
+    }
+    const handleEditClick2 = () => {
+        setOpen(false);
     }
 
     const handleChangePasswordClick = () => {
@@ -173,8 +181,6 @@ function User() {
     useEffect(() => {
         getUserData()
     }, []);
-
-    console.log(user)
     //console.log(user[0])
 
 
@@ -347,6 +353,43 @@ function User() {
                 </DialogActions>
             </Dialog>
 
+
+            {/*******************************************************************/}
+            <Dialog open={open} onClose={handleEditClick}>
+                <DialogTitle>Edit Profile</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Edit Profile:
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="email"
+                        color="secondary"
+                        label="email"
+                        placeholder={user.mail}
+                        type= "text"
+                        fullWidth
+                        variant="standard"
+                      
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        color="secondary"
+                        id="phonenumber"
+                        placeholder={user.phoneNumber}
+                        label="Phone Number"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleEditClick2}>Cancel</Button>
+                    <Button onClick={handleChangePasswordClick}>Submit</Button>
+                </DialogActions>
+            </Dialog>                        
 
 
         </Box >

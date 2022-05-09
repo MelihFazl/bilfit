@@ -81,15 +81,37 @@ function Navbar() {
     const handleClick = () => setClick(!click);
     const handleLogout = () => {
         let id = localStorage.getItem("userid")
-        fetch("http://localhost:8080/user/logout/" + id, {
-            method: "POST"
-        }).then((result) => {
-            result.text().then((actualResult) => {
-                console.log(actualResult)
-                if (actualResult.includes("success"))
-                    history.push("/")
+        if(localStorage.getItem("usertype") !== "admin")
+        {
+            fetch("http://localhost:8080/user/logout/" + id, {
+                method: "POST"
+            }).then((result) => {
+                result.text().then((actualResult) => {
+               
+                    if(actualResult.includes("successfully"))
+                    {
+                        localStorage.setItem("usertoken", "")
+                        localStorage.setItem("userid", "")
+                        history.push("/")
+                    }
+                })
             })
-        })
+        }
+        else
+        {
+            fetch("http://localhost:8080/admin/logout/" + id, {
+                method: "POST"
+            }).then((result) => {
+                result.text().then((actualResult) => {
+                    if(actualResult.includes("successfully"))
+                    {
+                        localStorage.setItem("usertoken", "");
+                        localStorage.setItem("userid", "")
+                        history.push("/")
+                    }
+                })
+            })
+        }
     }
     const closeMobileMenu = () => setClick(false);
     window.addEventListener("resize", showButton);
