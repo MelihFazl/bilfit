@@ -26,6 +26,7 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons/faPenToSquare";
 import { Button } from "../Navbar/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons/faTrashCan";
+import { faBan } from "@fortawesome/free-solid-svg-icons";
 import Input from "../Controls/Input.js";
 import {
   stableSort,
@@ -70,7 +71,7 @@ const gender = [
     label: "Female",
   },
 ];
-function AdminPanel() {
+function GymStaffPanel() {
   const [users, setUsers] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);
@@ -199,9 +200,10 @@ function AdminPanel() {
     });
   }
 
-  function handleDelete(id)
+  function handleBan(id)
   {
-      fetch("http://localhost:8080/user/delete/" + id, {
+    //USER NEEDS TO BE RESTRICTED!!!
+      /*fetch("http://localhost:8080/user/delete/" + id, {
           method: "DELETE"
       }).then((result) => {
           result.text().then((actualResult) => {
@@ -209,7 +211,7 @@ function AdminPanel() {
                 setUserData()
 
           })
-      })
+      })*/
   }
   const handleClickOpen5 = () => {
     setOpen5(true);
@@ -354,151 +356,8 @@ function AdminPanel() {
           marginTop: "2rem",
         }}
       >
-        <Button onClick={handleClickOpen}> Add User </Button>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Add User </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Please enter the necessary information of the new user.
-            </DialogContentText>
-            <TextField
-              className="newUser"
-              onChange={(event) => setNewUserID(event.target.value)}
-              autoFocus
-              margin="dense"
-              id="newUserID"
-              label="User ID"
-              type="number"
-              required={true}
-              fullWidth
-              variant="standard"
-              color="secondary"
-              errorText="Please enter only 8 digits number"
-              focused
-            />
-            <TextField
-              className="newUser"
-              onChange={(event) => setNewUserName(event.target.value)}
-              autoFocus
-              margin="dense"
-              id="newUserName"
-              label="User Full Name"
-              required={true}
-              type="text"
-              color="secondary"
-              fullWidth
-              variant="standard"
-              focused
-            />
-            <TextField
-              className="newUser"
-              onChange={(event) => setNewUserMail(event.target.value)}
-              autoFocus
-              margin="dense"
-              id="newUserMail"
-              label="User Mail"
-              color="secondary"
-              required={true}
-              type="mail"
-              fullWidth
-              variant="standard"
-              focused
-            />
-            <TextField
-              className="newUser"
-              onChange={(event) => setNewUserPassword(event.target.value)}
-              autoFocus
-              margin="dense"
-              id="newUserPassword"
-              label="User Password"
-              type="password"
-              required={true}
-              fullWidth
-              variant="standard"
-              color="secondary"
-              focused
-            />
-            <TextField
-              className="newUser"
-              onChange={(event) => setNewUserBirthDate(event.target.value)}
-              autoFocus
-              margin="dense"
-              id="newUserBirthDate"
-              label="User Birth Date"
-              required={true}
-              color="secondary"
-              type="date"
-              fullWidth
-              variant="standard"
-              focused
-            />
-            <TextField
-              className="newUser"
-              onChange={(event) => setNewUserPhone(event.target.value)}
-              autoFocus
-              margin="dense"
-              id="newUserBirthDate"
-              label="User Phone Number"
-              required={true}
-              color="secondary"
-              type="text"
-              fullWidth
-              variant="standard"
-              focused
-            />
-            <TextField
-              className="newUser"
-              autoFocus
-              id="newUserGender"
-              margin="dense"
-              select
-              label="Select User Gender"
-              required={true}
-              value={newUserGender}
-              color="secondary"
-              onChange={(event) => {
-                setNewUserGender(event.target.value);
-              }}
-              helperText="Please select Gender"
-              focused
-            >
-              {gender.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                setOpen(false);
-                cancelNewUser();
-              }}
-            >
-              Cancel{" "}
-            </Button>
-            <Button
-              onClick={
-                newUserID != "" &&
-                newUserMail != "" &&
-                newUserGender != "" &&
-                newUserBirthDate != "" &&
-                newUserGender != ""
-                  ? (event) => {
-                      setOpen(false);
-                      handleAddGymMember();
-                    }
-                  : (event) =>
-                      alert(
-                        "All fields must be filled"
-                      ) /*ADD SONRASI SIFIRLAMAK LAZIM*/
-              }
-            >
-              Add
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {/*<Button onClick={handleClickOpen}> Add User </Button>*/}
+
       </div>
       <Stack
         className="mainStackUser"
@@ -636,137 +495,6 @@ function AdminPanel() {
                           spacing={0}
                         >
                           <Box
-                            className="editButton"
-                            sx={{
-                              "& > :not(style)": {
-                                m: 1,
-                              },
-                            }}
-                          >
-                            <IconButton
-                              aria-label="Example"
-                              onClick={() => {
-                                setOpen2(true);
-                                setCurrentIndex(user);
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faPenToSquare} />
-                            </IconButton>
-                          </Box>
-                          <Dialog
-                            open={open2}
-                            onClose={() => {
-                              setOpen2(false);
-                            }}
-                          >
-                            <DialogTitle>Edit User Information</DialogTitle>
-                            <DialogContent>
-                              <DialogContentText>
-                                Please enter the information that you want to
-                                change.
-                              </DialogContentText>
-                              <TextField
-                                className="editUser"
-                                onChange={(event) =>
-                                  setEditUserPhone(event.target.value)
-                                }
-                                autoFocus
-                                margin="dense"
-                                id="newUserBirthDate"
-                                label="User Phone Number"
-                                required={true}
-                                color="secondary"
-                                type="text"
-                                fullWidth
-                                variant="standard"
-                                placeholder={currentIndex.phoneNumber}
-                                focused
-                              />
-                              <TextField
-                                className="editUser"
-                                onChange={(event) =>
-                                  setEditUserName(event.target.value)
-                                }
-                                autoFocus
-                                margin="dense"
-                                id="UserName"
-                                label="User Full Name"
-                                placeholder={currentIndex.name}
-                                color="secondary"
-                                type="text"
-                                fullWidth
-                                variant="standard"
-                                focused
-                              />
-                              <TextField
-                                className="editUser"
-                                onChange={(event) =>
-                                  setEditUserMail(event.target.value)
-                                }
-                                autoFocus
-                                margin="dense"
-                                id="UserMail"
-                                label="User Mail"
-                                placeholder={currentIndex.email}
-                                color="secondary"
-                                type="mail"
-                                fullWidth
-                                variant="standard"
-                                focused
-                              />
-                              <TextField
-                                className="editUser"
-                                onChange={(event) =>
-                                  setEditUserWeight(event.target.value)
-                                }
-                                autoFocus
-                                margin="dense"
-                                id="UserMail"
-                                label="User Weight"
-                                placeholder={currentIndex.weight}
-                                color="secondary"
-                                type="number"
-                                fullWidth
-                                variant="standard"
-                                focused
-                              />
-                              <TextField
-                                className="editUser"
-                                onChange={(event) =>
-                                  setEditUserHeight(event.target.value)
-                                }
-                                autoFocus
-                                margin="dense"
-                                id="UserMail"
-                                label="User Height"
-                                placeholder={currentIndex.height}
-                                color="secondary"
-                                type="number"
-                                fullWidth
-                                variant="standard"
-                                focused
-                              />
-                            </DialogContent>
-                            <DialogActions>
-                              <Button
-                                onClick={() => {
-                                  setOpen2(false);
-                                  cancelEditingUser();
-                                }}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                onClick={() => {
-                                  setOpen2(false);
-                                  handleEditGymMember(currentIndex.id);
-                                }}
-                              >
-                                Submit
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
-                          <Box
                             className="deleteButton"
                             sx={{
                               "& > :not(style)": {
@@ -781,7 +509,7 @@ function AdminPanel() {
                                 setCurrentIndex(user);
                               }}
                             >
-                              <FontAwesomeIcon icon={faTrashCan} />
+                              <FontAwesomeIcon icon={faBan} />
                             </IconButton>
 
         
@@ -796,14 +524,14 @@ function AdminPanel() {
                               </DialogTitle>
                               <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
-                                  You are about to delete a user. Are you sure?
+                                  You are about to restrict this user. Are you sure?
                                 </DialogContentText>
                               </DialogContent>
                               <DialogActions>
                                 <Button onClick={handleClose5}>Cancel</Button>
                                 <Button onClick={() => {
                                 setOpen5(false);
-                                handleDelete(currentIndex.id);
+                                handleBan(currentIndex.id);
                               }} autoFocus>
                                   I am Sure.
                                 </Button>
@@ -837,4 +565,4 @@ function AdminPanel() {
     </>
   );
 }
-export default AdminPanel;
+export default GymStaffPanel;
