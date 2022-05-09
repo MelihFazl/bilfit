@@ -117,7 +117,7 @@ function Navbar() {
     window.addEventListener("resize", showButton);
     const history = useHistory();
 
-    if (userType === "staff" || userType === "admin") {
+    if (userType === "staff" ) {
         return (
             <>
                 <nav className="navbar">
@@ -154,6 +154,11 @@ function Navbar() {
                                     Courses <FontAwesomeIcon icon={faCaretDown} width='30px' />
                                 </Link>
                                 {dropdown3 && <Dropdown ChooseMenu={"staffCoursesDropdown"} />}
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/all-members" className="nav-links" onClick={closeMobileMenu} >
+                                    All Members
+                                </Link>
                             </li>
                             <li className="nav-item">
                                 <Link to={{ pathname: "/my-profile/" + userId }} className="nav-links" onClick={closeMobileMenu}>
@@ -224,8 +229,47 @@ function Navbar() {
                     </div>
                 </nav>
             </>
-        )
+        );
     }
+    if (userType === "admin" ) {
+        return (
+            <>
+                <nav className="navbar">
+                    <div className="navbar-container">
+                        <Link to="/home" className="navbar-logo" onClick={closeMobileMenu}>
+                            Bilfit
+                            <img src="/images/bilfit_logo.png" alt="Bilfit Logo" className="bilfit-logo" />
+                        </Link>
+                        <div className="menu-icon" onClick={handleClick}>
+                            {
+                                click ? (<FontAwesomeIcon icon={faCircleXmark} />) : (<FontAwesomeIcon icon={faBars} />)
+                            }
+                        </div>
+                        <ul className={click ? "nav-menu active" : "nav-menu"/*this will show side navbar according to the  */}>
+                            <li className="nav-item">
+                                <Link to="/admin-panel" className="nav-links" onClick={closeMobileMenu} >
+                                    Add Member
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/admin-panel-staff" className="nav-links" onClick={closeMobileMenu} >
+                                    Add Staff 
+                                </Link>
+                                {dropdown1 && <Dropdown ChooseMenu={"reservationDropdown"} />}
+                            </li>
+                            
+                            
+                            
+                        </ul>
+                        <Link className='btn-mobile'>
+                            {button && <Button buttonStyle="btn--outline" onClick={handleLogout}>Log Out</Button>}
+                        </Link>
+                    </div>
+                </nav>
+            </>
+        );
+    }
+    
 }
 export default Navbar
 

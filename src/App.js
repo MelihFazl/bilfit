@@ -14,7 +14,7 @@ import Login from './components/Login/Login';
 import Contact from './components/Contact/Contact';
 import TournamentRequests from './components/Tournaments/TournamentRequests';
 import AdminPanel from './components/AdminPanel/AdminPanel';
-
+import GymStaffPanel from './components/AdminPanel/GymStaffPanel';
 import EnrollSportsCourses from './components/SportsCourses/EnrollSportsCourses';
 import SportsCourses from './components/SportsCourses/SportsCourses';
 import "./App.css";
@@ -83,6 +83,7 @@ function App() {
               <Route path="/enrolled-courses" component={SportsCourses} />
               <Route path="/my-courses" component={SportsCourses} />
               <Route path="/available-courses" component={EnrollSportsCourses} />
+              <Route path="/all-members" component={GymStaffPanel} />
 
             </>
           </Switch>

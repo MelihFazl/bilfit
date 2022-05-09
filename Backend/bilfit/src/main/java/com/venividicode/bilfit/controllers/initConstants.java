@@ -45,7 +45,7 @@ public class initConstants {
         badmintonNorth.setName("Main Badminton-North");
         badmintonNorth.setMaxQuota(4);
         TimeSlotOnDay timeSlotOnDay = new TimeSlotOnDay();
-        timeSlotOnDay.setDate(LocalDate.of(2022, 05, 15));
+        timeSlotOnDay.setDate(LocalDate.of(2022, 05, 11));
         TimeSlot timeSlot1 = new TimeSlot();
         timeSlot1.setTimeSlot("10.00-12.00");
         timeSlot1.setCurrentCount(0);
@@ -92,7 +92,7 @@ public class initConstants {
         System.out.println("NORTH: " + badmintonNorth.getID());
         System.out.println("SOTUH: " + badmintonSouth.getID());
         if (badmintonNorth.getID() == badmintonSouth.getID()) {
-            fieldRepository.save(badmintonSouth);
+            //fieldRepository.save(badmintonSouth);
         }
 
 
