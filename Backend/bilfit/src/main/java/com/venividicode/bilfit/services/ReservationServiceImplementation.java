@@ -264,6 +264,7 @@ public class ReservationServiceImplementation implements ReservationService{
             {
                 TimeSlot curTimeSlot = new TimeSlot();
                 curTimeSlot.setTimeSlot(timeSlots.get(i));
+                curTimeSlot.setCurrentCount(0);
                 timeSlotRepository.save(curTimeSlot);
                 timeSlots1.add(curTimeSlot);
             }
