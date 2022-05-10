@@ -171,7 +171,7 @@ function Reservation() {
 
   //Table actions for the gym member
   const headCells1 = [
-    { id: 'resDate', label: 'Date' },
+    { id: 'reservationDate', label: 'Date' },
     { id: 'resTime', label: 'Time' },
     { id: 'resActivity', label: 'Activity' },
     { id: 'resLocation', label: 'Location' },
@@ -199,7 +199,7 @@ function Reservation() {
           return items;
         else
           switch (searchSelection) {
-            case "resDate": return items.filter(x => x.reservationDate.includes(target.value));
+            case "reservationDate": return items.filter(x => x.reservationDate.includes(target.value));
             case "resTime": return items.filter(x => x.reservedTimeInterval.includes(target.value));
             case "resActivity": return items.filter(x => x.reservationActivity.activity.includes(target.value));
             case "resLocation": return items.filter(x => x.reservationField.name.includes(target.value));
@@ -228,9 +228,9 @@ function Reservation() {
 
   //Table actions for the gym staff
   const headCells2 = [
-    { id: 'resDate', label: 'Date' },
-    { id: 'resTime', label: 'Time' },
-    { id: 'resActivity', label: 'Activity' },
+    { id: 'reservationDate', label: 'Date' },
+    { id: 'reservedTimeInterval', label: 'Time' },
+    { id: 'reservationActivity-activity', label: 'Activity' },//?
     { id: 'resSportsCenter', label: 'Sports Center' },
     { id: 'resLocation', label: 'Location' },
     { id: 'reserverName', label: 'Reserver Name' },
@@ -278,11 +278,14 @@ function Reservation() {
           return items;
         else
           switch (searchSelection2) {
-            case "resDate": return items.filter(x => x.reservationDate.includes(target.value));
-            case "resTime": return items.filter(x => x.reservedTimeInterval.includes(target.value));
-            case "resActivity": return items.filter(x => x.reservationActivity.activity.includes(target.value));
+            case "reservationDate": return items.filter(x => x.reservationDate.includes(target.value));
+            case "reservedTimeInterval": return items.filter(x => x.reservedTimeInterval.includes(target.value));
+            case "activity": return items.filter(x => x.reservationActivity.activity.includes(target.value));
             case "resLocation": return items.filter(x => x.reservationField.name.includes(target.value));
             case "resSportsCenter": return items.filter(x => x.reservationPlace.name.includes(target.value));
+            case "resStatus": return items.filter(x => x.status.includes(target.value));
+            case "resStatus": return items.filter(x => x.status.includes(target.value));
+            case "resStatus": return items.filter(x => x.status.includes(target.value));
             case "resStatus": return items.filter(x => x.status.includes(target.value));
             default: return items.filter(x => x.reservationActivity.activity.includes(target.value));
           }
@@ -432,13 +435,13 @@ function Reservation() {
                   <TableBody >
                     {reservationsAfterSortingAndPaging().map((reservation, index) => (
                       <StyledTableRow key={reservation.id} component="th" scope="row"  >
-                        <StyledTableCell className='cellItem'>
+                        <StyledTableCell className='cellItem' >
                           {reservation.reservationDate}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
                           {reservation.reservedTimeInterval}
                         </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
+                        <StyledTableCell className='cellItem' value={reservation.reservationActivity.activity}>
                           {reservation.reservationActivity.activity}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem'  >

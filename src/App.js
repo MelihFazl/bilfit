@@ -70,7 +70,7 @@ function App() {
               <Route path="/make-reservation" component={MakeReservation} />
               <Route path="/my-reservations" component={MyReservations} />
               <Route path="/my-tournaments" component={Tournaments} />
-              <Route path="/tournament-requests" component={TournamentRequests} />
+              {/*<Route path="/tournament-requests" component={TournamentRequests} />*/}
               <Route path="/enroll-tournament" component={EnrollTournaments} />
               <Route path="/my-profile" component={User} />
               <Route path="/contact" component={Contact} />

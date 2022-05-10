@@ -100,7 +100,7 @@ function GymStaffPanel() {
 
   const pages = [5, 10, 15];
   const headCells1 = [
-    { id: "schoolID", label: "ID" },
+    { id: "id", label: "ID" },
     { id: "email", label: "Mail" },
     { id: "name", label: "Full Name" },
     { id: "phoneNumber", label: "Phone Number" },
@@ -108,13 +108,6 @@ function GymStaffPanel() {
     { id: "gender", label: "Gender" },
     { id: "weight", label: "Weight" },
     { id: "height", label: "Height" },
-    { id: "resButton1", label: "", disableSorting: true },
-  ];
-  const headCells2 = [
-    { id: "schoolID", label: "ID" },
-    { id: "email", label: "Mail" },
-    { id: "name", label: "Full Name" },
-    { id: "phoneNumber", label: "Phone Number" },
     { id: "resButton1", label: "", disableSorting: true },
   ];
 
@@ -272,8 +265,8 @@ function GymStaffPanel() {
         if (target.value == "") return items;
         else
           switch (searchSelection) {
-            case "schoolID":
-              return items.filter((x) => x.id.includes(target.value));
+            case "id":
+              return items.filter((x) => x.id.toString().includes(target.value));
             case "email":
               return items.filter((x) => x.email.includes(target.value));
             case "name":
@@ -285,9 +278,9 @@ function GymStaffPanel() {
             case "gender":
               return items.filter((x) => x.gender.includes(target.value));
             case "weight":
-              return items.filter((x) => x.weight.includes(target.value));
+              return items.filter((x) => x.weight.toString().includes(target.value));
             case "height":
-              return items.filter((x) => x.height.includes(target.value));
+              return items.filter((x) => x.height.toString().includes(target.value));
             default:
               return items.filter((x) => x.name.includes(target.value));
           }
