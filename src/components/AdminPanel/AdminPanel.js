@@ -163,7 +163,7 @@ function AdminPanel() {
           name: newUserName,
           hashedPassword: newUserPassword,
           email: newUserMail,
-          phoneNumber: newUserPassword,
+          phoneNumber: newUserPhone,
           birthday: new Date(newUserBirthDate),
           gender: newUserGender,
         }),

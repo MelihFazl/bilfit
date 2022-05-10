@@ -51,6 +51,7 @@ public class UserAccountManagementController {
             if (tokenMatch) {
                 passwordHashHandler.setPassword(gymMember.getHashedPassword());
                 gymMember.setHashedPassword(passwordHashHandler.hashPassword());
+                gymMember.setIsRestricted(false);
                 if (userAccountManagementService.saveGymMember(gymMember) != null)
                     return "Gym Member with name (" + gymMember.getName() + ") and with id (" + gymMember.getID() + ") has been added.";
                 else
@@ -113,37 +114,62 @@ public class UserAccountManagementController {
     @DeleteMapping("/delete/{id}")
     public String deleteUserWithID(@PathVariable("id") long userID) //test passed
     {
+
         if (userAccountManagementService.getUserByID(userID) == null)
             return "User with ID " + userID + " does not exist.";
         else
         {
-            //Delete reservations
-            List<Reservation> checklist = reservationService.getByReserver(userID);
-            for (int i = 0; i < checklist.size(); i++)
+            List<GymMember> potentialGymMember = userAccountManagementService.getGymMemberByID(userID);
+            if(potentialGymMember == null)
             {
-                reservationService.deleteReservationByID(checklist.get(i).getID());
+                List<GymProgram> checkListGymProgram = gymProgramService.getGymProgramByAuthor(userID);
+                List<GymMember> members = getAllGymMembers();
+                for(int i = 0; checkListGymProgram.size() > i; i++)
+                {
+                    for(int j = 0; j < members.size(); j++)
+                    {
+                        if(members.get(j).getProgram() != null && (members.get(j).getProgram().getID().longValue() == checkListGymProgram.get(i).getID().longValue()))
+                        {
+                            GymMember member = members.get(j);
+                            member.setProgram(null);
+                            userAccountManagementService.updateGymMember(member);
+                        }
+                    }
+                    gymProgramService.deleteGymProgramByID(checkListGymProgram.get(i).getID());
+                }
+                userAccountManagementService.deleteUserByID(userID);
+                return "User with ID " + userID + " has been successfully deleted.";
             }
-
-            //Delete course registrations
-            List<SportCourse>  sportCourses = sportCourseService.getSportCoursesByParticipants(userID);
-            for (int i = 0; i < sportCourses.size(); i++)
+            else
             {
-                sportCourseService.removeParticipant(sportCourses.get(i).getID(), userID);
-            }
-            //Delete GymProgramRequests
-            List<GymProgramRequest> requests = gymProgramService.getGymProgramRequestByOwner(userID);
-            for(int i = 0; i < requests.size(); i++)
-                gymProgramService.deleteGymProgramRequestByID(requests.get(i).getID());
+                //Delete reservations
+                List<Reservation> checklist = reservationService.getByReserver(userID);
+                for (int i = 0; i < checklist.size(); i++)
+                {
+                    reservationService.deleteReservationByID(checklist.get(i).getID());
+                }
 
-            //Delete Tournament registrations
-            List<TournamentRegistration> registrations = tournamentService.getTournamentRegistrationByMemberID(userID);
-            for(int i = 0; i < registrations.size(); i++)
-            {
-                tournamentService.deleteTournamentRegistrationByID(registrations.get(i).getID(), registrations.get(i).getTournament().getID());
-            }
+                //Delete course registrations
+                List<SportCourse>  sportCourses = sportCourseService.getSportCoursesByParticipants(userID);
+                for (int i = 0; i < sportCourses.size(); i++)
+                {
+                    sportCourseService.removeParticipant(sportCourses.get(i).getID(), userID);
+                }
+                //Delete GymProgramRequests
+                List<GymProgramRequest> requests = gymProgramService.getGymProgramRequestByOwner(userID);
+                for(int i = 0; i < requests.size(); i++)
+                    gymProgramService.deleteGymProgramRequestByID(requests.get(i).getID());
 
-            userAccountManagementService.deleteUserByID(userID);
-            return "User with ID " + userID + " has been successfully deleted.";
+                //Delete Tournament registrations
+                List<TournamentRegistration> registrations = tournamentService.getTournamentRegistrationByMemberID(userID);
+                for(int i = 0; i < registrations.size(); i++)
+                {
+                    tournamentService.deleteTournamentRegistrationByID(registrations.get(i).getID(), registrations.get(i).getTournament().getID());
+                }
+
+                userAccountManagementService.deleteUserByID(userID);
+                return "User with ID " + userID + " has been successfully deleted.";
+            }
         }
     }
 
@@ -266,6 +292,8 @@ public class UserAccountManagementController {
         if (gymMembers == null)
             return "No Gym Member was found with ID " + gymMemberID;
         GymMember gymMemberLoggingIn = gymMembers.get(0);
+        if(gymMemberLoggingIn.getIsRestricted())
+            return "You shall not pass.";
         if (passwordHashHandler.hashPassword().equals(gymMemberLoggingIn.getHashedPassword())) {
             Token token = new Token();
             token.setInUse(true);
