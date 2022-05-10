@@ -129,6 +129,11 @@ public class UserAccountManagementController {
             //Delete GymProgramRequests
 
             //Delete Tournament registrations
+            List<TournamentRegistration> registrations = tournamentService.getTournamentRegistrationByMemberID(userID);
+            for(int i = 0; i < registrations.size(); i++)
+            {
+                tournamentService.deleteTournamentByID(registrations.get(i).getID());
+            }
 
             userAccountManagementService.deleteUserByID(userID);
             return "User with ID " + userID + " has been successfully deleted.";

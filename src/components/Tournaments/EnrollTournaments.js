@@ -58,15 +58,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const sportCenters = [
     {
-        value: 'Main',
+        value: '1',
         label: 'Main Sport Center',
     },
     {
-        value: 'Dorm',
+        value: '2',
         label: 'Dormitory Sport Center',
     },
     {
-        value: 'East',
+        value: '3',
         label: 'East Sport Center',
     },
 ];
@@ -77,29 +77,36 @@ function EnrollTournaments() {
     const [tournaments, setTournaments] = useState([]);
     const [open, setOpen] = React.useState(false);
     const [open2, setOpen2] = React.useState(false);
+    const [open3, setOpen3] = React.useState(false);
     const [studentID, setStudentID] = useState(''); //student id will be checked if it is not true, text dialog will be red color
     const [checkStudentID, setCheckStudentID] = useState(true); //trying
-    const [teammates, setTeammates] = useState(new Array(3).fill('')); //it will change according to a value that comes from database
-    const [sportCenter, setSportCenter] = React.useState('Main Sport Center');
+    const [teammates, setTeammates] = useState(''); //it will change according to a value that comes from database
+    const [sportCenter, setSportCenter] = React.useState('');
     //Below are new tournaments ddata when staff added
-    const [newTournamentDate, setNewTournamentDate] = useState('');
-    const [newTournamentTime, setNewTournamentTime] = useState('');
+    const [newTournamentStartDate, setNewTournamentStartDate] = useState('');
+    const [newTournamentEndDate, setNewTournamentEndDate] = useState('');
     const [newTournamentActivity, setNewTournamentActivity] = useState('');
-    const [newTournamentLocation, setNewTournamentLocation] = useState('');
+    const [newTournamentField, setNewTournamentField] = useState('');
     const [newTournamentSportCenter, setNewTournamentSportCenter] = useState('');
     const [newTournamentLastRegDate, setNewTournamentLastRegDate] = useState('');
-    const [newTournamentTotalNumber, setNewTournamentTotalNum] = useState('');
+    const [newTournamentTotalNum, setNewTournamentTotalNum] = useState('');
+    const [newTournamentMaxTeamNumber, setNewTournamentMaxTeamNumber] = useState('');
+    const [currentIndex, setCurrentIndex] = React.useState(0);//currentIndex
 
 
     const cancelNewTournament = () => {
-        setNewTournamentDate('')
-        setNewTournamentTime('');
+        setNewTournamentStartDate('')
+        setNewTournamentEndDate('');
         setNewTournamentActivity('');
-        setNewTournamentLocation('');
+        setNewTournamentField('');
         setNewTournamentSportCenter('');
         setNewTournamentLastRegDate('');
         setNewTournamentTotalNum('');
+        setNewTournamentMaxTeamNumber('');
+        setSportCenter('');
     };
+
+    const cancelNewRegistration = () => { setTeammates('') }
 
     const handleChange = (event) => {
         setSportCenter(event.target.value);
@@ -132,15 +139,97 @@ function EnrollTournaments() {
     };
     const handleClose = () => {
         setOpen(false);
+        cancelNewRegistration();
     };
     //fetching data from restAPI
     useEffect(() => {
-        fetch('http://localhost:3000/reservations')
+        fetch('http://localhost:8080/tournaments')
             .then((res) => res.json())
             .then((result) => {
                 setTournaments(result);
             });
-    }, []);
+    }, [tournaments]);
+
+    const removeTournament = (index) => {
+        fetch('http://localhost:8080/tournaments/delete/' + tournaments[index].id, { method: 'DELETE' })
+            .then((result) => {
+                result.text().then((resultStr) => {
+                    alert(resultStr);
+                })
+            });
+    }
+
+    const addNewTournament = () => {
+        if (newTournamentStartDate === '' || newTournamentEndDate === '' || newTournamentActivity === '' || newTournamentField === '' || newTournamentSportCenter === '' || newTournamentLastRegDate === '' || newTournamentTotalNum === '' || newTournamentMaxTeamNumber === '') {
+            alert("You have empty required fields");
+        }
+        else {
+            let request = "http://localhost:8080/tournaments/add?";
+
+            console.log(request + "sportCenterID=" + newTournamentSportCenter);
+            fetch(request + "sportCenterID=" + newTournamentSportCenter, {
+                method: "POST",
+                Accept: "/",
+                "Accept-Encoding": "gzip, deflate, br",
+                Connection: "keep-alive",
+                headers: {
+                    Accept: "application/json",
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify({
+                    name: newTournamentActivity,
+                    startingDate: newTournamentStartDate,
+                    endingDate: newTournamentEndDate,
+                    maxTeams: newTournamentTotalNum,
+                    deadline: newTournamentLastRegDate,
+                    numberOfRegistrations: 0,
+                    field: newTournamentField,
+                    maxNumberOfTeamMembers: newTournamentMaxTeamNumber
+                })
+            }).then((result) => {
+                result.text().then((actualResult) => {
+                    alert(actualResult)
+                })
+            })
+
+            handleClose2();
+        }
+    }
+
+    const addNewRegistration = (index) => {
+        if (teammates === '') {
+            alert("You have enter a value for teammate's IDs.");
+        }
+        else {
+            let strArray = teammates.replace(/\s/g, '').split(",");
+            let request = "http://localhost:8080/tournaments/" + index + "/registration/add?";
+            for (var i = 0; i < strArray.length; i++) {
+                request = request + "teamID=" + strArray[i];
+                if (i != strArray.length - 1)
+                    request = request + "&"
+            }
+            console.log(request);
+            fetch(request, {
+                method: "POST",
+                Accept: "/",
+                "Accept-Encoding": "gzip, deflate, br",
+                Connection: "keep-alive",
+                headers: {
+                    Accept: "application/json",
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify({
+
+                })
+            }).then((result) => {
+                result.text().then((actualResult) => {
+                    alert(actualResult)
+                })
+            })
+            cancelNewRegistration();
+            handleClose();
+        }
+    }
 
     const FontAwesomeSvgIcon = React.forwardRef((props, ref) => {
         const { icon } = props;
@@ -176,23 +265,23 @@ function EnrollTournaments() {
                         <DialogContentText>
                             Please enter the necessary information of tournament.
                         </DialogContentText>
-                        <TextField className="newTournament" onChange={event => setNewTournamentDate(event.target.value)}
+                        <TextField className="newTournament" onChange={event => setNewTournamentStartDate(event.target.value)}
                             autoFocus
                             margin="dense"
-                            id={"newTournamentDate"}
-                            label="Tournament Date"
+                            id={"newTournamentStartDate"}
+                            label="Tournament Start Date"
                             type="date"
                             fullWidth
                             variant="standard"
                             color={checkStudentID ? "secondary" : "warning"} //it will be assigning according to whether the input is true or not
                             focused
                         />
-                        <TextField className="newTournament" onChange={event => setNewTournamentTime(event.target.value)}
+                        <TextField className="newTournament" onChange={event => setNewTournamentEndDate(event.target.value)}
                             autoFocus
                             margin="dense"
-                            id={"newTournamentTime"}
-                            label="Tournament Time"
-                            type="time"
+                            id={"newTournamentEndDate"}
+                            label="Tournament End Date"
+                            type="date"
                             fullWidth
                             variant="standard"
                             color={checkStudentID ? "secondary" : "warning"} //it will be assigning according to whether the input is true or not
@@ -209,11 +298,11 @@ function EnrollTournaments() {
                             color={checkStudentID ? "secondary" : "warning"} //it will be assigning according to whether the input is true or not
                             focused
                         />
-                        <TextField className="newTournament" onChange={event => setNewTournamentLocation(event.target.value)}
+                        <TextField className="newTournament" onChange={event => setNewTournamentField(event.target.value)}
                             autoFocus
                             margin="dense"
-                            id={"newTournamentlocation"}
-                            label="Tournament Location"
+                            id={"newTournamentField"}
+                            label="Tournament Field"
                             type="text"
                             fullWidth
                             variant="standard"
@@ -244,7 +333,7 @@ function EnrollTournaments() {
                         <TextField className="newTournament" onChange={event => setNewTournamentLastRegDate(event.target.value)}
                             autoFocus
                             margin="dense"
-                            id={"newTournamentDate"}
+                            id={"newTournamentLastRegDate"}
                             label="Last Registration Date"
                             type="date"
                             fullWidth
@@ -255,8 +344,19 @@ function EnrollTournaments() {
                         <TextField className="newTournament" onChange={event => setNewTournamentTotalNum(event.target.value)}
                             autoFocus
                             margin="dense"
-                            id={"newTournamentTotalNumber"}
-                            label="Tournament Max Group or Person"
+                            id={"newTournamentTotalNum"}
+                            label="Tournament Max Team or Person"
+                            type="number"
+                            fullWidth
+                            variant="standard"
+                            color={checkStudentID ? "secondary" : "warning"} //it will be assigning according to whether the input is true or not
+                            focused
+                        />
+                        <TextField className="newTournament" onChange={event => setNewTournamentMaxTeamNumber(event.target.value)}
+                            autoFocus
+                            margin="dense"
+                            id={"newTournamentMaxTeamNumber"}
+                            label="Tournament Max Number of Members in a Team"
                             type="number"
                             fullWidth
                             variant="standard"
@@ -266,8 +366,9 @@ function EnrollTournaments() {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => {
-                            setOpen2(false); cancelNewTournament()}} >Cancel </Button>
-                        <Button onClick={handleClose2}>Add</Button> 
+                            setOpen2(false); cancelNewTournament()
+                        }} >Cancel </Button>
+                        <Button onClick={addNewTournament}>Add</Button>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -284,35 +385,42 @@ function EnrollTournaments() {
                             <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
                                 <TableHead>
                                     <TableRow>
-                                        <StyledTableCell>Tournaments Date</StyledTableCell>
-                                        <StyledTableCell align='right'>Tournaments Time</StyledTableCell>
-                                        <StyledTableCell align='right'>Tournaments Activity</StyledTableCell>
-                                        <StyledTableCell align='right'>Tournaments Location</StyledTableCell>
-                                        <StyledTableCell align='right'>Sport Center</StyledTableCell>
-                                        <StyledTableCell align='right'>Tournament Status</StyledTableCell>
-                                        <StyledTableCell align='right'></StyledTableCell>
+                                        <StyledTableCell>Activity</StyledTableCell>
+                                        <StyledTableCell>Start-Finish Date</StyledTableCell>
+                                        <StyledTableCell>Sports Center</StyledTableCell>
+                                        <StyledTableCell align='center'>Location</StyledTableCell>
+                                        <StyledTableCell>Last Registration Date</StyledTableCell>
+                                        <StyledTableCell>Available Quota</StyledTableCell>
+                                        <StyledTableCell>Number of Persons in a Team</StyledTableCell>
+                                        <StyledTableCell></StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody >
                                     {tournaments.map((tournament, index) => (
                                         <StyledTableRow key={tournament.id} component="th" scope="row"  >
                                             <StyledTableCell className='cellItem'>
-                                                {tournament.resDate} {newTournamentDate}
-                                            </StyledTableCell>
-                                            <StyledTableCell className='cellItem' > {newTournamentTime}
-                                                {tournament.timeSlot}
-                                            </StyledTableCell>
-                                            <StyledTableCell className='cellItem' > {newTournamentActivity}
-                                                {tournament.activity}
-                                            </StyledTableCell>
-                                            <StyledTableCell className='cellItem'  >
-                                                {tournament.location}
-                                            </StyledTableCell>
-                                            <StyledTableCell className='cellItem'>
-                                                {tournament.campus}
+                                                {tournament.name}
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem' >
-                                                {tournament.status} ({newTournamentTotalNumber})
+                                                <Table size="small" aria-label="a dense table">
+                                                    <TableRow><StyledTableCell > {tournament.startingDate}</StyledTableCell></TableRow>
+                                                    <TableRow><StyledTableCell> {tournament.endingDate}</StyledTableCell></TableRow>
+                                                </Table>
+                                            </StyledTableCell>
+                                            <StyledTableCell className='cellItem' >
+                                                {tournament.sportCenter.name}
+                                            </StyledTableCell>
+                                            <StyledTableCell className='cellItem'  >
+                                                {tournament.field}
+                                            </StyledTableCell>
+                                            <StyledTableCell className='cellItem'>
+                                                {tournament.deadline}
+                                            </StyledTableCell>
+                                            <StyledTableCell className='cellItem' >
+                                                {tournament.maxTeams - tournament.numberOfRegistrations}
+                                            </StyledTableCell>
+                                            <StyledTableCell className='cellItem' >
+                                                {tournament.maxNumberOfTeamMembers}
                                             </StyledTableCell>
                                             <StyledTableCell className='cellItem' >
                                                 <Stack className='mainStack' direction="row"  // This stack is for delete and cancel reservation buttons
@@ -326,32 +434,31 @@ function EnrollTournaments() {
                                                             },
                                                         }} style={{ display: showInfo1 ? "block" : "none" }}
                                                     >
-                                                        <IconButton aria-label="Example" onClick={handleClickOpen} >
-                                                            <FontAwesomeIcon icon={faFilePen} />
+                                                        <IconButton aria-label="Example" >
+                                                            <FontAwesomeIcon icon={faFilePen} onClick={() => { setOpen3(true); setCurrentIndex(tournament.id) }}/>
                                                         </IconButton>
                                                     </Box>
-                                                    <Dialog open={open} onClose={handleClose}>
+                                                    <Dialog open={open3} onClose={() => setOpen3(false)}>
                                                         <DialogTitle>Enroll the Tournament</DialogTitle>
                                                         <DialogContent>
                                                             <DialogContentText>
-                                                                Please enter your teammates student IDs if you have.
+                                                                {"Please enter your ID and teammates student IDs as a comma seperated list (ex: 21901831, 21901940)."}
                                                             </DialogContentText>
-                                                            {teammates.map((teammate, index) => (
-                                                                <TextField className={"teammate" + index} onChange={event => handleSetTeammates((event.target.value), index)}
-                                                                    autoFocus
-                                                                    margin="dense"
-                                                                    id={"studentID" + index}
-                                                                    label="Student ID"
-                                                                    type="number"
-                                                                    fullWidth
-                                                                    variant="standard"
-                                                                    color={checkStudentID ? "secondary" : "warning"} //it will be assigning according to whether the input is true or not
-                                                                    focused
-                                                                />))}
+                                                            <TextField className="newTournament" onChange={event => setTeammates(event.target.value)}
+                                                                autoFocus
+                                                                margin="dense"
+                                                                id={"teammates"}
+                                                                label="Teamates"
+                                                                type="text"
+                                                                fullWidth
+                                                                variant="standard"
+                                                                color={checkStudentID ? "secondary" : "warning"} //it will be assigning according to whether the input is true or not
+                                                                focused
+                                                            />
                                                         </DialogContent>
                                                         <DialogActions>
-                                                            <Button onClick={handleClose}>Cancel</Button>
-                                                            <Button onClick={handleClose}>Enroll</Button>
+                                                            <Button onClick={() => setOpen3(false)}>Cancel</Button>
+                                                            <Button  onClick={() => {setOpen3(false); addNewRegistration(currentIndex) }}>Enroll</Button>
                                                         </DialogActions>
                                                     </Dialog>
                                                     <Box className='deleteButton'
@@ -361,7 +468,7 @@ function EnrollTournaments() {
                                                             },
                                                         }} style={{ display: showInfo1 ? "none" : "block" }}
                                                     >
-                                                        <IconButton aria-label="Example" onClick={() => { handleOnChange(index, 1); alert(index) }} >
+                                                        <IconButton aria-label="Example" onClick={() => { handleOnChange(index, 1); removeTournament(index) }} >
                                                             <FontAwesomeIcon icon={faXmark} />
                                                         </IconButton>
                                                     </Box>

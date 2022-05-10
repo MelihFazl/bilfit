@@ -2,14 +2,12 @@ package com.venividicode.bilfit.services;
 
 import com.venividicode.bilfit.helpers.IgnoredPropertyCreator;
 import com.venividicode.bilfit.models.*;
-import com.venividicode.bilfit.repositories.FieldRepository;
-import com.venividicode.bilfit.repositories.GymMemberRepository;
-import com.venividicode.bilfit.repositories.TournamentRegistrationRepository;
-import com.venividicode.bilfit.repositories.TournamentRepository;
+import com.venividicode.bilfit.repositories.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,29 +23,33 @@ public class TournamentServiceImplementation implements TournamentService
     TournamentRegistrationRepository registrationRepository;
     @Autowired
     GymMemberRepository gymMemberRepository;
+    @Autowired
+    SportCenterRepository sportCenterRepository;
 
     private IgnoredPropertyCreator ignoredPropertyCreator;
 
     //Tournament
     @Override
-    public Tournament saveTournament(Tournament tournament, List<Long> fieldID)
+    public Tournament saveTournament(Tournament tournament, long sportCenterID)
     {
-        List<Field> fields = new ArrayList<Field>();
-        for (int i= 0; i < fieldID.size(); i++)
-        {
-            List<Field> checkList = fieldRepository.findById(fieldID.get(i).longValue());
-            if (checkList != null)
-            {
-                fields.add(checkList.get(0));
-            }
-        }
-        tournament.setFields(fields);
+        List<SportCenter> sportCenters = sportCenterRepository.findById(sportCenterID);
+        if (sportCenters == null)
+            return null;
+        tournament.setSportCenter(sportCenters.get(0));
         return tournamentRepository.save(tournament);
     }
 
     @Override
     public Tournament deleteTournamentByID(long id)
     {
+        List<TournamentRegistration> registrations = registrationRepository.findAll();
+        for(int i = 0; i < registrations.size(); i++)
+        {
+            if(registrations.get(i).getTournament().getID() == id)
+            {
+                registrationRepository.deleteById(registrations.get(i).getID());
+            }
+        }
         return tournamentRepository.deleteById(id);
     }
 
@@ -67,6 +69,18 @@ public class TournamentServiceImplementation implements TournamentService
     public List<Tournament> getTournamentByName(String name)
     {
         return tournamentRepository.findByName(name);
+    }
+
+    @Override
+    public List<Tournament> getTournamentByTeamMember( long memberID )
+    {
+        List<TournamentRegistration> memberRegistered = getTournamentRegistrationByMemberID(memberID);
+        List<Tournament> result = new ArrayList<Tournament>();
+        for (int i = 0; i < memberRegistered.size(); i++)
+        {
+            result.add(memberRegistered.get(i).getTournament());
+        }
+        return result;
     }
 
     @Override
@@ -91,27 +105,24 @@ public class TournamentServiceImplementation implements TournamentService
 
     //TournamentRegistration
     @Override
-    public TournamentRegistration saveTournamentRegistration(TournamentRegistration registration, long tournamentID, List<Long> teamID)
+    public String saveTournamentRegistration(TournamentRegistration registration, long tournamentID, List<Long> teamID)
     {
         List<Tournament> tournamentCheck = tournamentRepository.findById(tournamentID);
         if(tournamentCheck == null)
         {
-            System.out.println("Tournament with given ID is not found.");
-            return null;
+            return "Tournament with given ID is not found.";
         }
 
         Tournament tournament = tournamentCheck.get(0);
 
-        if (tournament.getDeadline().isBefore(LocalDateTime.now()))
+        if (tournament.getDeadline().isBefore(LocalDate.now()))
         {
-            System.out.println("Registration deadline has passed for this tournament.");
-            return null;
+            return "Registration deadline has passed for this tournament.";
         }
 
         if (tournament.getMaxNumberOfTeamMembers() != teamID.size())
         {
-            System.out.println("There is a problem with the team members number!!");
-            return null;
+            return "There is a problem with the team members number!!";
         }
 
         List<GymMember> gymMembers = new ArrayList<GymMember>();
@@ -123,44 +134,44 @@ public class TournamentServiceImplementation implements TournamentService
         }
         if (tournament.getMaxNumberOfTeamMembers() > gymMembers.size())
         {
-            System.out.println("Some members with given ID's did not found.");
-            return null;
+            return "Some members with given ID's did not found.";
         }
 
-        registration.setTeamMembersID(teamID);
-        List<TournamentRegistration> registrations = tournament.getRegistrations();
-        registrations.add(registration);
-        tournament.setRegistrations(registrations);
-        if (registrations.size() > tournament.getMaxTeams())
+        for (int i = 0; i < gymMembers.size(); i++)
         {
-            System.out.println("The quota is full for the tournament.");
-            return null;
+            List<TournamentRegistration> checklist = getTournamentRegistrationByMemberID(gymMembers.get(i).getID());
+            if ( checklist != null )
+            {
+                for (int j = 0; j < checklist.size(); j++)
+                {
+                    if (checklist.get(j).getTournament().getID() == tournamentID)
+                        return "The member with ID " + gymMembers.get(i).getID() + " is already enrolled to this tournament";
+                }
+            }
         }
+        if (tournament.getMaxTeams() < tournament.getNumberOfRegistrations())
+        {
+            return "The quota is full for the tournament.";
+        }
+        tournament.setNumberOfRegistrations(tournament.getNumberOfRegistrations()+1);
+        registration.setTournament(tournament);
+        registration.setTeamMembers(gymMembers);
         registrationRepository.save(registration);
         tournamentRepository.save(tournament);
-        return registration;
+        return "Your registration has added to the tournament.";
     }
 
     @Override
     public TournamentRegistration deleteTournamentRegistrationByID(long id, long tournamentID)
     {
-        List<Tournament> data = tournamentRepository.findById(tournamentID);
+        List<TournamentRegistration> data = registrationRepository.findById(id);
         if(data == null)
         {
-            System.out.println("Tournament ID is wrong!");
+            System.out.println("Tournament Registration ID is wrong!");
             return null;
         }
-        Tournament tournament = data.get(0);
-        List<TournamentRegistration> registrations = tournament.getRegistrations();
-        for (int i = 0; i < registrations.size(); i++)
-        {
-            if (registrations.get(i).getID() == id)
-            {
-                registrations.remove(i);
-                break;
-            }
-        }
-        tournament.setRegistrations(registrations);
+        Tournament tournament = data.get(0).getTournament();
+        tournament.setNumberOfRegistrations(tournament.getNumberOfRegistrations()-1);
         tournamentRepository.save(tournament);
         return registrationRepository.deleteById(id);
     }
@@ -178,16 +189,12 @@ public class TournamentServiceImplementation implements TournamentService
     }
 
     @Override
-    public List<TournamentRegistration> getTournamentRegistrationByRegisterer(long registererID)
+    public List<TournamentRegistration> getTournamentRegistrationByMemberID(long memberID)
     {
-        List<TournamentRegistration> checklist = registrationRepository.findAll();
-        List<TournamentRegistration> result = new ArrayList<TournamentRegistration>();
-        for(int i = 0; i < checklist.size(); i++)
-        {
-            if (registererID == checklist.get(i).getRegisterer().getID())
-                result. add(checklist.get(i));
-        }
-        return result;
+        List<GymMember> checklist = gymMemberRepository.findById(memberID);
+        if(checklist == null)
+            return null;
+        return registrationRepository.findByTeamMembers(checklist.get(0));
     }
 
 }
