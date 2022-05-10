@@ -103,13 +103,19 @@ function AdminPanel() {
     { id: "email", label: "Mail" },
     { id: "name", label: "Full Name" },
     { id: "phoneNumber", label: "Phone Number" },
-    { id: "birthday", label: "Birth Date" },
+    { id: "birthdate", label: "Birth Date" },
     { id: "gender", label: "Gender" },
     { id: "weight", label: "Weight" },
     { id: "height", label: "Height" },
     { id: "resButton1", label: "", disableSorting: true },
   ];
-
+  const headCells2 = [
+    { id: "schoolID", label: "ID" },
+    { id: "email", label: "Mail" },
+    { id: "name", label: "Full Name" },
+    { id: "phoneNumber", label: "Phone Number" },
+    { id: "resButton1", label: "", disableSorting: true },
+  ];
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
@@ -272,7 +278,7 @@ function AdminPanel() {
               return items.filter((x) => x.name.includes(target.value));
             case "phoneNumber":
               return items.filter((x) => x.phoneNumber.includes(target.value));
-            case "birthday":
+            case "birthdate":
               return items.filter((x) => x.birthday.includes(target.value));
             case "gender":
               return items.filter((x) => x.gender.includes(target.value));
@@ -348,7 +354,7 @@ function AdminPanel() {
           marginTop: "2rem",
         }}
       >
-        <Button onClick={handleClickOpen} > Add User </Button>
+        <Button onClick={handleClickOpen}> Add User </Button>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Add User </DialogTitle>
           <DialogContent>
@@ -508,7 +514,7 @@ function AdminPanel() {
           }}
         >
           {" "}
-          <h1 className="header">All Members</h1>{" "}
+          <h1 className="header">All Users</h1>{" "}
         </div>
         <Stack
           className="mainStack"
@@ -685,7 +691,6 @@ function AdminPanel() {
                                 margin="dense"
                                 id="UserName"
                                 label="User Full Name"
-                                defaultValue={currentIndex.name}
                                 placeholder={currentIndex.name}
                                 color="secondary"
                                 type="text"

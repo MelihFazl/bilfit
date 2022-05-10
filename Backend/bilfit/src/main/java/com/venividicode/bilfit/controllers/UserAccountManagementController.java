@@ -131,12 +131,15 @@ public class UserAccountManagementController {
                 sportCourseService.removeParticipant(sportCourses.get(i).getID(), userID);
             }
             //Delete GymProgramRequests
+            List<GymProgramRequest> requests = gymProgramService.getGymProgramRequestByOwner(userID);
+            for(int i = 0; i < requests.size(); i++)
+                gymProgramService.deleteGymProgramRequestByID(requests.get(i).getID());
 
             //Delete Tournament registrations
             List<TournamentRegistration> registrations = tournamentService.getTournamentRegistrationByMemberID(userID);
             for(int i = 0; i < registrations.size(); i++)
             {
-                tournamentService.deleteTournamentByID(registrations.get(i).getID());
+                tournamentService.deleteTournamentRegistrationByID(registrations.get(i).getID(), registrations.get(i).getTournament().getID());
             }
 
             userAccountManagementService.deleteUserByID(userID);

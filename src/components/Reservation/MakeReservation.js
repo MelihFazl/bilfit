@@ -95,6 +95,7 @@ function MakeReservation() {
   const myHistory = useHistory();
   const [checkedState, setCheckedState] = useState(new Array(3).fill(false));
   const [checkedState2, setCheckedState2] = useState(new Array(50).fill(false));
+  const [checkedState3, setCheckedState3] = useState(new Array(50).fill(false));
 
   function handleReservation()
   {
@@ -141,14 +142,22 @@ function MakeReservation() {
       const updatedCheckedState = checkedState2.map((item, index) => index === position ? !item : item);
       setCheckedState2(updatedCheckedState);
     }
+
+    if (number == 3 ){
+      const updateAllStates = checkedState3.fill(false);
+      setCheckedState3(updateAllStates);
+      const updatedCheckedState = checkedState3.map((item, index) => index === position ? !item : item);
+      setCheckedState3(updatedCheckedState);
+    }
   };
 
   const displayActivities = (sportsCenter, index) => {
+    console.log("girdik")
     const data = []
     if (resSportCenter.name === sportsCenter.name) {
       sportsCenter.availableActivities.map((activity, index) => (
         data.push(<StyledTableRow key={sportActivity}>
-          <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState2.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 2); setResActivity(activity) }} >
+          <StyledTableCell className='cellItem' component="th" scope="row" style={{ backgroundColor: checkedState3.at(index) ? blue : white }} key={"button" + index} onClick={() => { handleOnChange(index, 3); setResActivity(activity) }} >
             {activity.activity}
           </StyledTableCell>
         </StyledTableRow>)));
@@ -278,7 +287,7 @@ function MakeReservation() {
           alignItems="center">
           <ThemeProvider theme={theme}>
             <Button className='submitButton' variant="contained" color="secondary" size='large' onClick={() => {
-              alert('clicked'); handleReservation()
+              handleReservation()
             }} > Make Reservation</Button>
           </ThemeProvider>
 

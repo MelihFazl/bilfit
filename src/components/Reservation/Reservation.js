@@ -95,6 +95,7 @@ function Reservation() {
   const [open5, setOpen5] = React.useState(false);
   const [open6, setOpen6] = React.useState(false);
   const [open7, setOpen7] = React.useState(false);
+  const [open8, setOpen8] = React.useState(false);
 
   const [sportCenters, setSportCenters] = useState([]);
   const [sportActivities, setSportActivities] = useState([]);
@@ -111,6 +112,14 @@ function Reservation() {
 
 
  
+  const handleClose8 = () => {
+    setOpen8(false);
+  };
+
+  const handleClickOpen8 = () => {
+    setOpen8(true);
+  };
+
   const handleClose7 = () => {
     setOpen7(false);
   };
@@ -306,6 +315,25 @@ function Reservation() {
   const handleSearchSelection2 = (event) => {
     setSearchSelection2(event.target.value);
   };
+
+  function handleCancelReservation(reservation){
+    if(reservation.status === "Not_Attended")
+    {
+    fetch("http://localhost:8080/reservation/cancel/" + reservation.id, {
+      method:"POST"
+    }).then(result => {
+      result.text().then((actualResult) => {
+          alert(actualResult)
+          handleData()
+          
+      })
+    })
+  }
+  else
+  {
+    alert("Cannot cancel that reservation 🤔");
+  }
+  }
   function handleAttendStatus(reservation) {
       if(reservation.status === "Not_Attended")
       {
@@ -465,19 +493,36 @@ function Reservation() {
                                 },
                               }}
                             >
-                              <IconButton aria-label="Example" onClick={() => { alert("I am clicked But1")  /* it will be modified according to array that comes from backend */ }}>
-                                <FontAwesomeIcon icon={faXmark} />
-                              </IconButton></Box>
-                            <Box className='button2'
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton aria-label="Example">
-                                <FontAwesomeIcon icon={faTrashCan} onClick={() => { alert("I am clicked But2")  /* it will be modified according to array that comes from backend */ }} />
-                              </IconButton></Box>
+                              <IconButton aria-label="Example" onClick={() => { handleClickOpen8();setCurrentIndex(reservation)}}>  
+                                <FontAwesomeIcon icon={faXmark}/>
+                              </IconButton>
+                              <Dialog
+                                open={open8}
+                                onClose={handleClose8}
+                                aria-labelledby="Warning"
+                                aria-describedby="Warning"
+                              >
+                                <DialogTitle id="alert-dialog-title">
+                                  {"Warning 🤒"}
+                                </DialogTitle>
+                                <DialogContent>
+                                  <DialogContentText id="alert-dialog-description">
+                                    You are cancelling the reservation. Are you sure?
+                                  </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                  <Button onClick={handleClose8}>Cancel</Button>
+                                  <Button onClick={() => {
+                                    setOpen8(false);
+                                    handleCancelReservation(currentIndex);
+                                  }} autoFocus>
+                                    I am Sure.
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
+                            </Box>
+                              
+                           
                           </Stack>
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
