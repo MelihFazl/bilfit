@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * A controller class for handling requests related
+ * to Announcement model
+ * @author Veni Vidi Code
+ */
+
 @RestController
 @RequestMapping("/announcement")
 @CrossOrigin
@@ -24,6 +30,11 @@ public class AnnouncementController {
      * 	private LocalDateTime date;
      */
 
+    /**
+     * Post method adds announcement to the database
+     * @param announcement Announcement entity that is to be saved into the database
+     * @return String indicates success or fail
+     */
     @PostMapping("/make")
     public String makeAnnouncement(@RequestBody Announcement announcement) {
         announcement.setDate(LocalDateTime.now());
@@ -32,6 +43,11 @@ public class AnnouncementController {
                 + "\" has been successfully added.";
     }
 
+    /**
+     * Delete request used to delete announcement from the database
+     * @param id id of the Announcement
+     * @return String indicating success or fail
+     */
     @DeleteMapping("/delete/{id}")
     public String deleteAnnouncement(@PathVariable("id") long id) {
         List<Announcement> announcementsWithSpecifiedID = announcementService.getAnnouncementByID(id);
@@ -41,11 +57,20 @@ public class AnnouncementController {
         return "Announcement with specified ID " + id + " has been successfully deleted.";
     }
 
+    /**
+     * Get request returns all the Announcement objects
+     * @return List<Announcement> list of all the announcements
+     */
     @GetMapping
     public List<Announcement> getAllAnnouncements() {
         return announcementService.getAllAnnouncements();
     }
 
+    /**
+     * Get method returns the Announcement object specified by its id
+     * @param id id of the Announcement
+     * @return Announcement entity returned from the database
+     */
     @GetMapping("/{id}")
     public Announcement getAnnouncementWithID(@PathVariable("id") long id) {
 

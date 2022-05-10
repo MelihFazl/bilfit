@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * A controller class for handling requests and
+ * operations related to User Management
+ */
 @RestController
 @RequestMapping("/user")
 @CrossOrigin
@@ -129,6 +133,11 @@ public class UserAccountManagementController {
             //Delete GymProgramRequests
 
             //Delete Tournament registrations
+            List<TournamentRegistration> registrations = tournamentService.getTournamentRegistrationByMemberID(userID);
+            for(int i = 0; i < registrations.size(); i++)
+            {
+                tournamentService.deleteTournamentByID(registrations.get(i).getID());
+            }
 
             userAccountManagementService.deleteUserByID(userID);
             return "User with ID " + userID + " has been successfully deleted.";

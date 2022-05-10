@@ -2,6 +2,7 @@ package com.venividicode.bilfit.repositories;
 
 
 import com.venividicode.bilfit.models.GymMember;
+import com.venividicode.bilfit.models.SportCourse;
 import com.venividicode.bilfit.models.TournamentRegistration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -19,5 +20,7 @@ public interface TournamentRegistrationRepository extends JpaRepository<Tourname
     public List<TournamentRegistration> findById(long id);
 
     public TournamentRegistration deleteById(long id);
+
+    public List<TournamentRegistration> findByTeamMembers(GymMember teamMembers);
 
 }

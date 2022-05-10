@@ -8,6 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * A controller class for handling requests related
+ * to GymMemberRestriction model
+ * @author Veni Vidi Code
+ */
+
+
 @RestController
 @RequestMapping("/gymMemberRestriction")
 @CrossOrigin
@@ -16,6 +23,11 @@ public class GymMemberRestrictionController {
     @Autowired
     private GymMemberRestrictionService gymMemberRestrictionService;
 
+    /**
+     * Patch method used to change the isRestricted attribute of a Gym Member
+     * @param id id of the Gym Member that is to be restricted
+     * @return String indicates success or fail
+     */
     @PatchMapping("/restrict/{id}")
     public String restrictGymMemberWithID(@PathVariable("id") long id) { // test passed
         List<GymMember> memberToBeRestricted = gymMemberRestrictionService.getGymMemberByID(id);
@@ -28,6 +40,11 @@ public class GymMemberRestrictionController {
         return "Gym Member with ID " + memberToBeRestricted.get(0).getID() + " is restricted\n";
     }
 
+    /**
+     * Patch method used to change the isRestricted attribute of a Gym Member
+     * @param id id of the Gym Member that is to be unrestricted
+     * @return String indicates success or fail
+     */
     @PatchMapping("/unrestrict/{id}")
     public String unrestrictGymMemberWithID(@PathVariable("id") long id) { // test passed
         List<GymMember> memberToBeUnrestricted = gymMemberRestrictionService.getGymMemberByID(id);

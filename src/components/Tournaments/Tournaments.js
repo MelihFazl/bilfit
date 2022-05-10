@@ -57,7 +57,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function Tournaments() {
   const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
-  const [tournaments, setTournaments] = useState([]);
+  const [tournamentRegistrations, setTournamentRegistrations] = useState([]);
   //variables for unique button states 
   const [checkedState1, setCheckedState1] = useState(new Array().fill(false));
   const [checkedState2, setCheckedState2] = useState(new Array().fill(false));
@@ -66,27 +66,36 @@ function Tournaments() {
   const [checkedState5, setCheckedState5] = useState(new Array().fill(false));
   const [checkedState6, setCheckedState6] = useState(new Array().fill(false));
   const [checkedState7, setCheckedState7] = useState(new Array().fill(false));
-  const [checkedUsers, setCheckedUsers] = useState();
   const [showInfo1, setInfo1] = useState(() => userType ? 0 : 1); //visibility setting for regular users and staff
 
 
 
 
   useEffect(() => {
-    fetch('http://localhost:3000/reservations')
+    if (userType == 0) {
+      fetch('http://localhost:8080/tournaments/registration/teamMember/' + localStorage.getItem("userid"))
+        .then((res) => res.json())
+        .then((result) => {
+          setTournamentRegistrations(result);
+        });
+    }
+    else {
+      fetch('http://localhost:8080/tournaments/registration')
       .then((res) => res.json())
       .then((result) => {
-        setTournaments(result);
+        setTournamentRegistrations(result);
       });
-  }, []);
+    }
+  }, [tournamentRegistrations]);
 
-  useEffect(() => {
-    fetch('http://localhost:3000/users/id')
-      .then((res) => res.json())
-      .then((result) => {
-        setCheckedUsers(result);
-      });
-  }, []);
+  const leaveTournament = (index) => {
+    fetch('http://localhost:8080/tournaments/'+ tournamentRegistrations[index].tournament.id +'/registration/delete/' + tournamentRegistrations[index].id, { method: 'DELETE' })
+        .then((result) => {
+            result.text().then((resultStr) => {
+                alert(resultStr);
+            })
+        });
+}
 
   /**
    * This function changes the situation of the buttons when the are clicked
@@ -165,161 +174,59 @@ function Tournaments() {
     icon: PropTypes.any.isRequired,
   };
 
-  if (userType === 0) {
-    return (
-      <>
-        {/*The first stack will will be displayed for users*/}
-        <Stack className='mainStackUser' direction="column"
-          spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'>My Tournaments</h1> </div>
-          <Stack className='mainStack' direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={6}>
-            <div className="TournamentContainer">
-              <TableContainer component={Paper} >
-                <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
-                  <TableHead>
-                    <TableRow hover="false">
-                      <StyledTableCell>Activity</StyledTableCell>
-                      <StyledTableCell align='right'> Start-Finish Date</StyledTableCell>
-                      <StyledTableCell align='right'> Location</StyledTableCell>
-                      <StyledTableCell align='right'> Sport Center</StyledTableCell>
-                      <StyledTableCell align='right'> Team Members</StyledTableCell>
-                      <StyledTableCell align='right'> Status</StyledTableCell>
-                      <StyledTableCell align='right'></StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody hover="false">
-                    {tournaments.map((tournament, index) => (
-                      <StyledTableRow key={tournament.id} component="th" scope="row"  >
-                        <StyledTableCell className='cellItem'>
-                          {tournament.resDate}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.timeSlot}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.activity}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'  >
-                          {tournament.location}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'>
-                          {tournament.campus}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'>
-                          <Table size="small" aria-label="a dense table">
-                            <TableRow><StyledTableCell > {tournament.teammates1}</StyledTableCell></TableRow>
-                            <TableRow><StyledTableCell> {tournament.teammates2}</StyledTableCell></TableRow>
-                            <TableRow><StyledTableCell> {tournament.teammates3}</StyledTableCell></TableRow>
-                            <TableRow><StyledTableCell> {tournament.teammates4}</StyledTableCell></TableRow>
-
-                          </Table>
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.status}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          <Stack className='mainStack' direction="row"  // This stack is for delete and cancel reservation buttons
-                            justifyContent="start"
-                            alignItems="start"
-                            spacing={0}>
-                            <Box className='button1'
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton aria-label="Example" onClick={() => { handleOnChange(index, 1); alert(index)  /* it will be modified according to array that comes from backend */ }}>
-                                <FontAwesomeIcon icon={faXmark} />
-                              </IconButton></Box>
-                            <Box className='button2'
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton aria-label="Example">
-                                <FontAwesomeIcon icon={faTrashCan} onClick={() => { handleOnChange(index, 2); alert(index)  /* it will be modified according to array that comes from backend */ }} />
-                              </IconButton></Box>
-                          </Stack>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </Stack>
-        </Stack>
-      </>
-    )
-  }
-  else if (userType === 1) {
-    return (
-      <>
-        {/*The second stack will be displayed to staff*/}
-        <Stack className='mainStackStaff' direction="column"
-          spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "none" : "block" }}    >
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header' >Enrolled Tournaments</h1> </div>
-          <Stack className='mainStack' direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={6}>
-            <div className="TournamentContainer">
-              <TableContainer component={Paper} >
-                <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
-                  <TableHead>
-                    <TableRow hover="false">
-                      <StyledTableCell>Tournament Date</StyledTableCell>
-                      <StyledTableCell align='right'> Time</StyledTableCell>
-                      <StyledTableCell align='right'> Activity</StyledTableCell>
-                      <StyledTableCell align='right'> Location</StyledTableCell>
-                      <StyledTableCell align='right'> Sport Center</StyledTableCell>
-                      <StyledTableCell align='right'>Team Member Numbers</StyledTableCell>
-                      <StyledTableCell align='right'>Team Members</StyledTableCell>
-                      <StyledTableCell align='right'> Status</StyledTableCell>
-                      <StyledTableCell align='right'></StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody hover="false">
-                    {tournaments.map((tournament, index) => (
-                      <StyledTableRow key={tournament.id} component="th" scope="row"  >
-                        <StyledTableCell className='cellItem'>
-                          {tournament.resDate}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.timeSlot}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.activity}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'  >
-                          {tournament.location}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'>
-                          {tournament.campus}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'>
-                          {tournament.memberNumber}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem'>
-                          <Table size="small" aria-label="a dense table">
-                            <TableRow><StyledTableCell > {tournament.teammates1}</StyledTableCell></TableRow>
-                            <TableRow><StyledTableCell> {tournament.teammates2}</StyledTableCell></TableRow>
-                            <TableRow><StyledTableCell> {tournament.teammates3}</StyledTableCell></TableRow>
-                            <TableRow><StyledTableCell> {tournament.teammates4}</StyledTableCell></TableRow>
-
-                          </Table>
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-                          {tournament.status}
-                        </StyledTableCell>
-                        <StyledTableCell className='cellItem' >
-
+  return (
+    <>
+      {/*The first stack will will be displayed for users*/}
+      <Stack className='mainStackUser' direction="column"
+        spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'>My Tournaments</h1> </div>
+        <Stack className='mainStack' direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={6}>
+          <div className="TournamentContainer">
+            <TableContainer component={Paper} >
+              <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
+                <TableHead>
+                  <TableRow hover="false">
+                    <StyledTableCell>Activity</StyledTableCell>
+                    <StyledTableCell>Start-Finish Date</StyledTableCell>
+                    <StyledTableCell>Sports Center</StyledTableCell>
+                    <StyledTableCell align='center'>Location</StyledTableCell>
+                    <StyledTableCell>Team Members</StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody hover="false">
+                  {tournamentRegistrations.map((registration, index) => (
+                    <StyledTableRow key={registration.id} component="th" scope="row"  >
+                      <StyledTableCell className='cellItem'>
+                        {registration.tournament.name}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        <Table size="small" aria-label="a dense table">
+                          <TableRow><StyledTableCell > {registration.tournament.startingDate}</StyledTableCell></TableRow>
+                          <TableRow><StyledTableCell> {registration.tournament.endingDate}</StyledTableCell></TableRow>
+                        </Table>
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        {registration.tournament.sportCenter.name}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem'  >
+                          {registration.tournament.field}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem'>
+                        <Table size="small" aria-label="a dense table">
+                          {registration.teamMembers.map(member => (
+                            <TableRow><StyledTableCell >{member.name}</StyledTableCell></TableRow>
+                          ))}
+                        </Table>
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        <Stack className='mainStack' direction="row"  // This stack is for delete and cancel reservation buttons
+                          justifyContent="start"
+                          alignItems="start"
+                          spacing={0}>
                           <Box className='button1'
                             sx={{
                               '& > :not(style)': {
@@ -327,25 +234,98 @@ function Tournaments() {
                               },
                             }}
                           >
-                            <IconButton aria-label="Example" onClick={() => { handleOnChange(index, 7); alert(index)  /* it will be modified according to array that comes from backend */ }}>
+                            <IconButton aria-label="Example" onClick={() => { handleOnChange(index, 1); leaveTournament(index)  /* it will be modified according to array that comes from backend */ }}>
                               <FontAwesomeIcon icon={faXmark} />
                             </IconButton></Box>
-
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </Stack>
+                          <Box className='button2'
+                            sx={{
+                              '& > :not(style)': {
+                                m: 1,
+                              },
+                            }}
+                          >
+                            <IconButton aria-label="Example">
+                              <FontAwesomeIcon icon={faTrashCan} onClick={() => { handleOnChange(index, 2); leaveTournament(index)  /* it will be modified according to array that comes from backend */ }} />
+                            </IconButton></Box>
+                        </Stack>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </Stack>
-      </>
-    )
-  }
+      </Stack>
+      {/*The second stack will be displayed to staff*/}
+      <Stack className='mainStackStaff' direction="column"
+        spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "none" : "block" }}    >
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header' >Enrolled Tournaments</h1> </div>
+        <Stack className='mainStack' direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={6}>
+          <div className="TournamentContainer">
+            <TableContainer component={Paper} >
+              <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
+                <TableHead>
+                  <TableRow hover="false">
+                    <StyledTableCell>Activity</StyledTableCell>
+                    <StyledTableCell>Start-Finish Date</StyledTableCell>
+                    <StyledTableCell>Sports Center</StyledTableCell>
+                    <StyledTableCell align='center'>Location</StyledTableCell>
+                    <StyledTableCell>Team Members</StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody hover="false">
+                  {tournamentRegistrations.map((registration, index) => (
+                    <StyledTableRow key={registration.id} component="th" scope="row"  >
+                      <StyledTableCell className='cellItem'>
+                        {registration.tournament.name}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        <Table size="small" aria-label="a dense table">
+                          <TableRow><StyledTableCell > {registration.tournament.startingDate}</StyledTableCell></TableRow>
+                          <TableRow><StyledTableCell> {registration.tournament.endingDate}</StyledTableCell></TableRow>
+                        </Table>
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
+                        {registration.tournament.sportCenter.name}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem'>
+                          {registration.tournament.field}
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem'>
+                        <Table size="small" aria-label="a dense table">
+                          {registration.teamMembers.map(member => (
+                            <TableRow><StyledTableCell >{member.name}</StyledTableCell></TableRow>
+                          ))}
+                        </Table>
+                      </StyledTableCell>
+                      <StyledTableCell className='cellItem' >
 
+                        <Box className='button1'
+                          sx={{
+                            '& > :not(style)': {
+                              m: 1,
+                            },
+                          }}
+                        >
+                          <IconButton aria-label="Example" onClick={() => { handleOnChange(index, 7); leaveTournament(index)  /* it will be modified according to array that comes from backend */ }}>
+                            <FontAwesomeIcon icon={faXmark} />
+                          </IconButton></Box>
 
-
-
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+        </Stack>
+      </Stack>
+    </>
+  )
 }
 export default Tournaments;
