@@ -82,6 +82,39 @@ function User() {
     const [reqId, setReqId] = useState()
     const [announcementTitle, setAnnouncementTitle] = useState()
     const [announcementDescription, setAnnouncementDescription] = useState()
+    const [oldPassword, setOldPassword] = useState()
+    const [newPassword, setNewPassword] = useState()
+    const [reNewPassword, setReNewPassword] = useState()
+
+
+
+    function handleSubmitPassword() {
+        console.log(oldPassword)
+        console.log(newPassword)
+        console.log(reNewPassword)
+
+        if (newPassword !== reNewPassword) {
+            alert("Your new re-entered password does not match the new password")
+        }
+        else {
+            fetch('http://localhost:8080/user/changePassword/'+user_id +'?newPassword='+newPassword+'&oldPassword='+oldPassword, {
+                method: 'PATCH'
+            })
+            .then((res) => {res.text().then((result) => {
+                    if (result.includes("incorrect")) {
+                        alert("Your old password is incorrect")
+                    }
+                    else {
+                        setChangePasswordClick(!changePasswordClick);
+                        setOpenDialog(false);
+                    }
+            })})
+            
+        
+
+        }
+
+    }
 
     
     function writeProgram(req) {
@@ -275,6 +308,18 @@ function User() {
         setAnnouncementDescription(e.target.value)
     }
 
+    function oldPsw(e) {
+        setOldPassword(e.target.value)
+    }
+    function newPsw(e) {
+        setNewPassword(e.target.value)
+    }
+    function reNewPsw(e) {
+        setReNewPassword(e.target.value)
+    }
+
+    
+
     // make announcement submit button
     function submitAnnouncement() {
         fetch('http://localhost:8080/announcement/make', {
@@ -367,10 +412,13 @@ function User() {
                     {/* {users.map((user) => user.id === userId ? (<div>{user.name}</div>) : (<></>))} */}
                     {user.name}
                 </Typography>
-                <Box sx={{ margin: '1rem' }}>
+                {localStorage.getItem("usertype") == "member" &&
+                    <Box sx={{ margin: '1rem' }}>
                     {editClick ? button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Finish Edit</Button>
                         : button && <Button buttonStyle="btn--outline" onClick={handleEditClick} margin="1rem" >Edit Profile</Button>}
-                </Box>
+                    </Box>
+                }
+                
                 <Box>
                     {button && <Button buttonStyle="btn--outline" onClick={handleChangePasswordClick} margin="1rem" >Change Password</Button>}
                 </Box>
@@ -389,24 +437,30 @@ function User() {
                                     <div>{user.id}</div>
                                 </StyledTableCell>
                             </StyledTableRow>
+                            {localStorage.getItem("usertype") == "member" &&
+                                <StyledTableRow component="th" scope="row"  >
+                                    <StyledTableCell className='cellItem'>
+                                        Gender:
+                                    </StyledTableCell>
+                                    <StyledTableCell className='cellItem' >
+                                        {/* {users.map((user) => user.id === userId ? (<div>{user.gender}</div>) : (<></>))} */}
+                                        {user.gender}
+                                    </StyledTableCell>
+                                </StyledTableRow>
+                            }
+                            { localStorage.getItem("usertype") == "member" && 
                             <StyledTableRow component="th" scope="row"  >
-                                <StyledTableCell className='cellItem'>
-                                    Gender:
-                                </StyledTableCell>
-                                <StyledTableCell className='cellItem' >
-                                    {/* {users.map((user) => user.id === userId ? (<div>{user.gender}</div>) : (<></>))} */}
-                                    {user.gender}
-                                </StyledTableCell>
-                            </StyledTableRow>
-                            <StyledTableRow component="th" scope="row"  >
-                                <StyledTableCell className='cellItem'>
-                                    Birthdate:
-                                </StyledTableCell>
-                                <StyledTableCell className='cellItem' >
-                                    {/* {users.map((user) => user.id === userId ? (<div>{user.birthdate}</div>) : (<></>))} */}
-                                    {user.birthdate}
-                                </StyledTableCell>
-                            </StyledTableRow>
+                            <StyledTableCell className='cellItem'>
+                                Birthdate:
+                            </StyledTableCell>
+                            <StyledTableCell className='cellItem' >
+                                {/* {users.map((user) => user.id === userId ? (<div>{user.birthdate}</div>) : (<></>))} */}
+                                {user.birthdate}
+                            </StyledTableCell>
+                        </StyledTableRow>                           
+                            }
+
+                            {localStorage.getItem("usertype") == "member" && 
                             <StyledTableRow component="th" scope="row"  >
                                 <StyledTableCell className='cellItem'>
                                     Weight:
@@ -422,23 +476,27 @@ function User() {
                                         (<div>{user.weight}</div>)
                                     }
                                 </StyledTableCell>
-                            </StyledTableRow>
-                            <StyledTableRow component="th" scope="row"  >
-                                <StyledTableCell className='cellItem'>
-                                    Height:
-                                </StyledTableCell>
-                                <StyledTableCell className='cellItem' >
-                                    {editClick && 
-                                        (<TextField type="number" defaultValue={user.height} onChange={(e) => {
-                                            //console.log(e.target.value);
-                                            changeHeight(user_id, e.target.value);
-                                          }}></TextField>)
-                                    }
-                                    {!editClick &&
-                                        (<div>{user.height}</div>)
-                                    }
-                                </StyledTableCell>
-                            </StyledTableRow>
+                            </StyledTableRow>                            
+                            }
+                            {localStorage.getItem("usertype") == "member" && 
+                             <StyledTableRow component="th" scope="row"  >
+                             <StyledTableCell className='cellItem'>
+                                 Height:
+                             </StyledTableCell>
+                             <StyledTableCell className='cellItem' >
+                                 {editClick && 
+                                     (<TextField type="number" defaultValue={user.height} onChange={(e) => {
+                                         //console.log(e.target.value);
+                                         changeHeight(user_id, e.target.value);
+                                       }}></TextField>)
+                                 }
+                                 {!editClick &&
+                                     (<div>{user.height}</div>)
+                                 }
+                             </StyledTableCell>
+                         </StyledTableRow>                           
+                            }
+
                             <StyledTableRow component="th" scope="row"  >
                                 <StyledTableCell className='cellItem'>
                                     Phone Number:
@@ -481,10 +539,11 @@ function User() {
                         margin="dense"
                         id="name"
                         color="secondary"
-                        label="New Password"
+                        label="Old Password"
                         type={hidePassword ? 'password' : 'name'}
                         fullWidth
                         variant="standard"
+                        onChange={(e) => {oldPsw(e)}}
                         InputProps={{
                             endAdornment: <IconButton aria-label="Example" onClick={handleHidePassword}>
                                 <FontAwesomeIcon icon={faEyeSlash} width='20px' />
@@ -494,8 +553,21 @@ function User() {
                     <TextField
                         autoFocus
                         margin="dense"
+                        id="name"
+                        color="secondary"
+                        label="New Password"
+                        onChange={(e) => {newPsw(e)}}
+                        type={hidePassword ? 'password' : 'name'}
+                        fullWidth
+                        variant="standard"
+                        
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
                         color="secondary"
                         id="name"
+                        onChange={(e) => {reNewPsw(e)}}
                         label="Re-Enter Password"
                         type={hidePassword ? 'password' : 'name'}
                         fullWidth
@@ -504,7 +576,7 @@ function User() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleChangePasswordClick}>Cancel</Button>
-                    <Button onClick={handleChangePasswordClick}>Submit</Button>
+                    <Button onClick={handleSubmitPassword}>Submit</Button>
                 </DialogActions>
             </Dialog>
 
