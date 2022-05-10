@@ -77,17 +77,17 @@ function AdminPanelStaff() {
     const [editStaffPhone, setEditStaffPhone] = useState('');
     const [editStaffName, setEditStaffName] = useState('')
     const [editStaffMail, setEditStaffMail] = useState('')
-    
+
 
     const pages = [5, 10, 15];
-    const headCells1= [
-        { id: 'id', label: "ID"},
+    const headCells1 = [
+        { id: 'id', label: "ID" },
         { id: 'email', label: 'Mail' },
         { id: 'name', label: 'Full Name' },
         { id: 'phoneNumber', label: 'Phone Number' },
         { id: 'resButton1', label: '', disableSorting: true }
     ]
-    
+
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
     const [order, setOrder] = useState();
@@ -99,8 +99,7 @@ function AdminPanelStaff() {
         setGymStaffData()
     }, []);
 
-    function setGymStaffData()
-    {
+    function setGymStaffData() {
         fetch('http://localhost:8080/user/gymStaff')
             .then((res) => res.json())
             .then((result) => {
@@ -109,67 +108,72 @@ function AdminPanelStaff() {
             });
     }
 
-    function handleAddGymStaff()
-    {
+    function handleAddGymStaff() {
         console.log("http://localhost:8080/user/gymStaff/add?token=" + localStorage.getItem("usertoken"))
         fetch("http://localhost:8080/user/gymStaff/add?token=" + localStorage.getItem("usertoken"), {
-            method:"POST",
-            Accept:"*/*",
-            "Accept-Encoding":"gzip, deflate, br",
-            Connection:"keep-alive",
+            method: "POST",
+            Accept: "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            Connection: "keep-alive",
             headers: {
-                Accept:"application/json",
-            'Content-Type': "application/json"
+                Accept: "application/json",
+                'Content-Type': "application/json"
             },
             body: JSON.stringify({
                 id: newStaffID,
-                name:newStaffName,
-                hashedPassword:newStaffPassword,
-                email:newStaffMail,
+                name: newStaffName,
+                hashedPassword: newStaffPassword,
+                email: newStaffMail,
                 phoneNumber: newStaffPhone
-            })}).then((result) => {
-                result.text().then((actualResult) => {
-                    console.log(actualResult)
-                    setGymStaffData()
-                })
             })
+        }).then((result) => {
+            result.text().then((actualResult) => {
+                console.log(actualResult)
+                setGymStaffData()
+            })
+        })
     }
 
-    function handleEditGymStaff(id)
-    {
-        fetch("http://localhost:8080/user/editGymStaff/" + id, {
-            method:"PATCH",
-            "Accept-Encoding":"gzip, deflate, br",
-            Connection:"keep-alive",
-            headers: {
-                Accept:"application/json",
-            'Content-Type': "application/json"
-            },
-            body: JSON.stringify({
-                name:editStaffName,
-                email:editStaffMail,
-                phoneNumber: editStaffPhone
-            })}).then((result) => {
+    function handleEditGymStaff(id) {
+        if (editStaffName === '' || editStaffMail === '' || editStaffPhone === '') {
+            alert("You have empty required fields");
+        }
+        else {
+            fetch("http://localhost:8080/user/editGymStaff/" + id, {
+                method: "PATCH",
+                "Accept-Encoding": "gzip, deflate, br",
+                Connection: "keep-alive",
+                headers: {
+                    Accept: "application/json",
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify({
+                    name: editStaffName,
+                    email: editStaffMail,
+                    phoneNumber: editStaffPhone
+                })
+            }).then((result) => {
                 result.text().then((actualResult) => {
-                    if(!actualResult.includes("edited."))
+                    if (!actualResult.includes("edited."))
                         alert(actualResult)
                     setGymStaffData()
                 })
             })
+        }
+        cancelEditingStaff();
     }
 
-    function handleDelete(id)
-  {
-      fetch("http://localhost:8080/user/delete/" + id, {
-          method: "DELETE"
-      }).then((result) => {
-          result.text().then((actualResult) => {
+    function handleDelete(id) {
+        fetch("http://localhost:8080/user/delete/" + id, {
+            method: "DELETE"
+        }).then((result) => {
+            result.text().then((actualResult) => {
                 alert(actualResult)
                 setGymStaffData()
 
-          })
-      })
-  }
+            })
+        })
+    }
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -201,11 +205,11 @@ function AdminPanelStaff() {
 
     const handleClickOpen5 = () => {
         setOpen5(true);
-      };
-    
-      const handleClose5 = () => {
+    };
+
+    const handleClose5 = () => {
         setOpen5(false);
-      };
+    };
     const handleRowsPerPageChange = event => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
@@ -343,7 +347,7 @@ function AdminPanelStaff() {
                             color='secondary'
                             focused
                         />
-                         <TextField className="newUser" onChange={event => setNewStaffPhone (event.target.value)}
+                        <TextField className="newUser" onChange={event => setNewStaffPhone(event.target.value)}
                             autoFocus
                             margin="dense"
                             id="newUserBirthDate"
@@ -361,7 +365,7 @@ function AdminPanelStaff() {
                         <Button onClick={() => {
                             setOpen(false); cancelNewStaff()
                         }}>Cancel </Button>
-                        <Button onClick={(newStaffID != '' && newStaffMail != '' && newStaffPhone != '') ? (event) => {setOpen(false); handleAddGymStaff()} : (event) => alert("All fields must be filled") /*ADD SONRASI SIFIRLAMAK LAZIM*/}>Add</Button>
+                        <Button onClick={(newStaffID != '' && newStaffMail != '' && newStaffPhone != '') ? (event) => { setOpen(false); handleAddGymStaff() } : (event) => alert("All fields must be filled") /*ADD SONRASI SIFIRLAMAK LAZIM*/}>Add</Button>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -443,29 +447,29 @@ function AdminPanelStaff() {
                                                             },
                                                         }}
                                                     >
-                                                        <IconButton aria-label="Example" onClick={() => { setOpen2(true); setCurrentIndex(user)}} >
+                                                        <IconButton aria-label="Example" onClick={() => { setOpen2(true); setCurrentIndex(user) }} >
                                                             <FontAwesomeIcon icon={faPenToSquare} />
                                                         </IconButton>
                                                     </Box>
-                                                    <Dialog open={open2} onClose={() => { setOpen2(false)}}>
+                                                    <Dialog open={open2} onClose={() => { setOpen2(false) }}>
                                                         <DialogTitle>Edit User Information</DialogTitle>
                                                         <DialogContent>
                                                             <DialogContentText>
                                                                 Please enter the information that you want to change.
                                                             </DialogContentText>
-                                                             <TextField className="editUser" onChange={event => setEditStaffPhone (event.target.value)}
+                                                            <TextField className="editUser" onChange={event => setEditStaffPhone(event.target.value)}
                                                                 autoFocus
-                                                                 margin="dense"
-                                                                 id="newUserBirthDate"
+                                                                margin="dense"
+                                                                id="newUserBirthDate"
                                                                 label="User Phone Number"
                                                                 required={true}
-                                                                 color='secondary'
-                                                                 type="text"
-                                                                    fullWidth
+                                                                color='secondary'
+                                                                type="text"
+                                                                fullWidth
                                                                 variant="standard"
                                                                 placeholder={currentIndex.phoneNumber}
                                                                 focused
-                                                                 />  
+                                                            />
                                                             <TextField className="editUser" onChange={event => setEditStaffName(event.target.value)}
                                                                 autoFocus
                                                                 margin="dense"
@@ -508,29 +512,29 @@ function AdminPanelStaff() {
                                                             <FontAwesomeIcon icon={faTrashCan} />
                                                         </IconButton>
                                                         <Dialog
-                              open={open5}
-                              onClose={handleClose5}
-                              aria-labelledby="Warning"
-                              aria-describedby="Warning"
-                            >
-                              <DialogTitle id="alert-dialog-title">
-                                {"Warning 🥴"}
-                              </DialogTitle>
-                              <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                  You are about to delete a user. Are you sure?
-                                </DialogContentText>
-                              </DialogContent>
-                              <DialogActions>
-                                <Button onClick={handleClose5}>Cancel</Button>
-                                <Button onClick={() => {
-                                setOpen5(false);
-                                handleDelete(currentIndex.id);
-                              }} autoFocus>
-                                  I am Sure.
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
+                                                            open={open5}
+                                                            onClose={handleClose5}
+                                                            aria-labelledby="Warning"
+                                                            aria-describedby="Warning"
+                                                        >
+                                                            <DialogTitle id="alert-dialog-title">
+                                                                {"Warning 🥴"}
+                                                            </DialogTitle>
+                                                            <DialogContent>
+                                                                <DialogContentText id="alert-dialog-description">
+                                                                    You are about to delete a user. Are you sure?
+                                                                </DialogContentText>
+                                                            </DialogContent>
+                                                            <DialogActions>
+                                                                <Button onClick={handleClose5}>Cancel</Button>
+                                                                <Button onClick={() => {
+                                                                    setOpen5(false);
+                                                                    handleDelete(currentIndex.id);
+                                                                }} autoFocus>
+                                                                    I am Sure.
+                                                                </Button>
+                                                            </DialogActions>
+                                                        </Dialog>
                                                     </Box>
                                                 </Stack>
                                             </StyledTableCell>

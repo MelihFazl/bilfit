@@ -138,11 +138,11 @@ function AdminPanel() {
   function handleAddGymMember() {
     console.log(
       "http://localhost:8080/user/gymMember/add?token=" +
-        localStorage.getItem("usertoken")
+      localStorage.getItem("usertoken")
     );
     fetch(
       "http://localhost:8080/user/gymMember/add?token=" +
-        localStorage.getItem("usertoken"),
+      localStorage.getItem("usertoken"),
       {
         method: "POST",
         Accept: "*/*",
@@ -170,40 +170,45 @@ function AdminPanel() {
   }
 
   function handleEditGymMember(id) {
-    fetch("http://localhost:8080/user/editGymMember/" + id, {
-      method: "PATCH",
-      "Accept-Encoding": "gzip, deflate, br",
-      Connection: "keep-alive",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: editUserName,
-        email: editUserMail,
-        phoneNumber: editUserPhone,
-        height: editUserHeight,
-        weight: editUserWeight,
-      }),
-    }).then((result) => {
-      result.text().then((actualResult) => {
-        if (!actualResult.includes("edited.")) alert(actualResult);
-        setUserData();
+    if (editUserName === '' || editUserMail === '' || editUserPhone === '' || editUserHeight === '' || editUserWeight === '') {
+      alert("You have empty required fields");
+    }
+    else {
+      fetch("http://localhost:8080/user/editGymMember/" + id, {
+        method: "PATCH",
+        "Accept-Encoding": "gzip, deflate, br",
+        Connection: "keep-alive",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: editUserName,
+          email: editUserMail,
+          phoneNumber: editUserPhone,
+          height: editUserHeight,
+          weight: editUserWeight,
+        }),
+      }).then((result) => {
+        result.text().then((actualResult) => {
+          if (!actualResult.includes("edited.")) alert(actualResult);
+          setUserData();
+        });
       });
-    });
+    }
+    cancelEditingUser();
   }
 
-  function handleDelete(id)
-  {
-      fetch("http://localhost:8080/user/delete/" + id, {
-          method: "DELETE"
-      }).then((result) => {
-          result.text().then((actualResult) => {
-                alert(actualResult)
-                setUserData()
+  function handleDelete(id) {
+    fetch("http://localhost:8080/user/delete/" + id, {
+      method: "DELETE"
+    }).then((result) => {
+      result.text().then((actualResult) => {
+        alert(actualResult)
+        setUserData()
 
-          })
       })
+    })
   }
   const handleClickOpen5 = () => {
     setOpen5(true);
@@ -312,7 +317,7 @@ function AdminPanel() {
     }*/
   /* This const takes the index of users and deletes it
     const deleteUser = (index) =>{
-
+  
     }*/
 
   const FontAwesomeSvgIcon = React.forwardRef((props, ref) => {
@@ -475,18 +480,18 @@ function AdminPanel() {
             <Button
               onClick={
                 newUserID != "" &&
-                newUserMail != "" &&
-                newUserGender != "" &&
-                newUserBirthDate != "" &&
-                newUserGender != ""
+                  newUserMail != "" &&
+                  newUserGender != "" &&
+                  newUserBirthDate != "" &&
+                  newUserGender != ""
                   ? (event) => {
-                      setOpen(false);
-                      handleAddGymMember();
-                    }
+                    setOpen(false);
+                    handleAddGymMember();
+                  }
                   : (event) =>
-                      alert(
-                        "All fields must be filled"
-                      ) /*ADD SONRASI SIFIRLAMAK LAZIM*/
+                    alert(
+                      "All fields must be filled"
+                    ) /*ADD SONRASI SIFIRLAMAK LAZIM*/
               }
             >
               Add
@@ -779,7 +784,7 @@ function AdminPanel() {
                               <FontAwesomeIcon icon={faTrashCan} />
                             </IconButton>
 
-        
+
                             <Dialog
                               open={open5}
                               onClose={handleClose5}
@@ -797,9 +802,9 @@ function AdminPanel() {
                               <DialogActions>
                                 <Button onClick={handleClose5}>Cancel</Button>
                                 <Button onClick={() => {
-                                setOpen5(false);
-                                handleDelete(currentIndex.id);
-                              }} autoFocus>
+                                  setOpen5(false);
+                                  handleDelete(currentIndex.id);
+                                }} autoFocus>
                                   I am Sure.
                                 </Button>
                               </DialogActions>
