@@ -691,6 +691,7 @@ function AdminPanel() {
                                 margin="dense"
                                 id="UserName"
                                 label="User Full Name"
+                                defaultValue={currentIndex.name}
                                 placeholder={currentIndex.name}
                                 color="secondary"
                                 type="text"

@@ -19,10 +19,10 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons/faTrashCan';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons/faPenToSquare';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-
+import {Button} from "../Navbar/Button"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+
 import IconButton from '@mui/material/IconButton';
 import SvgIcon from '@mui/material/SvgIcon';
 import { Sort } from '@mui/icons-material';
@@ -94,8 +94,30 @@ function Reservation() {
   //FOR GYM STAFF DELETING 
   const [open5, setOpen5] = React.useState(false);
   const [open6, setOpen6] = React.useState(false);
+  const [open7, setOpen7] = React.useState(false);
+
+  const [sportCenters, setSportCenters] = useState([]);
+  const [sportActivities, setSportActivities] = useState([]);
+  const [sportFields, setSportFields] = useState([]);
 
   const [currentIndex, setCurrentIndex] = useState("");
+  const [newSportCenter, setNewSportCenter] = useState("");
+  const [newSportActivity, setNewSportActivity] = useState("");
+  const [newSportField, setNewSportField] = useState("");
+  const [newDateFirst, setNewDateFirst] = useState("");
+  const [newDateSecond, setNewDateSecond] = useState("");
+  const [newTimeSlots, setNewTimeSlots] = useState("");
+  const [newTimes, setNewTimes] = useState([]);
+
+
+ 
+  const handleClose7 = () => {
+    setOpen7(false);
+  };
+
+  const handleClickOpen7 = () => {
+    setOpen7(true);
+  };
 
   //methods
   const handleClose5 = () => {
@@ -121,6 +143,7 @@ function Reservation() {
       .then((res) => res.json())
       .then((result) => {
         setReservations(result);
+        handleSportCenterData();
       });
   }
   else if (userType === 0) {
@@ -128,12 +151,22 @@ function Reservation() {
       .then((res) => res.json())
       .then((result) => {
         setReservations(result);
+        
       });
   }
+  }
 
-  };
+  const handleSportCenterData = () => {
+    fetch("http://localhost:8080/reservation/sportCenter").then((res) => res.json()).then((result) => {
+      setSportCenters(result)
+      console.log(result);
+    })
+  }
+
   useEffect(() => {
-    handleData()
+    handleSportCenterData()
+    handleData();
+    
   }, []);
 
   //Table actions for the gym member
@@ -216,7 +249,27 @@ function Reservation() {
     setRowsPerPage2(parseInt(event.target.value, 10));
     setPage2(0);
   };
-
+  const handleSubmitDateTime = () =>
+  {
+    if(newDateFirst >= newDateSecond)
+    {
+      alert("First date cannot be after the second one!")
+      return;
+    }
+    let strArray = newTimeSlots.replace(/\s/g, '').split(",");
+    console.log(strArray)
+    console.log(new Date(newDateSecond).toISOString().split('T')[0])
+    fetch("http://localhost:8080/reservation/dateTimeSet?sportCenterID=" 
+    + newSportCenter.id + "&sportActivityID=" + newSportActivity.id 
+    + "&fieldID=" + newSportField.id + "&begin=" + new Date(newDateFirst).toISOString().split('T')[0] 
+    + "&end=" + new Date(newDateSecond).toISOString().split('T')[0] + "&strings=" + strArray, {
+      method:"POST"
+    }).then((result) => {
+      result.text().then((actualResult) => {
+        alert(actualResult);
+      })
+    })
+  }
   const handleSearch2 = e => {
     let target = e.target;
     setFilterFn2({
@@ -330,6 +383,7 @@ function Reservation() {
             justifyContent="center"
             alignItems="center"
             spacing={6}>
+             
             <div className="ReservationContainer">
 
               {/*For searching and sorting of user*/}
@@ -449,6 +503,140 @@ function Reservation() {
         <Stack className='mainStackStaff' direction="column"
           spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo2 ? "block" : "none" }}    >
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'>Total Reservations</h1> </div>
+          <Button onClick={() => setOpen7(true)}>Set Date and Time Slots</Button>
+          <Dialog open={open7} onClose={handleClose7}> 
+          <DialogTitle>Set Time</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please enter the necessary information of the new user.
+            </DialogContentText>
+            <Stack direction="column">  
+            <TextField
+              className="newUser"
+              autoFocus
+              id="newUserGender"
+              margin="dense"
+              select
+              label="Select Sport Center"
+              required={true}
+              defaultValue={sportCenters[0] && sportCenters[0].name }
+              color="secondary"
+              onChange={(event) => {
+                setNewSportCenter(event.target.value)
+                setSportActivities(event.target.value.availableActivities)
+                console.log(event.target.value.availableActivities)
+              }}
+              focused
+            >
+              {sportCenters.map((option) => (
+                <MenuItem key={option.name} value={option}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              className="newUser"
+              autoFocus
+              id="newUserGender"
+              margin="dense"
+              select
+              label="Select Sport Activity"
+              required={true}
+              color="secondary"
+              defaultValue={sportActivities[0] && sportActivities[0].activity}
+              onChange={(event) => {
+                setNewSportActivity(event.target.value);
+                setSportFields(event.target.value.fields)
+              }}
+              focused
+            >
+              {sportActivities.map((option) => (
+                <MenuItem key={option.activity} value={option}>
+                  {option.activity}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              className="newUser"
+              autoFocus
+              id="newUserGender"
+              margin="dense"
+              select
+              label="Select Sport Place"
+              required={true}
+              color="secondary"
+              defaultValue={sportFields[0] && sportFields[0].name}
+              onChange={(event) => {
+                setNewSportField(event.target.value);
+              }}
+              focused
+            >
+              {sportFields.map((option) => (
+                <MenuItem key={option.name} value={option}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            </Stack>
+            <TextField
+              className="newUser"   
+              autoFocus
+              margin="dense"
+              id="newUserBirthDate"
+              label="Start Date"
+              required={true}
+              color="secondary"
+              type="date"
+              fullWidth
+              variant="standard"
+              focused
+              onChange={(event) => setNewDateFirst(event.target.value)}
+            />
+              <TextField
+              className="newUser"   
+              autoFocus
+              margin="dense"
+              id="newUserBirthDate"
+              label="End Date"
+              required={true}
+              color="secondary"
+              type="date"
+              fullWidth
+              variant="standard"
+              focused
+              onChange={(event) => setNewDateSecond(event.target.value)}
+            /> 
+             <TextField
+              className="newUser"   
+              autoFocus
+              multiline
+              margin="dense"
+              id="newUserBirthDate"
+              label="Time Slots"
+              required={true}
+              color="secondary"
+              type="text"
+              fullWidth
+              helperText="Enter Time Slots in comma seperated list (eg. 15.00-17.00, 17.00-19.00)"
+              variant="standard"
+              focused
+              onChange={(event) => setNewTimeSlots(event.target.value)}
+            />       
+            <Button className='submitButton' variant="contained" color="secondary" size='large' onClick={() => 
+              (newSportCenter === "" || newSportActivity === ""  
+              || newSportField === "" || newDateFirst === "" 
+              || newDateSecond === "" 
+              || newTimeSlots === "") 
+              ? alert("Please fill all fields😯")
+              : handleSubmitDateTime() }
+             > Submit Dates and Times</Button>
+
+    
+          </DialogContent>
+          </Dialog>
+
+          
+
           <Stack className='mainStack' direction="row"
             justifyContent="center"
             alignItems="center"
