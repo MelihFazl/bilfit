@@ -385,7 +385,7 @@ function GymStaffPanel() {
             >
               <Toolbar>
                 <Input
-                  label="Search Reservations"
+                  label="Search Members"
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
