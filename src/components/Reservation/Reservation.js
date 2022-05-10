@@ -260,14 +260,14 @@ function Reservation() {
   };
   const handleSubmitDateTime = () =>
   {
+    
     if(newDateFirst >= newDateSecond)
     {
       alert("First date cannot be after the second one!")
       return;
     }
     let strArray = newTimeSlots.replace(/\s/g, '').split(",");
-    console.log(strArray)
-    console.log(new Date(newDateSecond).toISOString().split('T')[0])
+
     fetch("http://localhost:8080/reservation/dateTimeSet?sportCenterID=" 
     + newSportCenter.id + "&sportActivityID=" + newSportActivity.id 
     + "&fieldID=" + newSportField.id + "&begin=" + new Date(newDateFirst).toISOString().split('T')[0] 
@@ -275,7 +275,8 @@ function Reservation() {
       method:"POST"
     }).then((result) => {
       result.text().then((actualResult) => {
-        alert(actualResult);
+        handleClose7()
+        setNewTimeSlots("")
       })
     })
   }
