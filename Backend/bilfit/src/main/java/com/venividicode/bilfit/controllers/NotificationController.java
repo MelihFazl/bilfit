@@ -24,7 +24,6 @@ public class NotificationController {
      * 	private String content;
      * 	private String title;
      */
-
     @PostMapping("/send")
     public String sendNotification(@RequestBody Notification notification) {
         notificationService.saveNotification(notification);

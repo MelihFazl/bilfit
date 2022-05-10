@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * A controller class for handling requests related
+ * to SportCourse model
+ * @author Veni Vidi Code
+ */
 @RestController
 @RequestMapping("/course")
 @CrossOrigin
@@ -17,6 +22,13 @@ public class SportCourseController
     @Autowired
     SportCourseService sportCourseService;
 
+    /**
+     * Post method used to add a Sport Course to the database
+     * @param sportCourse object that is to be added
+     * @param sportCenterID id of the SportCenter that this Sport Course will take place in
+     * @param courseDays days that this course will be carried out
+     * @return String indicating success or failure
+     */
     @PostMapping("/add")
     public String saveSportCourse(@RequestBody SportCourse sportCourse, @RequestParam long sportCenterID,
                                   @RequestParam(value="courseDays") List<String> courseDays)
@@ -30,6 +42,11 @@ public class SportCourseController
         }
     }
 
+    /**
+     * Delete method used to delete a Sport Course from the database
+     * @param id id of the Sport Course that is to be deleted
+     * @return String indicating success or failure
+     */
     @DeleteMapping("/delete/{id}")
     public String deleteSportCourse(@PathVariable("id") long id)
     {
@@ -41,36 +58,66 @@ public class SportCourseController
         return "SportCourse with name " + sportCoursesWithSpecifiedID.get(0).getType() + " has been successfully deleted.";
     }
 
+    /**
+     * Get method returning all the Sport Courses
+     * @return list of all the Sport courses
+     */
     @GetMapping
     public List<SportCourse> getAllCourses()
     {
         return sportCourseService.getAllSportCourses();
     }
 
+    /**
+     * Get method returning the Sport Course with specified id
+     * @param id id of the Sport Course
+     * @return list of the specified Sport Courses
+     */
     @GetMapping("/{id}")
     public List<SportCourse> getCourseByID(@PathVariable("id") long id)
     {
         return sportCourseService.getSportCourseByID(id);
     }
 
+    /**
+     * Get method returning the Sport Course with specified id
+     * @param type type of the Sport Course (Ex: Tennis)
+     * @return String indicating success or failure
+     */
     @GetMapping("/type/{type}")
     public List<SportCourse> getCourseByID(@PathVariable("type") String type)
     {
         return sportCourseService.getSportCoursesByType(type);
     }
 
+    /**
+     * Get method returning the Sport Course with specified id
+     * @param id id of the Sport Center
+     * @return list of all the Sport Courses carried out in the specified Sport Center
+     */
     @GetMapping("/sportcenter/{id}")
     public List<SportCourse> getCourseByLocation(@PathVariable("id") long id)
     {
         return sportCourseService.getSportCourseByLocation(id);
     }
 
+    /**
+     * Get method used to get a Sport Course by a participant id
+     * @param id id of the Gym Member
+     * @return list of all the Sport Courses that are enrolled by the specified Gym Member
+     */
     @GetMapping("/participant/{id}")
     public List<SportCourse> getCourseByParticipant(@PathVariable("id") long id)
     {
         return sportCourseService.getSportCoursesByParticipants(id);
     }
 
+    /**
+     * Post method used to edit attributes of a Sport Course object
+     * @param editedCourse edited Sport Course
+     * @param courseID id of the Sport Course
+     * @return String indicating success or failure
+     */
     @PostMapping("/edit/{id}")
     public String editCourseWithID(@RequestBody SportCourse editedCourse, @PathVariable("id") long courseID)
     {
@@ -90,6 +137,12 @@ public class SportCourseController
         }
     }
 
+    /**
+     * Post method used to enroll a Gym Member to a Sport Course
+     * @param courseID id of the Sport Course
+     * @param gymMemberID id of the Gym Member
+     * @return String indicating success or failure
+     */
     @PostMapping("/enroll/{courseID}/participant/{id}")
     public String enrollParticipantToACourseWithID(@PathVariable("courseID") long courseID, @PathVariable("id") long gymMemberID)
     {
@@ -102,6 +155,12 @@ public class SportCourseController
         return sportCourseService.addParticipant(courseID, gymMemberID);
     }
 
+    /**
+     * Post method used to remove a Gym Member from a Sport Course
+     * @param courseID id of the Sport Course
+     * @param gymMemberID id of the Gym Member
+     * @return String indicating success or failure
+     */
     @PostMapping("/remove/{courseID}/participant/{id}")
     public String removeParticipantFromACourseWithID(@PathVariable("courseID") long courseID, @PathVariable("id") long gymMemberID)
     {

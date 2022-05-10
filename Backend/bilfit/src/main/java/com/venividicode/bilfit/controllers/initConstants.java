@@ -13,6 +13,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class for putting initial entities
+ * into the database
+ * @author Veni Vidi Code
+ */
 @RestController
 @RequestMapping("/initConstants")
 @CrossOrigin

@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * A controller class for handling requests and
+ * operations related to User Management
+ */
 @RestController
 @RequestMapping("/user")
 @CrossOrigin
