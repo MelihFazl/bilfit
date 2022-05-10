@@ -157,7 +157,7 @@ public class UserAccountManagementController {
                 if (!oldHashedPassword.equals(actualOldHashedPassword))
                     return "The old password is incorrect.";
                 gymStaffs.get(0).setHashedPassword(newHashedPassword);
-                userAccountManagementService.saveGymStaff(gymStaffs.get(0));
+                userAccountManagementService.updateGymStaff(gymStaffs.get(0));
                 return "The password of user with ID " + userID + " has been successfully changed.";
             }
         } else {
@@ -165,7 +165,7 @@ public class UserAccountManagementController {
             if (!oldHashedPassword.equals(actualOldHashedPassword))
                 return "The old password is incorrect.";
             gymMembers.get(0).setHashedPassword(newHashedPassword);
-            userAccountManagementService.saveGymMember(gymMembers.get(0));
+            userAccountManagementService.updateGymMember(gymMembers.get(0));
             return "The password of user with ID " + userID + " has been successfully changed.";
         }
     }
