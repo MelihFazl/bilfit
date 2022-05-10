@@ -25,37 +25,37 @@ import SvgIcon from '@mui/material/SvgIcon';
 //ToDos: Button's on click functions can be added
 //seperating staff and user (not sure)
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      backgroundColor: '#F05454',
-      color: theme.palette.common.white,
-      fontSize: 15
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 14,
-    
-    },
-  }));
-  function createData(resDate, resTimeSlot, resActivity, resPlace, resLocation, resStatus, cancelButton, deleteButton) { // I am not sure for the last two parameters for now 
-    return { resDate, resTimeSlot, resActivity, resPlace, resLocation, resStatus };
-  }
-  const rows = [
-    createData('March 19, 2022', '11.30-12.45', 'Fitness', 'Dormitories', 'Ground Floor', 'Attended', "", ""),
-    createData('March 25, 2022', '14.30-15.45', 'Basketball', 'Main Campus', 'Ground Floor', 'Upcoming', "", ""),
-  
-  ];
-  
-  
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-  }));
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: '#F05454',
+    color: theme.palette.common.white,
+    fontSize: 15
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
 
-function Tournaments(){
+  },
+}));
+function createData(resDate, resTimeSlot, resActivity, resPlace, resLocation, resStatus, cancelButton, deleteButton) { // I am not sure for the last two parameters for now 
+  return { resDate, resTimeSlot, resActivity, resPlace, resLocation, resStatus };
+}
+const rows = [
+  createData('March 19, 2022', '11.30-12.45', 'Fitness', 'Dormitories', 'Ground Floor', 'Attended', "", ""),
+  createData('March 25, 2022', '14.30-15.45', 'Basketball', 'Main Campus', 'Ground Floor', 'Upcoming', "", ""),
+
+];
+
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
+function Tournaments() {
   const userType = (localStorage.getItem("usertype") == "staff") ? 1 : 0;
   const [tournaments, setTournaments] = useState([]);
   //variables for unique button states 
@@ -94,49 +94,49 @@ function Tournaments(){
    * @param {it shows which button is clicked } number 
    */
   const handleOnChange = (position, number) => { // It will be modified according to array that comes from backend
-    if(number == 1){
+    if (number == 1) {
       const updateAllStates = checkedState1.fill(false);
       setCheckedState1(updateAllStates);
       const updatedCheckedState = checkedState1.map((item, index) => index === position ? !item : item);
       setCheckedState1(updatedCheckedState);
     }
-    if(number == 2){
+    if (number == 2) {
       const updateAllStates = checkedState2.fill(false);
       setCheckedState2(updateAllStates);
       const updatedCheckedState = checkedState2.map((item, index) => index === position ? !item : item);
       setCheckedState2(updatedCheckedState);
     }
-    if(number == 3){
+    if (number == 3) {
       const updateAllStates = checkedState3.fill(false);
       setCheckedState3(updateAllStates);
       const updatedCheckedState = checkedState3.map((item, index) => index === position ? !item : item);
       setCheckedState3(updatedCheckedState);
     }
-    if(number == 4){
+    if (number == 4) {
       const updateAllStates = checkedState4.fill(false);
       setCheckedState4(updateAllStates);
       const updatedCheckedState = checkedState4.map((item, index) => index === position ? !item : item);
       setCheckedState4(updatedCheckedState);
     }
-    if(number == 5){
+    if (number == 5) {
       const updateAllStates = checkedState5.fill(false);
       setCheckedState5(updateAllStates);
       const updatedCheckedState = checkedState5.map((item, index) => index === position ? !item : item);
       setCheckedState5(updatedCheckedState);
     }
-    if(number == 6){
+    if (number == 6) {
       const updateAllStates = checkedState6.fill(false);
       setCheckedState6(updateAllStates);
       const updatedCheckedState = checkedState6.map((item, index) => index === position ? !item : item);
       setCheckedState6(updatedCheckedState);
     }
-    if(number == 7){
+    if (number == 7) {
       const updateAllStates = checkedState7.fill(false);
       setCheckedState7(updateAllStates);
       const updatedCheckedState = checkedState7.map((item, index) => index === position ? !item : item);
       setCheckedState7(updatedCheckedState);
     }
-    
+
 
   };
 
@@ -165,24 +165,24 @@ function Tournaments(){
     icon: PropTypes.any.isRequired,
   };
 
-    return(
-        <>
+  if (userType === 0) {
+    return (
+      <>
         {/*The first stack will will be displayed for users*/}
-        <Stack className='mainStackUser' direction="column" 
+        <Stack className='mainStackUser' direction="column"
           spacing={3} alignItems="center" style={{ display: showInfo1 ? "block" : "none" }}    >
-           <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}> <h1 className='header'>My Tournaments</h1> </div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'>My Tournaments</h1> </div>
           <Stack className='mainStack' direction="row"
             justifyContent="center"
             alignItems="center"
             spacing={6}>
             <div className="TournamentContainer">
-              <TableContainer   component={Paper} >
-                <Table sx={{   width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
+              <TableContainer component={Paper} >
+                <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
                   <TableHead>
                     <TableRow hover="false">
-                      <StyledTableCell>Tournament Date</StyledTableCell>
-                      <StyledTableCell align='right'> Time</StyledTableCell>
-                      <StyledTableCell align='right'> Activity</StyledTableCell>
+                      <StyledTableCell>Activity</StyledTableCell>
+                      <StyledTableCell align='right'> Start-Finish Date</StyledTableCell>
                       <StyledTableCell align='right'> Location</StyledTableCell>
                       <StyledTableCell align='right'> Sport Center</StyledTableCell>
                       <StyledTableCell align='right'> Team Members</StyledTableCell>
@@ -190,10 +190,10 @@ function Tournaments(){
                       <StyledTableCell align='right'></StyledTableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody  hover="false">
-                    {tournaments.map((tournament,index) => (
+                  <TableBody hover="false">
+                    {tournaments.map((tournament, index) => (
                       <StyledTableRow key={tournament.id} component="th" scope="row"  >
-                        <StyledTableCell  className='cellItem'>
+                        <StyledTableCell className='cellItem'>
                           {tournament.resDate}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
@@ -209,12 +209,12 @@ function Tournaments(){
                           {tournament.campus}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem'>
-                        <Table  size="small" aria-label="a dense table">
-                                <TableRow><StyledTableCell > {tournament.teammates1 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates2 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates3 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates4 }</StyledTableCell></TableRow>
-                                
+                          <Table size="small" aria-label="a dense table">
+                            <TableRow><StyledTableCell > {tournament.teammates1}</StyledTableCell></TableRow>
+                            <TableRow><StyledTableCell> {tournament.teammates2}</StyledTableCell></TableRow>
+                            <TableRow><StyledTableCell> {tournament.teammates3}</StyledTableCell></TableRow>
+                            <TableRow><StyledTableCell> {tournament.teammates4}</StyledTableCell></TableRow>
+
                           </Table>
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
@@ -232,7 +232,7 @@ function Tournaments(){
                                 },
                               }}
                             >
-                              <IconButton aria-label="Example" onClick={() => { handleOnChange(index,1); alert(index)  /* it will be modified according to array that comes from backend */ }}>
+                              <IconButton aria-label="Example" onClick={() => { handleOnChange(index, 1); alert(index)  /* it will be modified according to array that comes from backend */ }}>
                                 <FontAwesomeIcon icon={faXmark} />
                               </IconButton></Box>
                             <Box className='button2'
@@ -243,7 +243,7 @@ function Tournaments(){
                               }}
                             >
                               <IconButton aria-label="Example">
-                                <FontAwesomeIcon icon={faTrashCan} onClick={() => { handleOnChange(index,2); alert(index)  /* it will be modified according to array that comes from backend */ }} />
+                                <FontAwesomeIcon icon={faTrashCan} onClick={() => { handleOnChange(index, 2); alert(index)  /* it will be modified according to array that comes from backend */ }} />
                               </IconButton></Box>
                           </Stack>
                         </StyledTableCell>
@@ -255,17 +255,23 @@ function Tournaments(){
             </div>
           </Stack>
         </Stack>
+      </>
+    )
+  }
+  else if (userType === 1) {
+    return (
+      <>
         {/*The second stack will be displayed to staff*/}
-        <Stack className='mainStackStaff' direction="column" 
+        <Stack className='mainStackStaff' direction="column"
           spacing={3} alignItems="center" justifyContent="center" style={{ display: showInfo1 ? "none" : "block" }}    >
-          <div  style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}> <h1 className='header' >Enrolled Tournaments</h1> </div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header' >Enrolled Tournaments</h1> </div>
           <Stack className='mainStack' direction="row"
             justifyContent="center"
             alignItems="center"
             spacing={6}>
             <div className="TournamentContainer">
-              <TableContainer   component={Paper} >
-                <Table sx={{   width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
+              <TableContainer component={Paper} >
+                <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
                   <TableHead>
                     <TableRow hover="false">
                       <StyledTableCell>Tournament Date</StyledTableCell>
@@ -279,10 +285,10 @@ function Tournaments(){
                       <StyledTableCell align='right'></StyledTableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody  hover="false">
-                    {tournaments.map((tournament,index) => (
+                  <TableBody hover="false">
+                    {tournaments.map((tournament, index) => (
                       <StyledTableRow key={tournament.id} component="th" scope="row"  >
-                        <StyledTableCell  className='cellItem'>
+                        <StyledTableCell className='cellItem'>
                           {tournament.resDate}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
@@ -301,30 +307,30 @@ function Tournaments(){
                           {tournament.memberNumber}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem'>
-                        <Table  size="small" aria-label="a dense table">
-                                <TableRow><StyledTableCell > {tournament.teammates1 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates2 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates3 }</StyledTableCell></TableRow>
-                                <TableRow><StyledTableCell> {tournament.teammates4 }</StyledTableCell></TableRow>
-                                
+                          <Table size="small" aria-label="a dense table">
+                            <TableRow><StyledTableCell > {tournament.teammates1}</StyledTableCell></TableRow>
+                            <TableRow><StyledTableCell> {tournament.teammates2}</StyledTableCell></TableRow>
+                            <TableRow><StyledTableCell> {tournament.teammates3}</StyledTableCell></TableRow>
+                            <TableRow><StyledTableCell> {tournament.teammates4}</StyledTableCell></TableRow>
+
                           </Table>
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
                           {tournament.status}
                         </StyledTableCell>
                         <StyledTableCell className='cellItem' >
-    
-                            <Box className='button1'
-                              sx={{
-                                '& > :not(style)': {
-                                  m: 1,
-                                },
-                              }}
-                            >
-                              <IconButton aria-label="Example" onClick={() => { handleOnChange(index,7); alert(index)  /* it will be modified according to array that comes from backend */ }}>
-                                <FontAwesomeIcon icon={faXmark} />
-                              </IconButton></Box>
-                          
+
+                          <Box className='button1'
+                            sx={{
+                              '& > :not(style)': {
+                                m: 1,
+                              },
+                            }}
+                          >
+                            <IconButton aria-label="Example" onClick={() => { handleOnChange(index, 7); alert(index)  /* it will be modified according to array that comes from backend */ }}>
+                              <FontAwesomeIcon icon={faXmark} />
+                            </IconButton></Box>
+
                         </StyledTableCell>
                       </StyledTableRow>
                     ))}
@@ -334,7 +340,12 @@ function Tournaments(){
             </div>
           </Stack>
         </Stack>
-      </>  
+      </>
     )
+  }
+
+
+
+
 }
 export default Tournaments;

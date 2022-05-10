@@ -266,11 +266,14 @@ function EnrollTournaments() {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => {
-                            setOpen2(false); cancelNewTournament()}} >Cancel </Button>
-                        <Button onClick={handleClose2}>Add</Button> 
+                            setOpen2(false); cancelNewTournament()
+                        }} >Cancel </Button>
+                        <Button onClick={handleClose2}>Add</Button>
                     </DialogActions>
                 </Dialog>
             </div>
+
+
             <Stack className='mainStackUser' direction="column"
                 spacing={3} alignItems="center">
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> <h1 className='header'>Available Tournaments</h1> </div>
@@ -284,10 +287,10 @@ function EnrollTournaments() {
                             <Table sx={{ width: '100%', backgroundColor: '#F5F5F5', height: "max-content" }} aria-label="customized table"  >
                                 <TableHead>
                                     <TableRow>
-                                        <StyledTableCell>Tournaments Date</StyledTableCell>
-                                        <StyledTableCell align='right'>Tournaments Time</StyledTableCell>
-                                        <StyledTableCell align='right'>Tournaments Activity</StyledTableCell>
-                                        <StyledTableCell align='right'>Tournaments Location</StyledTableCell>
+                                        <StyledTableCell> Activity </StyledTableCell>
+                                        <StyledTableCell align='right'>Start-Finish Date</StyledTableCell>
+                                        <StyledTableCell align='right'>Location</StyledTableCell>
+                                        <StyledTableCell align='right'>Sports Center</StyledTableCell>
                                         <StyledTableCell align='right'>Sport Center</StyledTableCell>
                                         <StyledTableCell align='right'>Tournament Status</StyledTableCell>
                                         <StyledTableCell align='right'></StyledTableCell>
