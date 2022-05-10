@@ -21,12 +21,12 @@ export const MenuItems = [
         title: 'My Tournaments',
         path: '/my-tournaments',
         cName: 'dropdown-link'
-        },
-        {
-        title: 'Tournament Requests',
-        path: '/tournament-requests',
-        cName: 'dropdown-link'
         }
+        //{
+        //title: 'Tournament Requests',
+        //path: '/tournament-requests',
+        //cName: 'dropdown-link'
+        //}
     ],
     [
         {

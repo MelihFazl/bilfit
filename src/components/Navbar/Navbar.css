@@ -111,6 +111,14 @@
       width: 100%;
       display: table;
     }
+
+    .bilfit-logo {
+      position: fixed;
+      margin-left: 5rem;
+      font-size: 1.8rem;
+      height: 6.5rem;
+      width: auto;
+    }
   
     .nav-links:hover {
       background-color: #fff;

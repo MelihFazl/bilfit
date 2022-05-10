@@ -99,23 +99,17 @@ function AdminPanel() {
 
   const pages = [5, 10, 15];
   const headCells1 = [
-    { id: "schoolID", label: "ID" },
+    { id: "id", label: "ID" },
     { id: "email", label: "Mail" },
     { id: "name", label: "Full Name" },
     { id: "phoneNumber", label: "Phone Number" },
-    { id: "birthdate", label: "Birth Date" },
+    { id: "birthday", label: "Birth Date" },
     { id: "gender", label: "Gender" },
     { id: "weight", label: "Weight" },
     { id: "height", label: "Height" },
     { id: "resButton1", label: "", disableSorting: true },
   ];
-  const headCells2 = [
-    { id: "schoolID", label: "ID" },
-    { id: "email", label: "Mail" },
-    { id: "name", label: "Full Name" },
-    { id: "phoneNumber", label: "Phone Number" },
-    { id: "resButton1", label: "", disableSorting: true },
-  ];
+
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
@@ -270,22 +264,22 @@ function AdminPanel() {
         if (target.value == "") return items;
         else
           switch (searchSelection) {
-            case "schoolID":
-              return items.filter((x) => x.id.includes(target.value));
+            case "id":
+              return items.filter((x) => x.id.toString().includes(target.value));
             case "email":
               return items.filter((x) => x.email.includes(target.value));
             case "name":
               return items.filter((x) => x.name.includes(target.value));
             case "phoneNumber":
               return items.filter((x) => x.phoneNumber.includes(target.value));
-            case "birthdate":
+            case "birthday":
               return items.filter((x) => x.birthday.includes(target.value));
             case "gender":
               return items.filter((x) => x.gender.includes(target.value));
             case "weight":
-              return items.filter((x) => x.weight.includes(target.value));
+              return items.filter((x) => x.weight.toString().includes(target.value));
             case "height":
-              return items.filter((x) => x.height.includes(target.value));
+              return items.filter((x) => x.height.toString().includes(target.value));
             default:
               return items.filter((x) => x.name.includes(target.value));
           }
@@ -354,7 +348,7 @@ function AdminPanel() {
           marginTop: "2rem",
         }}
       >
-        <Button onClick={handleClickOpen}> Add User </Button>
+        <Button onClick={handleClickOpen} > Add User </Button>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Add User </DialogTitle>
           <DialogContent>
@@ -691,6 +685,7 @@ function AdminPanel() {
                                 margin="dense"
                                 id="UserName"
                                 label="User Full Name"
+                                defaultValue={currentIndex.name}
                                 placeholder={currentIndex.name}
                                 color="secondary"
                                 type="text"

@@ -81,7 +81,7 @@ function AdminPanelStaff() {
 
     const pages = [5, 10, 15];
     const headCells1= [
-        { id: 'ID', label: "ID"},
+        { id: 'id', label: "ID"},
         { id: 'email', label: 'Mail' },
         { id: 'name', label: 'Full Name' },
         { id: 'phoneNumber', label: 'Phone Number' },
@@ -219,7 +219,7 @@ function AdminPanelStaff() {
                     return items;
                 else
                     switch (searchSelection) {
-                        case "schoolID": return items.filter(x => x.id.includes(target.value));
+                        case "id": return items.filter(x => x.id.toString().includes(target.value));
                         case "email": return items.filter(x => x.email.includes(target.value));
                         case "name": return items.filter(x => x.name.includes(target.value));
                         case "phoneNumber": return items.filter(x => x.phoneNumber.includes(target.value));

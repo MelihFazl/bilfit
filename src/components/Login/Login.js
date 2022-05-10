@@ -23,7 +23,7 @@ function Copyright(props) {
   
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright Â© '}
+      {'Copyright © '}
       <Link color="inherit" href="">
         Bilfit
       </Link>{' '}
@@ -175,7 +175,7 @@ export default function SignIn() {
               required
               fullWidth
               id="email"
-              label="Student ID"
+              label="ID"
               name="email"
               autoComplete="email"
               autoFocus
@@ -190,10 +190,7 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            
             <Button
               //href = "/home"
               type="submit"
@@ -217,18 +214,6 @@ export default function SignIn() {
         <FormControlLabel value="admin" control={<Radio />}  label="Admin" />
       </RadioGroup>
     </FormControl>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

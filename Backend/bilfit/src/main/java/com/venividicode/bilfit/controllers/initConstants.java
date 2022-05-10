@@ -86,9 +86,22 @@ public class initConstants {
         List<TimeSlotOnDay> timeSlotOnDays = new ArrayList<>();
         timeSlotOnDays.add(timeSlotOnDay);
         timeSlotOnDayRepository.save(timeSlotOnDay);
+
+        /*tennisNorth.setOccupiableTimeSlotsOnDay(timeSlotOnDays);
+        fieldRepository.save(tennisNorth);
+        SportActivity tennis = new SportActivity();
+        List<Field> fields = new ArrayList<>();
+        fields.add(tennisNorth);
+        tennis.setFields(fields);
+        tennis.setActivity("Tennis");
+        sportActivityRepository.save(tennis);
+        SportCenter east = new SportCenter();
+        east.setName("East Sport Hall");
+        east.setBalance(500.0);
+        sportCenterRepository.save(east);*/
         badmintonNorth.setOccupiableTimeSlotsOnDay(timeSlotOnDays);
         Field badmintonSouth = new Field();
-        badmintonSouth.setName("Main Badminton-South");
+        badmintonSouth.setName("East Badminton-South");
         badmintonSouth.setMaxQuota(4);
         badmintonSouth.setOccupiableTimeSlotsOnDay(timeSlotOnDays);
 
@@ -102,19 +115,18 @@ public class initConstants {
 
 
         SportActivity badminton = new SportActivity();
-        badminton.setActivity("Badminton");
-        badminton.setFields(fieldRepository.findAll());
+        badminton.setActivity("Tennis");
+
         sportActivityRepository.save(badminton);
 
         SportCenter sportCenter = new SportCenter();
         sportCenter.setBalance(10.0);
         sportCenter.setAvailableActivities(sportActivityRepository.findAll());
-        sportCenter.setName("Main Sports Hall");
+        sportCenter.setName("Main Sport Hall");
 
         sportCenter.setClosesAt(LocalDateTime.of(0, 1, 1, 23, 0));
         sportCenter.setClosesAt(LocalDateTime.of(0, 1, 1, 10, 0));
         sportCenter.setLatestReservationStepValue(5);
-        sportCenter.setStaff(gymStaffRepository.findById(21));
         sportCenterRepository.save(sportCenter);
         return true;
     }

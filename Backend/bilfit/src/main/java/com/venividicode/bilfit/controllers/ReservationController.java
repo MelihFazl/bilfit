@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,12 +79,14 @@ public class ReservationController {
         return reservationService.getAllSportCenters();
     }
 
+
+
     /**
      * Post method used to cancel a Reservation
      * @param reservationID id of the Reservation that is to be cancelled
      * @return String indicating success or fail
      */
-    @PostMapping("cancel/{id}")
+    @PostMapping("/cancel/{id}")
     public String cancelByID(@PathVariable("id") long reservationID) {
         Reservation reservation = reservationService.getReservationById(reservationID);
         if (reservation == null)
@@ -97,12 +100,12 @@ public class ReservationController {
         }
     }
 
+    @PostMapping("/attend/{id}")
     /**
      * Post method used to mark the specified Reservation as attended
      * @param reservationID id of the Reservation
      * @return String indicating success or failure
      */
-    @PostMapping("attend/{id}")
     public String attendByID(@PathVariable("id") long reservationID)
     {
         Reservation reservation = reservationService.getReservationById(reservationID);
@@ -119,5 +122,13 @@ public class ReservationController {
             return "Something went wrong 😤 ";
         }
 
+    }
+    @PostMapping("/dateTimeSet")
+    public String dateTimeSet(@RequestParam long sportCenterID, @RequestParam long sportActivityID,
+                               @RequestParam long fieldID, @RequestParam String begin, @RequestParam String end, @RequestParam List<String> strings)
+    {
+        LocalDate begin2 = LocalDate.parse(begin);
+        LocalDate end2 = LocalDate.parse(end);
+        return reservationService.dateTimeSet(sportCenterID, sportActivityID, fieldID, begin2, end2, strings);
     }
 }
