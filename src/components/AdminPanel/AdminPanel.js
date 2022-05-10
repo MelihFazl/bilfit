@@ -519,7 +519,7 @@ function AdminPanel() {
           }}
         >
           {" "}
-          <h1 className="header">All Users</h1>{" "}
+          <h1 className="header">All Members</h1>{" "}
         </div>
         <Stack
           className="mainStack"
