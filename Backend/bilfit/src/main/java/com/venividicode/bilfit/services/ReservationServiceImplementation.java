@@ -5,6 +5,7 @@ import com.venividicode.bilfit.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -187,5 +188,90 @@ public class ReservationServiceImplementation implements ReservationService{
     @Override
     public List<SportCenter> getAllSportCenters() {
         return sportCenterRepository.findAll();
+    }
+
+    @Override
+    public String cancel(Reservation reservation) {
+
+        reservation.setStatus(ReservationStatus.Cancelled);
+        LocalDate resDate = reservation.getReservationDate();
+        Field resField = reservation.getReservationField();
+
+        TimeSlotOnDay matchedTimeSlotOnDay = null;
+        TimeSlot matchedTimeSlot = null;
+        int index = 0;
+        int index2 = 0;
+        for (int i = 0; resField.getOccupiableTimeSlotsOnDay().size() > i; i++) {
+            if (resField.getOccupiableTimeSlotsOnDay().get(i).getDate().toString().equals(resDate.toString())) {
+                index = i;
+                matchedTimeSlotOnDay = resField.getOccupiableTimeSlotsOnDay().get(i);
+                List<TimeSlot> timeSlots = resField.getOccupiableTimeSlotsOnDay().get(i).getTimeSlotList();
+                for (int j = 0; timeSlots.size() > j; j++) {
+                    if (timeSlots.get(j).getTimeSlot().equals(reservation.getReservedTimeInterval())) {
+                        index = j;
+                        matchedTimeSlot = timeSlots.get(j);
+                        System.out.println("NULL GELİRSE PİÇİM");
+                        timeSlots.get(j).setCurrentCount(timeSlots.get(j).getCurrentCount() - 1);
+                    }
+                }
+            }
+        }
+        timeSlotRepository.save(matchedTimeSlot);
+        timeSlotOnDayRepository.save(matchedTimeSlotOnDay);
+        fieldRepository.save(resField);
+        sportActivityRepository.save(reservation.getReservationActivity());
+        sportCenterRepository.save(reservation.getReservationPlace());
+        return "The reservation on " + reservation.getReservationDate() + " between " + reservation.getReservedTimeInterval()
+                + " has been successfully cancelled.";
+
+    }
+
+    @Override
+    public String dateTimeSet(long sportCenterID, long sportActivityID, long fieldID, LocalDate begin, LocalDate end, List<String> timeSlots) {
+        List<SportCenter> sportCenters = sportCenterRepository.findById(sportCenterID);
+        if(sportCenters == null)
+            return "Sport Center with ID " + sportCenterID + " was not found.";
+        List<SportActivity> sportActivities = sportActivityRepository.findById(sportActivityID);
+        if(sportActivities == null)
+            return "Sport Activity with ID " + sportActivityID + " was not found.";
+        List<Field> fields = fieldRepository.findById(fieldID);
+        if(fields == null)
+            return "Field with ID " + fieldID + " was not found.";
+
+        SportCenter sportCenter = sportCenters.get(0);
+        SportActivity sportActivity = sportActivities.get(0);
+        Field field = fields.get(0);
+        for(LocalDate date = begin; date.isBefore(end); date=date.plusDays(1))
+        {
+            for(int i = 0; field.getOccupiableTimeSlotsOnDay().size() > i; i++)
+            {
+                TimeSlotOnDay cur =  field.getOccupiableTimeSlotsOnDay().get(i);
+                field.getOccupiableTimeSlotsOnDay().get(i).setTimeSlotList(new ArrayList<TimeSlot>());
+                timeSlotOnDayRepository.save(cur);
+                for(int j = 0; cur.getTimeSlotList().size() > j; j++)
+                {
+                    timeSlotRepository.delete(cur.getTimeSlotList().get(j));
+                }
+                //timeSlotOnDayRepository.delete(field.getOccupiableTimeSlotsOnDay().get(i)); //? should I delete this?
+            }
+        }
+        for(LocalDate date = begin; date.isBefore(end); date= date.plusDays(1)) //All dates between begin and end
+        {
+            TimeSlotOnDay cur = new TimeSlotOnDay();
+            cur.setDate(date);
+            List<TimeSlot> timeSlots1 = new ArrayList<>();
+            for(int i = 0; timeSlots.size() > i; i++)
+            {
+                TimeSlot curTimeSlot = new TimeSlot();
+                curTimeSlot.setTimeSlot(timeSlots.get(i));
+                timeSlotRepository.save(curTimeSlot);
+                timeSlots1.add(curTimeSlot);
+            }
+            cur.setTimeSlotList(timeSlots1);
+            timeSlotOnDayRepository.save(cur);
+            field.getOccupiableTimeSlotsOnDay().add(cur);
+            fieldRepository.save(field);
+        }
+        return "Pass";
     }
 }

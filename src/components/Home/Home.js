@@ -90,6 +90,10 @@ function Home() {
         fontWeight: '200'*/
         fontFamily: 'Inter, sans-serif',
     }
+    const paragraphStyle2 = {
+        marginLeft: '3px',
+        fontFamily: 'Inter, sans-serif',
+    }
 
     const listStyle = {
         /**marginTop: '2rem',
@@ -120,13 +124,17 @@ function Home() {
                 <Box style={boxStyle2} ref={firstItemRef}>
                     <h2 style={headerStyle2}>Announcements</h2>
                     <List style={listStyle}>
-                        {announcements.slice(0).reverse().map((announcement, index) =>
+                        {announcements.length > 0 &&
+                        announcements.slice(0).reverse().map((announcement, index) =>
                         (
                         <ListItem>
                             <ListItemIcon><CampaignIcon /></ListItemIcon>
-                            <ListItemText primary={announcement.title} secondary={announcement.description} />{/*The data information can be later coming from an input*/}
+                            <ListItemText primary={announcement.title+" ("+announcement.date.substring(0,10)+")"} secondary={announcement.description} />{/*The data information can be later coming from an input*/}
                         </ListItem>
                         ))
+                        }
+                        {announcements.length == 0 &&
+                            <h style={paragraphStyle2}>No announcement yet</h>
                         }
                         
                     </List>
