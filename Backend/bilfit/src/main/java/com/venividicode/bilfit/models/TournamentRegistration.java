@@ -20,14 +20,10 @@ public class TournamentRegistration {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long ID;
-	// the gym member who made this tournament registration
-	@OneToOne
-	private GymMember registerer;
 	// list of all the ID's of the team members
-	@ElementCollection(targetClass = Long.class)
-	private List<Long> teamMembersID;
-	public GymMember getRegisterer() {
-		return this.registerer;
-	}
+	@ManyToMany
+	private List<GymMember> teamMembers;
+	@OneToOne
+	private Tournament tournament;
 
 }

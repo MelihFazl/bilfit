@@ -31,11 +31,11 @@ public class TournamentController
      * @return String indicating success or failure
      */
     @PostMapping("/add")
-    public String saveTournament(@RequestBody Tournament tournament, @RequestParam(value="field") List<Long> fieldID)
+    public String saveTournament(@RequestBody Tournament tournament, @RequestParam(value="sportCenterID") long sportCenterID)
     {
         try
         {
-            tournamentService.saveTournament(tournament, fieldID);
+            tournamentService.saveTournament(tournament,sportCenterID);
             return "Tournament with name " + tournament.getName() + " has been added.";
         } catch (Exception e)
         {
@@ -59,10 +59,12 @@ public class TournamentController
         return "Tournament with specified ID " + id + " has been successfully deleted.";
     }
 
-    /**
-     * Get method returns all the Tournament objects
-     * @return list of all the Tournament objects
-     */
+    @GetMapping("/teamMember/{id}")
+    public List<Tournament> getTournamentByTeamMember(@PathVariable("id") long id)
+    {
+        return tournamentService.getTournamentByTeamMember(id);
+    }
+  
     @GetMapping
     public List<Tournament> getAllTournaments()
     {
@@ -130,9 +132,7 @@ public class TournamentController
     {
         try
         {
-            if(tournamentService.saveTournamentRegistration(tournamentRegistration, tournamentID, teamID) != null)
-                return "TournamentRegistration with id " + tournamentRegistration.getID() + " has been added.";
-            return "There is a problem, check the backend console for the details";
+            return tournamentService.saveTournamentRegistration(tournamentRegistration, tournamentID, teamID);
         } catch (Exception e)
         {
         return "Something has gone wrong: " + e.toString() ;
@@ -177,14 +177,10 @@ public class TournamentController
         return tournamentService.getTournamentRegistrationByID(id);
     }
 
-    /**
-     * Get method returning all the Tournament Registrations whose registerer has the specified id
-     * @param id of the registerer
-     * @return list of all the Tournament Registrations with specified registerer
-     */
-    @GetMapping("/registration/reserver/{id}")
-    public List<TournamentRegistration> getTournamentRegistrationByRegisterer(@PathVariable("id") long id)
+    @GetMapping("/registration/teamMember/{id}")
+    public List<TournamentRegistration> getTournamentRegistrationByTeamMember(@PathVariable("id") long id)
+
     {
-        return tournamentService.getTournamentRegistrationByRegisterer(id);
+        return tournamentService.getTournamentRegistrationByMemberID(id);
     }
 }
